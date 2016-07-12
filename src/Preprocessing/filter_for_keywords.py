@@ -3,8 +3,8 @@
 #    The output is TBD
 from os import listdir
 from os.path import isfile, join
-import SystemUtilities.Configuration as c
-import SystemUtilities.Globals as g
+from SystemUtilities.Configuration import *
+from SystemUtilities.Globals import *
 from DataModeling.DataModels import Document, Patient
 from Extraction.KeywordSearch import KeywordSearch
 from nltk.tokenize import sent_tokenize
@@ -14,17 +14,17 @@ from Preprocessing.get_splits2 import DataSplitter
 
 def main():
     # Read in from folder containing all available data
-    data_src = c.data_repo_dir
+    data_src = data_repo_dir
     data = load_data(data_src)
     documents = create_documents_from_data(data)
     patients = create_patients_from_documents(documents)
-    docs_with_keyword_hits = KeywordSearch.search_keywords(g.TOBACCO, patients)
+    docs_with_keyword_hits = KeywordSearch.search_keywords(TOBACCO, patients)
 
     # TODO -- do smth with docs_with_keyword_hits (info also stored in patients)
-    # print(docs_with_keyword_hits)
+    print(docs_with_keyword_hits)
 
     # Sort based on flor's divisions
-    # splitter = DataSplitter(docs_with_keyword_hits_tob, docs_with_keyword_hits_alc)
+    # splitter = DataSplitter(docs_with_keyword_hits[TOBACCO], docs_with_keyword_hits[ALCOHOL])
     # splitter.split_into_dev_test_train()
 
 
