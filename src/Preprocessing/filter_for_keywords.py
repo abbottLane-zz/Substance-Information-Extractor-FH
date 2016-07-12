@@ -27,12 +27,11 @@ def main():
     # splitter = DataSplitter(docs_with_keyword_hits[TOBACCO], docs_with_keyword_hits[ALCOHOL])
     # splitter.split_into_dev_test_train()
 
-    #
-
 
 def load_data(data_src):
     # debug
-    data_src = "C:\Users\sdmorris\Documents\FHCRC\ExposureProject\Substance_IE_Data\mini_data"
+    # data_src = "C:\Users\sdmorris\Documents\FHCRC\ExposureProject\Substance_IE_Data\mini_data"
+    data_src = "C:\Users\wlane\Documents\Substance_IE_Data\mini_output_corpus"
     # end debug
 
     file_list = [f for f in listdir(data_src) if isfile(join(data_src, f))]

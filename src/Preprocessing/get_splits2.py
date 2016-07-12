@@ -4,4 +4,5 @@ class DataSplitter:
         self.alc_list = alc_list
 
     def split_into_dev_test_train(self):
+        tmp=9
         pass
