@@ -9,6 +9,8 @@ from DataModeling.DataModels import Document, Patient
 from Extraction.KeywordSearch import KeywordSearch
 from nltk.tokenize import sent_tokenize
 
+from Preprocessing.get_splits2 import DataSplitter
+
 
 def main():
     # Read in from folder containing all available data
@@ -20,6 +22,10 @@ def main():
 
     # TODO -- do smth with docs_with_keyword_hits (info also stored in patients)
     # print(docs_with_keyword_hits)
+
+    # Sort based on flor's divisions
+    # splitter = DataSplitter(docs_with_keyword_hits_tob, docs_with_keyword_hits_alc)
+    # splitter.split_into_dev_test_train()
 
 
 def load_data(data_src):
