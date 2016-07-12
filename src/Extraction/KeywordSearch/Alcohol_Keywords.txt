@@ -4,7 +4,7 @@ ethanol
 drunk\S*
 drank
 (glass|bottle) ?(\/|each|every|per) ?(day|w(ee)?k|mo(nth)?|y(ea)?r)
-beer
+beers?
 wine
 vodka
 bourbon
