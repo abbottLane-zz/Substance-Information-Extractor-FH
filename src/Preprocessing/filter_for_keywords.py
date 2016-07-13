@@ -18,17 +18,19 @@ def main():
     data = load_data(data_src)
     documents = create_documents_from_data(data)
     patients = create_patients_from_documents(documents)
+    print("Searching documents for keywords...")
     docs_with_keyword_hits = KeywordSearch.search_keywords(TOBACCO, patients)
+    # print(docs_with_keyword_hits)
 
-    # TODO -- do smth with docs_with_keyword_hits (info also stored in patients)
-    print(docs_with_keyword_hits)
-
-    # Sort based on flor's divisions
+    # Based on Flor's divisions, derive list of documents that need annotation
+    print("Generating list of documents that need annotations...")
     splitter = DataSplitter(docs_with_keyword_hits)
     splitter.split_into_dev_test_train()
 
+    print("Done.")
 
 def load_data(data_src):
+    print("Loading data...")
     # debug
     # data_src = "C:\Users\sdmorris\Documents\FHCRC\ExposureProject\Substance_IE_Data\mini_data"
     # data_src = "C:\Users\wlane\Documents\Substance_IE_Data\mini_output_corpus"
@@ -45,16 +47,18 @@ def load_data(data_src):
 
 
 def create_documents_from_data(data):
+    print("Creating Documents from data...")
     documents = list()
     for id, text in data.iteritems():
         new_doc = Document(id, text)
-        sent_tokenize_list = sent_tokenize(text.encode("utf-8"))
+        sent_tokenize_list = sent_tokenize(text.decode("utf-8"))
         new_doc.sent_list=sent_tokenize_list
         documents.append(new_doc)
     return documents
 
 
 def create_patients_from_documents(documents):
+    print ("Creating patients from documents...")
     patientId_docList = dict()
     for doc in documents:
         patient_id = doc.id.split("_")[0]
