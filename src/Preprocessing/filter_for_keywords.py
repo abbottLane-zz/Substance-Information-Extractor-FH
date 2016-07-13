@@ -9,7 +9,7 @@ from DataModeling.DataModels import Document, Patient
 from Extraction.KeywordSearch import KeywordSearch
 from nltk.tokenize import sent_tokenize
 
-from Preprocessing.get_splits2 import DataSplitter
+from Preprocessing.get_docs_to_annotate import DataSplitter
 
 
 def main():
@@ -24,14 +24,14 @@ def main():
     print(docs_with_keyword_hits)
 
     # Sort based on flor's divisions
-    # splitter = DataSplitter(docs_with_keyword_hits[TOBACCO], docs_with_keyword_hits[ALCOHOL])
-    # splitter.split_into_dev_test_train()
+    splitter = DataSplitter(docs_with_keyword_hits)
+    splitter.split_into_dev_test_train()
 
 
 def load_data(data_src):
     # debug
     # data_src = "C:\Users\sdmorris\Documents\FHCRC\ExposureProject\Substance_IE_Data\mini_data"
-    data_src = "C:\Users\wlane\Documents\Substance_IE_Data\mini_output_corpus"
+    # data_src = "C:\Users\wlane\Documents\Substance_IE_Data\mini_output_corpus"
     # end debug
 
     file_list = [f for f in listdir(data_src) if isfile(join(data_src, f))]
@@ -48,7 +48,7 @@ def create_documents_from_data(data):
     documents = list()
     for id, text in data.iteritems():
         new_doc = Document(id, text)
-        sent_tokenize_list = sent_tokenize(text)
+        sent_tokenize_list = sent_tokenize(text.encode("utf-8"))
         new_doc.sent_list=sent_tokenize_list
         documents.append(new_doc)
     return documents

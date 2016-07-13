@@ -24,7 +24,7 @@ if USER == spencer:
     gold_annotation_dir = r"C:\Users\sdmorris\Documents\FHCRC\Resources\Florian\Florian_smoking\smoking_status\
                             SmokingStatusAnnotator\resources\gold\\"
     ## SILVER annotation sources
-    silver_annotations_dir = "Silver annotations dir goes here" # TODO: needs filled in
+    silver_annotations_dir = "Silver annotations dir goes here"  # TODO: needs filled in
     ## Data sources
     data_repo_dir = r"C:\Users\sdmorris\Documents\FHCRC\Resources\Florian\Florian_smoking\smoking_status\
                     sortedNotes\sortedNotes\\"
@@ -32,6 +32,7 @@ if USER == spencer:
     # Output files
     CLASSF_EVAL_FILENAME = r"C:\Users\sdmorris\Documents\FHCRC\ExposureProject\Substance_IE_Data\SystemOutput\
                             Evaluation\EventDetectionEval.txt"
+    SUBSTANCE_IE_DATA_FOLDER = r"C:\Users\sdmorris\Documents\FHCRC\ExposureProject\Substance_IE_Data\\"
 
 elif USER == will:
     RAW_DATA_DIR = r"C:\Users\wlane\Documents\Substance_IE_Data\resources\exposure_notes_utf8.txt"
@@ -49,6 +50,7 @@ elif USER == will:
     # Output files
     CLASSF_EVAL_FILENAME = r"C:\Users\s____________________WILL'S PATH_____________________nce_IE_Data\SystemOutput\
                                 Evaluation\EventDetectionEval.txt"
+    SUBSTANCE_IE_DATA_FOLDER = r"C:\Users\wlane\Documents\Substance_IE_Data\\"
 
 else:
     print("Error: unknown user in SystemUtilities/Configuration")
@@ -57,7 +59,7 @@ doc_all_gold_dir = gold_annotation_dir + "documents.GOLD"
 doc_dev_gold_dir = gold_annotation_dir + "documents_dev.GOLD"
 doc_test_gold_dir = gold_annotation_dir + "documents_testing.GOLD"
 doc_train_gold_dir = gold_annotation_dir + "documents_training.GOLD"
-patients_all_gold_dir = gold_annotation_dir+"patients.GOLD"
+patients_all_gold_dir = gold_annotation_dir + "patients.GOLD"
 patients_dev_gold_dir = gold_annotation_dir + "patients_dev.GOLD"
 patients_test_gold_dir = gold_annotation_dir + "patients_testing.GOLD"
 patients_train_gold_dir = gold_annotation_dir + "patients_training.GOLD"
@@ -91,6 +93,7 @@ def get_environment_gold_data(env):
         test_data = [doc_test_gold_dir, patients_test_gold_dir]
         train_data = [doc_train_gold_dir, patients_train_gold_dir]
         return test_data, train_data
+
 
 def get_environment_text_data(env):
     return [data_repo_dir]
