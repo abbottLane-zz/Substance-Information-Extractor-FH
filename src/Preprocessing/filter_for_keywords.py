@@ -24,7 +24,7 @@ def main():
     print(docs_with_keyword_hits)
 
     # Sort based on flor's divisions
-    # splitter = DataSplitter(docs_with_keyword_hits[TOBACCO], docs_with_keyword_hits[ALCOHOL])
+    # splitter = DataSplitter(docs_with_keyword_hits)
     # splitter.split_into_dev_test_train()
 
 
