@@ -54,3 +54,11 @@ STATUS_CLASSF_FEATMAP_SUFFIX = "_status_clsf_featmap.p"
 # Substance Keyword/Regex files
 KEYWORD_FILE_DIR = "..\Extraction\KeywordSearch\\"
 KEYWORD_FILE_SUFFIX = "_Keywords.txt"
+
+# Keyword Hit Information
+KEYWORD_HIT_NAME = "KeywordHit"
+KEYWORD_HIT_TABLE = "Keywords"
+POSITIVE = "Positive"
+NEGATIVE = "Negative"
+TOB_KEYWORD_VERSION = "TobaccoKeywordHit1.0"
+ALC_KEYWORD_VERSION = "AlcoholKeywordHit1.0"

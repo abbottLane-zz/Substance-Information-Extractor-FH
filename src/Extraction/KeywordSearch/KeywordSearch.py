@@ -3,11 +3,34 @@ import re
 from SystemUtilities.Globals import *
 
 
+class KeywordHitJSON:
+    def __init__(self, substance):
+        self.alg_version = ""
+        self.init_version(substance)
+
+        self.name = substance + KEYWORD_HIT_NAME
+        self.spans = []
+        self.table = KEYWORD_HIT_TABLE
+        self.value = NEGATIVE
+
+    def init_version(self, substance):
+        if substance == TOBACCO:
+            self.alg_version = TOB_KEYWORD_VERSION
+        elif substance == ALCOHOL:
+            self.alg_version = ALC_KEYWORD_VERSION
+
+
 class KeywordHit:
     def __init__(self, text, span_start, span_end):
         self.text = text
         self.span_start = span_start
         self.span_end = span_end
+
+
+class Span:
+    def __init__(self, start, stop):
+        self.start = start
+        self.stop = stop
 
 
 def search_keywords(substance, patients):
@@ -34,14 +57,20 @@ def find_keyword_hits(patients, regexes, substance):
 
     for patient in patients:
         for doc in patient.doc_list:
+            keywordhit_json = KeywordHitJSON(substance)
 
             has_hit = False
             for regex in regexes:
+                # JSON format hits
+                find_json_doc_hits(doc, regex, keywordhit_json)
+
+                # Debug format hits
                 doc_hits = find_doc_hits(doc, regex)
                 doc.keyword_hits[substance].extend(doc_hits)
                 if doc_hits:
                     has_hit = True
 
+            doc.keyword_hits_json[substance] = keywordhit_json
             if has_hit:
                 docs_with_hits.append(doc)
 
@@ -61,3 +90,14 @@ def find_doc_hits(doc, regex):
         hit = KeywordHit(keyword_text, span_start, span_end)
         hits.append(hit)
     return hits
+
+
+def find_json_doc_hits(doc, regex, keywordhit_json):
+    matches = re.finditer(regex, doc.text)
+
+    for match in matches:
+        span_tuple = match.span()
+        span = Span(span_tuple[0], span_tuple[1])
+
+        keywordhit_json.spans.append(span)
+        keywordhit_json.value = POSITIVE

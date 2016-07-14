@@ -20,6 +20,7 @@ class Document(Data):
         self.text = text
         self.sent_list = []
         self.keyword_hits = {}  # {substance_type : [KeywordHit objs]}
+        self.keyword_hits_json = {}
 
         for substance in SUBSTANCE_TYPES:
             self.keyword_hits[substance] = []
