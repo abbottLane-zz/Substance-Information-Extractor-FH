@@ -8,7 +8,6 @@ from SystemUtilities.Globals import *
 from DataModeling.DataModels import Document, Patient
 from Extraction.KeywordSearch import KeywordSearch
 from nltk.tokenize import sent_tokenize
-
 from Preprocessing.get_docs_to_annotate import DataSplitter
 
 

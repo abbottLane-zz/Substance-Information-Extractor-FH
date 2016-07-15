@@ -33,6 +33,7 @@ if USER == spencer:
     CLASSF_EVAL_FILENAME = r"C:\Users\sdmorris\Documents\FHCRC\ExposureProject\Substance_IE_Data\SystemOutput\
                             Evaluation\EventDetectionEval.txt"
     SUBSTANCE_IE_DATA_FOLDER = r"C:\Users\sdmorris\Documents\FHCRC\ExposureProject\Substance_IE_Data\\"
+    FLORIAN_FULL_DATA = "path/to/florian's/full/set/of/note/documents"
 
 elif USER == will:
     RAW_DATA_DIR = r"C:\Users\wlane\Documents\Substance_IE_Data\resources\exposure_notes_utf8.txt"
@@ -51,6 +52,7 @@ elif USER == will:
     CLASSF_EVAL_FILENAME = r"C:\Users\s____________________WILL'S PATH_____________________nce_IE_Data\SystemOutput\
                                 Evaluation\EventDetectionEval.txt"
     SUBSTANCE_IE_DATA_FOLDER = r"C:\Users\wlane\Documents\Substance_IE_Data\\"
+    FLORIAN_FULL_DATA = "C:\Users\wlane\Documents\Florian_smoking\smoking_status\\full_data_set\\"
 
 else:
     print("Error: unknown user in SystemUtilities/Configuration")
