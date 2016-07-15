@@ -1,6 +1,6 @@
 # This script reads in a set of documents from a directory, and feeds them to KeywordHit module which checks
 #    whether the document contains words of interest; anything related to smoking or tobacco.
-#    The output is TBD
+
 from os import listdir
 from os.path import isfile, join
 from SystemUtilities.Configuration import *
