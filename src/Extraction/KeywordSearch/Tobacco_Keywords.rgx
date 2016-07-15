@@ -1,8 +1,7 @@
 ((non|ex)-?)?smoke(r|d)?
 smoking
-\+? ?tobacco
-\stobac
-(\s|^)(\+|- )?tob([^r]|$)
+tobac\S*
+(\s|^)(\+|-) ?tob([^r]|$)
 cig(s)?
 (ex-)?cigarettes?( per day)?
 (\d*\+? +)?pack(s)? ((per)|a) day
@@ -15,5 +14,3 @@ pack ?/ ?y(ea)?r
 nicotine
 chantix
 cigar
-((alcohol)|(etoh)), tobacco, ((or)|(and))? ((drugs?)|(illicits?( drugs?)?))
-tobacco, ((alcohol)|(etoh)), ((or)|(and))? ((drugs?)|(illicits?( drugs?)?))
