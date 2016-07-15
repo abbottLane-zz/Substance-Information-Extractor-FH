@@ -9,6 +9,7 @@ class KeywordHitJSON:
         self.init_version(substance)
 
         self.name = substance + KEYWORD_HIT_NAME
+        self.confidence = 0
         self.spans = []
         self.table = KEYWORD_HIT_TABLE
         self.value = NEGATIVE
@@ -33,13 +34,14 @@ class Span:
         self.stop = stop
 
 
-def search_keywords(substance, patients):
-    docs_with_hits = []
-    if substance in SUBSTANCE_TYPES:
+def search_keywords(patients):
+    docs_with_hits = set()
+    for substance in SUBSTANCE_TYPES:
         regexes = get_regexes_from_file(substance)
-        docs_with_hits = find_keyword_hits(patients, regexes, substance)
-    else:
-        print("Unexpected substance name")
+        docs_with_substance = find_keyword_hits(patients, regexes, substance)
+
+        for doc in docs_with_substance:
+            docs_with_hits.add(doc)
 
     return docs_with_hits
 
@@ -78,7 +80,7 @@ def find_keyword_hits(patients, regexes, substance):
 
 
 def find_doc_hits(doc, regex):
-    matches = re.finditer(regex, doc.text)
+    matches = re.finditer(regex, doc.text, re.IGNORECASE)
     hits = []
     for match in matches:
         keyword_text = match.group()
@@ -93,7 +95,7 @@ def find_doc_hits(doc, regex):
 
 
 def find_json_doc_hits(doc, regex, keywordhit_json):
-    matches = re.finditer(regex, doc.text)
+    matches = re.finditer(regex, doc.text, re.IGNORECASE)
 
     for match in matches:
         span_tuple = match.span()

@@ -21,9 +21,9 @@ DELIMITER = r"1234567890qwertyuiop"
 # Substances
 SUBSTANCE = "SUBSTANCE"
 ALCOHOL = "Alcohol"
-DRUGS = "Drug"
+DRUG = "Drug"
 TOBACCO = "Tobacco"
-SUBSTANCE_TYPES = [ALCOHOL, DRUGS, TOBACCO]
+SUBSTANCE_TYPES = [ALCOHOL, TOBACCO]
 ML_CLASSIFIER_SUBSTANCES = [TOBACCO]  # Substances using ML classification for event detection
 
 # Classification Labels
@@ -53,7 +53,7 @@ STATUS_CLASSF_FEATMAP_SUFFIX = "_status_clsf_featmap.p"
 
 # Substance Keyword/Regex files
 KEYWORD_FILE_DIR = "..\Extraction\KeywordSearch\\"
-KEYWORD_FILE_SUFFIX = "_Keywords.txt"
+KEYWORD_FILE_SUFFIX = "_Keywords.rgx"
 
 # Keyword Hit Information
 KEYWORD_HIT_NAME = "KeywordHit"

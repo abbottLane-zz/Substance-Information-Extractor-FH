@@ -1,4 +1,4 @@
-alcohol
+alcohol\S*
 ethanol
 \S*drink\S*
 drunk\S*

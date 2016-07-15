@@ -18,10 +18,11 @@ def main():
     data = load_data(data_src)
     documents = create_documents_from_data(data)
     patients = create_patients_from_documents(documents)
-    docs_with_keyword_hits = KeywordSearch.search_keywords(TOBACCO, patients)
+
+    docs_with_keywords = KeywordSearch.search_keywords(patients)
 
     # TODO -- do smth with docs_with_keyword_hits (info also stored in patients)
-    print(docs_with_keyword_hits)
+    print(docs_with_keywords)
 
     # Sort based on flor's divisions
     # splitter = DataSplitter(docs_with_keyword_hits)
