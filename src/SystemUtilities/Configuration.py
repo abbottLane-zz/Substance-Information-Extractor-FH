@@ -45,7 +45,7 @@ elif USER == will:
     ## GOLD annotation sources
     gold_annotation_dir = r"C:\Users\wlane\Documents\Florian_smoking\smoking_status\SmokingStatusAnnotator\resources\gold\\"
     ## Silver Annotations sources
-    silver_annotations_dir = r"C:\Users\wlane\Documents\Substance_IE_Data\resources\SilverOutput\\"
+    #silver_annotations_dir = r"C:\Users\wlane\Documents\Substance_IE_Data\resources\SilverOutput\\"
     ## Data sources
     data_repo_dir = r"C:\Users\wlane\Documents\Substance_IE_Data\output\\"
     # Output files

@@ -86,7 +86,7 @@ def write_note_files_to_disk(patients, flors_files):
             if normalized_note_text in flors_files:
                 this_data_is_from_flor.append((flors_files[normalized_note_text].replace("-", "_"), doc.text))
             else:
-                data_unique_to_our_set.append((str(doc.caisis_id) + "_" + str(alt_num_count), doc.text))
+                data_unique_to_our_set.append((str(patient_id) + "_" + str(alt_num_count), doc.text))
                 alt_num_count += 1
 
         # write files
