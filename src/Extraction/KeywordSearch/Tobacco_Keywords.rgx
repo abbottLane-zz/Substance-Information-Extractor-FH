@@ -1,19 +1,16 @@
 ((non|ex)-?)?smoke(r|d)?
 smoking
-(?<=\+? ?)tobacco
-(?<=\s)tobac\S*
-(?<=(\s|^)(\+|- )?)tob(?=([^r]|$))
+tobac\S*
+(\s|^)(\+|-) ?tob([^r]|$)
 cig(s)?
 (ex-)?cigarettes?( per day)?
-(?<=(\d*\+? +)?)pack(s)? ((per)|a) day
+(\d*\+? +)?pack(s)? ((per)|a) day
 pack/day
 ((pack)|(one)) and a half (packs?)?
-(?<=(\d+(-\d+)? )?)pack years?
+(\d+(-\d+)? )?pack years?
 ppd
-(?<=(\d+-| +)?)pack(-| )years?
+(\d+-| +)?pack(-| )years?
 pack ?/ ?y(ea)?r
 nicotine
 chantix
 cigar
-((alcohol)|(etoh)), tobacco, ((or)|(and))? ((drugs?)|(illicits?( drugs?)?))
-tobacco, ((alcohol)|(etoh)), ((or)|(and))? ((drugs?)|(illicits?( drugs?)?))
