@@ -3,19 +3,45 @@ import SystemUtilities.Globals as g
 import os
 import openpyxl
 import collections
+import csv
+
+from Preprocessing.CSVBatch import CSVBatch
 
 
 def write_unannotated_info_to_file(unannotated_documents):
     with open(c.SUBSTANCE_IE_DATA_FOLDER + "docs_to_annotate.txt", "w") as f:
         for doc in unannotated_documents:
-            f.write(doc.id+"\n")
+            f.write(doc.id + "\n")
     pass
 
 
-def write_docs_needing_annotation_to_notes(documents_needing_annotation):
+def write_docs_needing_annotation_to_csv_batches(documents_needing_annotation):
+    count = 0
+    batch_num = 0
+    BATCH_SIZE = 100
+    # Sort notes into batches of 100
+    batches = list()
     for doc in documents_needing_annotation:
-        with open(c.DOCS_NEEDING_ANNOTATION_DIR + doc.id, "w") as f:
-            f.write(doc.text)
+        if count == 0 or count == 1:
+            batch = CSVBatch(batch_num)
+            batch_num += 1
+        elif count == BATCH_SIZE:
+            batches.append(batch)
+            count = 0
+        batch.add_document(doc)
+        count += 1
+
+    # write a csv file for each batch
+    # with open('eggs.csv', 'wb') as csvfile:
+    #     spamwriter = csv.writer(csvfile, delimiter=' ',
+    #                             quotechar='|', quoting=csv.QUOTE_MINIMAL)
+    #     spamwriter.writerow(['Spam'] * 5 + ['Baked Beans'])
+    #     spamwriter.writerow(['Spam', 'Lovely Spam', 'Wonderful Spam'])
+    for batch in batches:
+        with open(c.DOCS_NEEDING_ANNOTATION_DIR + "annotation_batch_" + str(batch.id) + ".csv", "wb") as csvfile:
+            batch_writer = csv.writer(csvfile, quoting=csv.QUOTE_ALL)
+            for document in batch.documents:
+                batch_writer.writerow([document.id, document.text])
     pass
 
 
@@ -89,4 +115,4 @@ class DataSplitter:
         documents_needing_annotation = self.get_list_of_documents_to_annotate()
         write_unannotated_info_to_file(documents_needing_annotation)
 
-        write_docs_needing_annotation_to_notes(documents_needing_annotation)
+        write_docs_needing_annotation_to_csv_batches(documents_needing_annotation)
