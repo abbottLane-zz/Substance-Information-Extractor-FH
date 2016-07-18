@@ -12,6 +12,13 @@ def write_unannotated_info_to_file(unannotated_documents):
     pass
 
 
+def write_docs_needing_annotation_to_notes(documents_needing_annotation):
+    for doc in documents_needing_annotation:
+        with open(c.DOCS_NEEDING_ANNOTATION_DIR + doc.id, "w") as f:
+            f.write(doc.text)
+    pass
+
+
 class DataSplitter:
     def __init__(self, docs_with_keywords):
         self.docs_with_keywords_list = docs_with_keywords
@@ -22,7 +29,7 @@ class DataSplitter:
         self.patients_dev_dict = dict()
         self.patients_train_dict = dict()
 
-    def split_into_dev_test_train(self):
+    def write_notes_needing_annotation(self):
         self.get_splits()
         pass
 
@@ -81,3 +88,5 @@ class DataSplitter:
 
         documents_needing_annotation = self.get_list_of_documents_to_annotate()
         write_unannotated_info_to_file(documents_needing_annotation)
+
+        write_docs_needing_annotation_to_notes(documents_needing_annotation)

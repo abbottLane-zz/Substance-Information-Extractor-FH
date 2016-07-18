@@ -24,8 +24,7 @@ def main():
     # Based on Flor's divisions, derive list of documents that need annotation
     print("Generating list of documents that need annotations...")
     splitter = DataSplitter(docs_with_keyword_hits)
-    splitter.split_into_dev_test_train()
-
+    splitter.write_notes_needing_annotation()
     print("Done.")
 
 def load_data(data_src):
