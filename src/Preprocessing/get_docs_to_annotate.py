@@ -12,6 +12,7 @@ def write_unannotated_info_to_file(unannotated_documents):
     with open(c.SUBSTANCE_IE_DATA_FOLDER + "docs_to_annotate.txt", "w") as f:
         for doc in unannotated_documents:
             f.write(doc.id + "\n")
+    print("List of documents to annotate written to: " + c.SUBSTANCE_IE_DATA_FOLDER + "docs_to_annotate.txt")
     pass
 
 
@@ -58,6 +59,7 @@ def write_docs_needing_annotation_to_csv_batches(documents_needing_annotation):
                 mrn = metadata_dict[id][0]
                 timestamp = metadata_dict[id][1]
                 batch_writer.writerow([mrn, id, timestamp, document.text])
+    print("csv batch files ready for annotation written to: " + c.DOCS_NEEDING_ANNOTATION_DIR + "annotation_batch_" + str(batch.id) + ".csv")
     pass
 
 

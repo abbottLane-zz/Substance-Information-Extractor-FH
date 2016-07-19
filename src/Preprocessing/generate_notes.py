@@ -104,11 +104,13 @@ def write_note_files_to_disk(patients, flors_files):
             with open(c.NOTE_OUTPUT_DIR + tup[0], "w") as writefile:
                 for line in re.split(r"\n", tup[1]):
                     writefile.write(line + "\n")
+        print("Raw data written into individual document txt files at: " + c.NOTE_OUTPUT_DIR)
 
     # write metadata file
     with open(c.SUBSTANCE_IE_DATA_FOLDER + "marvelously_massive_metadata_muniments_dict.txt", "wb") as file:
         for key_id, value_tuple in document_metadata.iteritems():
             file.write(key_id + "\t" + value_tuple[0] + "\t" + value_tuple[1] + "\n")
+    print("Metatata for keyword-filtered documents written to: " + c.SUBSTANCE_IE_DATA_FOLDER + "marvelously_massive_metadata_muniments_dict.txt")
     pass
 
 def get_docs_from_blobs(blobs):
