@@ -70,6 +70,7 @@ def get_blobs():
 
 
 def write_note_files_to_disk(patients, flors_files):
+    document_metadata= dict()
     for patient_id in patients.keys():
         doc_num_count = 0
         alt_num_count = 0
@@ -84,10 +85,15 @@ def write_note_files_to_disk(patients, flors_files):
         for doc in documents:
             normalized_note_text = normalize_note_text(doc.text)
             if normalized_note_text in flors_files:
-                this_data_is_from_flor.append((flors_files[normalized_note_text].replace("-", "_"), doc.text))
+                obscured_id = flors_files[normalized_note_text].replace("-", "_")
+                this_data_is_from_flor.append((obscured_id, doc.text))
             else:
-                data_unique_to_our_set.append((str(patient_id) + "_" + str(alt_num_count), doc.text))
+                obscured_id = str(patient_id) + "_" + str(alt_num_count)
+                data_unique_to_our_set.append((obscured_id, doc.text))
                 alt_num_count += 1
+
+            # record metadata for each doc, will be written to METADATA_OUTPUT dir
+            document_metadata[obscured_id] = (doc.mrn, doc.timestamp)
 
         # write files
         for tup in this_data_is_from_flor:
@@ -98,8 +104,12 @@ def write_note_files_to_disk(patients, flors_files):
             with open(c.NOTE_OUTPUT_DIR + tup[0], "w") as writefile:
                 for line in re.split(r"\n", tup[1]):
                     writefile.write(line + "\n")
-    pass
 
+    # write metadata file
+    with open(c.SUBSTANCE_IE_DATA_FOLDER + "marvelously_massive_metadata_muniments_dict.txt", "wb") as file:
+        for key_id, value_tuple in document_metadata.iteritems():
+            file.write(key_id + "\t" + value_tuple[0] + "\t" + value_tuple[1] + "\n")
+    pass
 
 def get_docs_from_blobs(blobs):
     documents = list()

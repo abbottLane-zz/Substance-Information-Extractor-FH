@@ -34,7 +34,7 @@ if USER == spencer:
                             Evaluation\EventDetectionEval.txt"
     SUBSTANCE_IE_DATA_FOLDER = r"C:\Users\sdmorris\Documents\FHCRC\ExposureProject\Substance_IE_Data\\"
     FLORIAN_FULL_DATA = "path/to/florian's/full/set/of/note/documents"
-
+    METADATA_OUT = r"where you want metadata for the dataset to be written"
 elif USER == will:
     RAW_DATA_DIR = r"C:\Users\wlane\Documents\Substance_IE_Data\resources\exposure_notes_utf8.txt"
     METADATA_DIR = r"C:\Users\wlane\Documents\Substance_IE_Data\resources\metadata_partdeux.xlsx"
@@ -54,6 +54,7 @@ elif USER == will:
     SUBSTANCE_IE_DATA_FOLDER = r"C:\Users\wlane\Documents\Substance_IE_Data\\"
     FLORIAN_FULL_DATA = "C:\Users\wlane\Documents\Florian_smoking\smoking_status\\full_data_set\\"
     DOCS_NEEDING_ANNOTATION_DIR =  r"C:\Users\wlane\Documents\Substance_IE_Data\Docs_to_annotate\\"
+
 else:
     print("Error: unknown user in SystemUtilities/Configuration")
 

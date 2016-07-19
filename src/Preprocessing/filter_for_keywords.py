@@ -10,7 +10,6 @@ from Extraction.KeywordSearch import KeywordSearch
 from nltk.tokenize import sent_tokenize
 from Preprocessing.get_docs_to_annotate import DataSplitter
 
-
 def main():
     # Read in from folder containing all available data
     data_src = data_repo_dir

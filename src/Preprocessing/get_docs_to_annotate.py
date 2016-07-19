@@ -15,33 +15,49 @@ def write_unannotated_info_to_file(unannotated_documents):
     pass
 
 
+def get_metadata_dict():
+    metadata = dict()
+    with open(c.SUBSTANCE_IE_DATA_FOLDER + "marvelously_massive_metadata_muniments_dict.txt", "rb") as f:
+        lines = f.readlines()
+    for line in lines:
+        items = line.split()
+        caisis_docid = items[0]
+        mrn = items[1]
+        timestamp = items[2]
+        metadata[caisis_docid] = (mrn, timestamp)
+    return metadata
+
+
 def write_docs_needing_annotation_to_csv_batches(documents_needing_annotation):
+    total_doc_count = 0
     count = 0
     batch_num = 0
-    BATCH_SIZE = 100
+    BATCH_SIZE = 99
     # Sort notes into batches of 100
     batches = list()
     for doc in documents_needing_annotation:
-        if count == 0 or count == 1:
+        total_doc_count += 1
+        if count == 0:
             batch = CSVBatch(batch_num)
             batch_num += 1
-        elif count == BATCH_SIZE:
+            batch.add_document(doc)
+        elif count == BATCH_SIZE or total_doc_count == len(documents_needing_annotation):
+            batch.add_document(doc)
             batches.append(batch)
-            count = 0
-        batch.add_document(doc)
+            count = -1
+        else:
+            batch.add_document(doc)
         count += 1
 
-    # write a csv file for each batch
-    # with open('eggs.csv', 'wb') as csvfile:
-    #     spamwriter = csv.writer(csvfile, delimiter=' ',
-    #                             quotechar='|', quoting=csv.QUOTE_MINIMAL)
-    #     spamwriter.writerow(['Spam'] * 5 + ['Baked Beans'])
-    #     spamwriter.writerow(['Spam', 'Lovely Spam', 'Wonderful Spam'])
+    metadata_dict = get_metadata_dict()
     for batch in batches:
         with open(c.DOCS_NEEDING_ANNOTATION_DIR + "annotation_batch_" + str(batch.id) + ".csv", "wb") as csvfile:
             batch_writer = csv.writer(csvfile, quoting=csv.QUOTE_ALL)
             for document in batch.documents:
-                batch_writer.writerow([document.id, document.text])
+                id = document.id.replace("-", "_")
+                mrn = metadata_dict[id][0]
+                timestamp = metadata_dict[id][1]
+                batch_writer.writerow([mrn, id, timestamp, document.text])
     pass
 
 
