@@ -93,7 +93,7 @@ def write_note_files_to_disk(patients, flors_files):
             with open(c.NOTE_OUTPUT_DIR + tup[0], "w") as writefile:
                 for line in re.split(r"\n", tup[1]):
                     writefile.write(line + "\n")
-        print("Raw data written into individual document txt files at: " + c.NOTE_OUTPUT_DIR)
+    print("Raw data written into individual document txt files at: " + c.NOTE_OUTPUT_DIR)
 
     # write metadata file
     with open(c.SUBSTANCE_IE_DATA_FOLDER + "marvelously_massive_metadata_muniments_dict.txt", "wb") as file:
