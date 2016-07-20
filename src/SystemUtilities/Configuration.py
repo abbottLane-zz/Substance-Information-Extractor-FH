@@ -3,7 +3,7 @@
 from SystemUtilities.Globals import *
 
 # User-specific configuration
-USER = will
+USER = spencer
 
 # Environment/run type
 ENV = RUNTIME_ENV.TRAIN
@@ -26,8 +26,7 @@ if USER == spencer:
     ## SILVER annotation sources
     silver_annotations_dir = "Silver annotations dir goes here"  # TODO: needs filled in
     ## Data sources
-    data_repo_dir = r"C:\Users\sdmorris\Documents\FHCRC\Resources\Florian\Florian_smoking\smoking_status\
-                    sortedNotes\sortedNotes\\"
+    data_repo_dir = r"C:\Users\sdmorris\Documents\FHCRC\Resources\Florian\Florian_smoking\smoking_status\sortedNotes\sortedNotes\\"
 
     # Output files
     CLASSF_EVAL_FILENAME = r"C:\Users\sdmorris\Documents\FHCRC\ExposureProject\Substance_IE_Data\SystemOutput\

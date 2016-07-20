@@ -1,4 +1,4 @@
-((non|ex)-?)?smoke(r|d)?
+((non|ex|never)-?)?smoke(r|d)?
 smoking
 tobac\S*
 (\s|^)(\+|-) ?tob([^r]|$)

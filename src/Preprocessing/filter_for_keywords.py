@@ -4,7 +4,6 @@
 from os import listdir
 from os.path import isfile, join
 from SystemUtilities.Configuration import *
-from SystemUtilities.Globals import *
 from DataModeling.DataModels import Document, Patient
 from Extraction.KeywordSearch import KeywordSearch
 from nltk.tokenize import sent_tokenize
@@ -22,10 +21,11 @@ def main():
 
     # Based on Flor's divisions, derive list of documents that need annotation
     print("Generating list of documents that need annotations...")
-    splitter = DataSplitter(docs_with_keyword_hits)
+    splitter = DataSplitter(docs_with_keywords)
     splitter.split_into_dev_test_train()
 
     print("Done.")
+
 
 def load_data(data_src):
     print("Loading data...")
