@@ -58,17 +58,6 @@ def get_blobs():
     blobs2.sort()
     return blobs2
 
-
-# def generate_doc_num(doc_num_count, alt_num_count, doc, flors_files):
-#     possible_doc_num = insert_appropriate_num_of_zeros(doc_num_count) + str(doc_num_count)
-#     pat_id = doc.caisis_id
-#
-#     if str(pat_id) + "-" + str(possible_doc_num) in flors_files:
-#         if doc.text.split() == flors_files[str(pat_id) + "-" + str(possible_doc_num)].split():
-#             return possible_doc_num, True
-#     return "n" + str(alt_num_count), False
-
-
 def write_note_files_to_disk(patients, flors_files):
     document_metadata= dict()
     for patient_id in patients.keys():
