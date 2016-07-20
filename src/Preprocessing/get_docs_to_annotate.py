@@ -3,12 +3,63 @@ import SystemUtilities.Globals as g
 import os
 import openpyxl
 import collections
+import csv
+
+from Preprocessing.CSVBatch import CSVBatch
 
 
 def write_unannotated_info_to_file(unannotated_documents):
     with open(c.SUBSTANCE_IE_DATA_FOLDER + "docs_to_annotate.txt", "w") as f:
         for doc in unannotated_documents:
-            f.write(doc.id+"\n")
+            f.write(doc.id + "\n")
+    print("List of documents to annotate written to: " + c.SUBSTANCE_IE_DATA_FOLDER + "docs_to_annotate.txt")
+    pass
+
+
+def get_metadata_dict():
+    metadata = dict()
+    with open(c.SUBSTANCE_IE_DATA_FOLDER + "marvelously_massive_metadata_muniments_dict.txt", "rb") as f:
+        lines = f.readlines()
+    for line in lines:
+        items = line.split()
+        caisis_docid = items[0]
+        mrn = items[1]
+        timestamp = items[2]
+        metadata[caisis_docid] = (mrn, timestamp)
+    return metadata
+
+
+def write_docs_needing_annotation_to_csv_batches(documents_needing_annotation):
+    total_doc_count = 0
+    count = 0
+    batch_num = 0
+    BATCH_SIZE = 99
+    # Sort notes into batches of 100
+    batches = list()
+    for doc in documents_needing_annotation:
+        total_doc_count += 1
+        if count == 0:
+            batch = CSVBatch(batch_num)
+            batch_num += 1
+            batch.add_document(doc)
+        elif count == BATCH_SIZE or total_doc_count == len(documents_needing_annotation):
+            batch.add_document(doc)
+            batches.append(batch)
+            count = -1
+        else:
+            batch.add_document(doc)
+        count += 1
+
+    metadata_dict = get_metadata_dict()
+    for batch in batches:
+        with open(c.DOCS_NEEDING_ANNOTATION_DIR + "annotation_batch_" + str(batch.id) + ".csv", "wb") as csvfile:
+            batch_writer = csv.writer(csvfile, quoting=csv.QUOTE_ALL)
+            for document in batch.documents:
+                id = document.id.replace("-", "_")
+                mrn = metadata_dict[id][0]
+                timestamp = metadata_dict[id][1]
+                batch_writer.writerow([mrn, id, timestamp, document.text])
+    print("csv batch files ready for annotation written to: " + c.DOCS_NEEDING_ANNOTATION_DIR + "annotation_batch_" + str(batch.id) + ".csv")
     pass
 
 
@@ -22,7 +73,7 @@ class DataSplitter:
         self.patients_dev_dict = dict()
         self.patients_train_dict = dict()
 
-    def split_into_dev_test_train(self):
+    def write_notes_needing_annotation(self):
         self.get_splits()
         pass
 
@@ -81,3 +132,5 @@ class DataSplitter:
 
         documents_needing_annotation = self.get_list_of_documents_to_annotate()
         write_unannotated_info_to_file(documents_needing_annotation)
+
+        write_docs_needing_annotation_to_csv_batches(documents_needing_annotation)

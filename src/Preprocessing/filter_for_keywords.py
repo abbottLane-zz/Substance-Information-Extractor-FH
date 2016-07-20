@@ -10,7 +10,6 @@ from Extraction.KeywordSearch import KeywordSearch
 from nltk.tokenize import sent_tokenize
 from Preprocessing.get_docs_to_annotate import DataSplitter
 
-
 def main():
     # Read in from folder containing all available data
     data_src = data_repo_dir
@@ -24,8 +23,7 @@ def main():
     # Based on Flor's divisions, derive list of documents that need annotation
     print("Generating list of documents that need annotations...")
     splitter = DataSplitter(docs_with_keyword_hits)
-    splitter.split_into_dev_test_train()
-
+    splitter.write_notes_needing_annotation()
     print("Done.")
 
 def load_data(data_src):
