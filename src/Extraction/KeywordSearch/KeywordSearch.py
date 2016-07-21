@@ -51,7 +51,11 @@ def get_regexes_from_file(substance):
     with open(filename, "r") as regex_file:
         regex_lines = regex_file.readlines()
         regexes = [r[:-1] for r in regex_lines]     # remove "\n" at end of each regex line
-    return regexes
+
+    # OR regexes together to get one big regex
+    regex = r"((" + ")|(".join(regexes) + "))"
+    single_regex = [regex]
+    return single_regex
 
 
 def find_keyword_hits(patients, regexes, substance):
