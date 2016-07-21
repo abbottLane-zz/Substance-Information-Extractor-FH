@@ -16,9 +16,8 @@ def main():
     data = load_data(data_src)
     documents = create_documents_from_data(data)
     patients = create_patients_from_documents(documents)
-    print("Searching documents for keywords...")
-    docs_with_keyword_hits = KeywordSearch.search_keywords(TOBACCO, patients)
-    # print(docs_with_keyword_hits)
+
+    docs_with_keywords = KeywordSearch.search_keywords(patients)
 
     # Based on Flor's divisions, derive list of documents that need annotation
     print("Generating list of documents that need annotations...")
