@@ -4,6 +4,7 @@
 from os import listdir
 from os.path import isfile, join
 from SystemUtilities.Configuration import *
+from SystemUtilities.Globals import *
 from DataModeling.DataModels import Document, Patient
 from Extraction.KeywordSearch import KeywordSearch
 from nltk.tokenize import sent_tokenize
