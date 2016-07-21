@@ -54,6 +54,7 @@ def write_docs_needing_annotation_to_csv_batches(documents_needing_annotation):
     for batch in batches:
         with open(c.DOCS_NEEDING_ANNOTATION_DIR + "annotation_batch_" + str(batch.id) + ".csv", "wb") as csvfile:
             batch_writer = csv.writer(csvfile, quoting=csv.QUOTE_ALL)
+            batch_writer.writerow(["MRN","FillerOrderNo","EventDate", "ObservationValue"])
             for document in batch.documents:
                 id = document.id.replace("-", "_")
                 mrn = metadata_dict[id][0]
