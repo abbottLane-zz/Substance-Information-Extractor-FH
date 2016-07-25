@@ -21,6 +21,7 @@ def main():
     docs_with_keywords = KeywordSearch.search_keywords(patients)
 
     # Filter out duplicate text spans
+    print("Filtering out documents with duplicate text spans whose context is also redundant ...")
     docs_with_keywords = filter_out_texts_with_duplicate_keyword_hit_and_context(docs_with_keywords)
 
     # Based on Flor's divisions, derive list of documents that need annotation
@@ -84,6 +85,8 @@ def get_sent_start_stop_idx(text, idx_b, idx_e):
         sent_start -= 1
     while text[sent_end] != "\n":
         sent_end += 1
+        if text[sent_end] == "?":
+            sent_end += 2
     return sent_start, sent_end
 
 

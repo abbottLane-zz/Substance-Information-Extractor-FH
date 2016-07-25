@@ -30,7 +30,13 @@ def get_metadata_dict():
 
 
 def is_it_discharge_instructions(doc):
-    if doc.text.split()[0] == "<%PATEDBLOB%>":
+    """The definition of what a discharge instruction looks like could be different in another data set."""
+    split_text = doc.text.split()
+    # Check first 4 lines for patient discharge instructions because we really really dont want any of those
+    if split_text[0] == "<%PATEDBLOB%>" or \
+                    "Patient Discharge Instructions" in split_text[1] or \
+                    "Patient Discharge Instructions" in split_text[2] or \
+                    "Patient Discharge Instructions" in split_text[3]:
         return True
     return False
 
@@ -68,7 +74,7 @@ def write_docs_needing_annotation_to_csv_batches(documents_needing_annotation):
     for batch in batches:
         with open(c.DOCS_NEEDING_ANNOTATION_DIR + "annotation_batch_" + str(batch.id) + ".tsv", "wb") as csvfile:
             batch_writer = csv.writer(csvfile, quoting=csv.QUOTE_ALL)
-            batch_writer.writerow(["MRN","FillerOrderNo","EventDate", "ObservationValue"])
+            batch_writer.writerow(["MRN", "FillerOrderNo", "EventDate", "ObservationValue"])
             for document in batch.documents:
                 id = document.id.replace("-", "_")
                 mrn = metadata_dict[id][0]
