@@ -106,16 +106,16 @@ def are_equal(text1, text2, hits): # right now, equality is defined as all match
     return False
 
 
-def get_hash(thetuple):
+def get_hash(thetuple, doc):
     hash=""
     for item in thetuple:
-        hash+=str(item.span_end)+str(item.span_start)+str(item.text)
+        hash+=str(item.span_end)+str(item.span_start)+str(item.text)+doc.id.split("_")[0]
     return hash
 
 
 def filter_by_type(TYPE, doc, docs_to_keep, keywordList_text):
     thetuple = tuple(doc.keyword_hits[TYPE])
-    hash = get_hash(thetuple)
+    hash = get_hash(thetuple, doc)
 
     if hash not in keywordList_text and len(doc.keyword_hits[TYPE]) != 0:
         docs_to_keep.add(doc)
