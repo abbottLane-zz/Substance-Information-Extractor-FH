@@ -35,6 +35,7 @@ def is_it_discharge_instructions(doc):
     # Check first 4 lines for patient discharge instructions because we really really dont want any of those
     if len(split_text) > 4:
         if split_text[0] == "<%PATEDBLOB%>" or \
+                        "Patient Discharge Instructions" in split_text[0] or\
                         "Patient Discharge Instructions" in split_text[1] or \
                         "Patient Discharge Instructions" in split_text[2] or \
                         "Patient Discharge Instructions" in split_text[3]:
@@ -154,5 +155,4 @@ class DataSplitter:
 
         documents_needing_annotation = self.get_list_of_documents_to_annotate()
         write_unannotated_info_to_file(documents_needing_annotation)
-
         write_docs_needing_annotation_to_csv_batches(documents_needing_annotation)
