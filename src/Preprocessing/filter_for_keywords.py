@@ -20,6 +20,9 @@ def main():
     print("Searching documents for keywords...")
     docs_with_keywords = KeywordSearch.search_keywords(patients)
 
+    # Filter out duplicate text spans
+    docs_with_keywords = filter_out_texts_with_duplicate_keyword_hit_and_context(docs_with_keywords)
+
     # Based on Flor's divisions, derive list of documents that need annotation
     print("Generating list of documents that need annotations...")
     splitter = DataSplitter(docs_with_keywords)
@@ -72,6 +75,63 @@ def create_patients_from_documents(documents):
         patients.append(new_patient)
     return patients
 
+
+def get_sent_start_stop_idx(text, idx_b, idx_e):
+    sent_start= idx_b
+    sent_end = idx_e
+
+    while text[sent_start] != "\n":
+        sent_start -= 1
+    while text[sent_end] != "\n":
+        sent_end += 1
+    return sent_start, sent_end
+
+
+def are_equal(text1, text2, hits): # right now, equality is defined as all matches sentences being identical
+    matched_hit =0
+    for hit in hits:
+        idx_b = hit.span_start
+        idx_e = hit.span_end
+        sent1_start_idx, sent1_end_idx = get_sent_start_stop_idx(text1, idx_b, idx_e)
+        sent2_start_idx, sent2_end_idx = get_sent_start_stop_idx(text2, idx_b, idx_e)
+
+        if text1[sent1_start_idx:sent1_end_idx] == text2[sent2_start_idx:sent2_end_idx]:
+            print "matched sents: " + text1[sent1_start_idx:sent1_end_idx] + " and " + text2[sent2_start_idx:sent2_end_idx]
+            matched_hit +=1
+    if matched_hit == len(hits):
+        return True
+    return False
+
+
+def get_hash(thetuple):
+    hash=""
+    for item in thetuple:
+        hash+=str(item.span_end)+str(item.span_start)+str(item.text)
+    return hash
+
+
+def filter_by_type(TYPE, doc, docs_to_keep, keywordList_text):
+    thetuple = tuple(doc.keyword_hits[TYPE])
+    hash = get_hash(thetuple)
+
+    if hash not in keywordList_text and len(doc.keyword_hits[TYPE]) != 0:
+        docs_to_keep.add(doc)
+        keywordList_text[hash] = doc.text
+    elif len(doc.keyword_hits[TYPE]) != 0:
+        they_are = are_equal(keywordList_text[hash], doc.text, doc.keyword_hits[TYPE])
+        if not they_are:
+            docs_to_keep.add(doc)
+            keywordList_text[hash] = doc.text
+    pass
+
+
+def filter_out_texts_with_duplicate_keyword_hit_and_context(docs_with_keywords):
+    docs_to_keep =set()
+    keywordList_text = dict()
+    for doc in docs_with_keywords:
+        filter_by_type(ALCOHOL,doc,docs_to_keep, keywordList_text)
+        filter_by_type(TOBACCO, doc, docs_to_keep, keywordList_text)
+    return docs_to_keep
 
 if __name__ == '__main__':
     main()

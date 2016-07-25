@@ -29,27 +29,41 @@ def get_metadata_dict():
     return metadata
 
 
-def write_docs_needing_annotation_to_csv_batches(documents_needing_annotation):
+def is_it_discharge_instructions(doc):
+    if doc.text.split()[0] == "<%PATEDBLOB%>":
+        return True
+    return False
+
+
+def get_batches(documents_needing_annotation):
     total_doc_count = 0
     count = 0
     batch_num = 0
     BATCH_SIZE = 99
-    # Sort notes into batches of 100
     batches = list()
     for doc in documents_needing_annotation:
-        total_doc_count += 1
-        if count == 0:
-            batch = CSVBatch(batch_num)
-            batch_num += 1
-            batch.add_document(doc)
-        elif count == BATCH_SIZE or total_doc_count == len(documents_needing_annotation):
-            batch.add_document(doc)
-            batches.append(batch)
-            count = -1
-        else:
-            batch.add_document(doc)
-        count += 1
+        # make sure its not a Discharge Instructions doc: we don't need those
+        is_discharge_doc = is_it_discharge_instructions(doc)
 
+        if not is_discharge_doc:
+            total_doc_count += 1
+            if count == 0:
+                batch = CSVBatch(batch_num)
+                batch_num += 1
+                batch.add_document(doc)
+            elif count == BATCH_SIZE or total_doc_count == len(documents_needing_annotation):
+                batch.add_document(doc)
+                batches.append(batch)
+                count = -1
+            else:
+                batch.add_document(doc)
+            count += 1
+    return batches
+
+
+def write_docs_needing_annotation_to_csv_batches(documents_needing_annotation):
+    # Sort notes into batches of 100
+    batches = get_batches(documents_needing_annotation)
     metadata_dict = get_metadata_dict()
     for batch in batches:
         with open(c.DOCS_NEEDING_ANNOTATION_DIR + "annotation_batch_" + str(batch.id) + ".tsv", "wb") as csvfile:
