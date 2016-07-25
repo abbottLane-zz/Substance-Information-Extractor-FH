@@ -90,7 +90,7 @@ def get_sent_start_stop_idx(text, idx_b, idx_e):
     return sent_start, sent_end
 
 
-def are_equal(text1, text2, hits): # right now, equality is defined as all matches sentences being identical
+def are_equal(text1, text2, hits): # right now, equality is defined as all matches' contexts being identical
     matched_hit =0
     for hit in hits:
         idx_b = hit.span_start

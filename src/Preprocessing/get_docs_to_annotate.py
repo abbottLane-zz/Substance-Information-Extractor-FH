@@ -33,11 +33,12 @@ def is_it_discharge_instructions(doc):
     """The definition of what a discharge instruction looks like could be different in another data set."""
     split_text = doc.text.split()
     # Check first 4 lines for patient discharge instructions because we really really dont want any of those
-    if split_text[0] == "<%PATEDBLOB%>" or \
-                    "Patient Discharge Instructions" in split_text[1] or \
-                    "Patient Discharge Instructions" in split_text[2] or \
-                    "Patient Discharge Instructions" in split_text[3]:
-        return True
+    if len(split_text) > 4:
+        if split_text[0] == "<%PATEDBLOB%>" or \
+                        "Patient Discharge Instructions" in split_text[1] or \
+                        "Patient Discharge Instructions" in split_text[2] or \
+                        "Patient Discharge Instructions" in split_text[3]:
+            return True
     return False
 
 
