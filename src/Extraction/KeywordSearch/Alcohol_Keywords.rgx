@@ -1,4 +1,4 @@
-alcohol\w*
+(?<!isopropyl )(?<!isopropyl)(?<!iso )(?<!iso)alcohol\w*
 ethanol
 (?<=\W)etoh(?=\W)
 (?<=\W)(non-?)?drink\w*
