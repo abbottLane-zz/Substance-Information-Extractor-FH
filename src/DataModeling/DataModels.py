@@ -1,5 +1,6 @@
 from SystemUtilities.Globals import SUBSTANCE_TYPES
 
+
 # Source data data structures
 class Data:
     def __init__(self, id_num):
