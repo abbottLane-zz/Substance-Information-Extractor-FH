@@ -64,50 +64,33 @@ def find_keyword_hits(patients, regex, substance):
         for doc in patient.doc_list:
             keywordhit_json = KeywordHitJSON(substance)
 
-            # JSON format hits
-            has_hit = find_json_doc_hits(doc, regex, keywordhit_json)
-            doc.keyword_hits_json[substance] = keywordhit_json
-            if has_hit:
-                docs_with_hits.append(doc)
-
-            # Debug format hits
-            '''
-            doc_hits = find_doc_hits(doc, regex)
+            doc_hits = find_doc_hits(doc, regex, keywordhit_json)
             doc.keyword_hits[substance].extend(doc_hits)
-            if (has_hit and not doc_hits) or (doc_hits and not has_hit):
-                print("KeywordHit Error! JSON and normal mismatch")
-            '''
-            # end debug
+            doc.keyword_hits_json[substance] = keywordhit_json
+            if doc_hits:
+                docs_with_hits.append(doc)
 
     return docs_with_hits
 
 
-def find_doc_hits(doc, regex):
+def find_doc_hits(doc, regex, keywordhit_json):
     matches = re.finditer(regex, doc.text, re.IGNORECASE)
     hits = []
     for match in matches:
         keyword_text = match.group()
         span = match.span()
-
         span_start = span[0]
         span_end = span[1]
 
         hit = KeywordHit(keyword_text, span_start, span_end)
         hits.append(hit)
+
+        add_json_hit(keywordhit_json, span_start, span_end)
+
     return hits
 
 
-def find_json_doc_hits(doc, regex, keywordhit_json):
-    matches = re.finditer(regex, doc.text, re.IGNORECASE)
-    has_hit = False
-
-    for match in matches:
-        span_tuple = match.span()
-        span = Span(span_tuple[0], span_tuple[1])
-
-        keywordhit_json.spans.append(span)
-        keywordhit_json.value = POSITIVE
-
-        has_hit = True
-
-    return has_hit
+def add_json_hit(keywordhit_json, span_start, span_end):
+    span = Span(span_start, span_end)
+    keywordhit_json.spans.append(span)
+    keywordhit_json.value = POSITIVE

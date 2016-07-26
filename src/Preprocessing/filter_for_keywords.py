@@ -34,7 +34,7 @@ def main():
 def load_data(data_src):
     print("Loading data...")
     # debug
-    data_src = "C:\Users\sdmorris\Documents\FHCRC\ExposureProject\Substance_IE_Data\mini_data.nlp"
+    # data_src = "C:\Users\sdmorris\Documents\FHCRC\ExposureProject\Substance_IE_Data\mini_data.nlp"
     # data_src = "C:\Users\wlane\Documents\Substance_IE_Data\mini_output_corpus"
     # end debug
 
