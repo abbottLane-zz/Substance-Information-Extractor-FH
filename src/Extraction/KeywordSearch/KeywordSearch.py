@@ -37,8 +37,8 @@ class Span:
 def search_keywords(patients):
     docs_with_hits = set()
     for substance in SUBSTANCE_TYPES:
-        regexes = get_regexes_from_file(substance)
-        docs_with_substance = find_keyword_hits(patients, regexes, substance)
+        regex = get_regex_from_file(substance)
+        docs_with_substance = find_keyword_hits(patients, regex, substance)
 
         for doc in docs_with_substance:
             docs_with_hits.add(doc)
@@ -46,7 +46,7 @@ def search_keywords(patients):
     return docs_with_hits
 
 
-def get_regexes_from_file(substance):
+def get_regex_from_file(substance):
     filename = KEYWORD_FILE_DIR + substance + KEYWORD_FILE_SUFFIX
     with open(filename, "r") as regex_file:
         regex_lines = regex_file.readlines()
@@ -54,31 +54,30 @@ def get_regexes_from_file(substance):
 
     # OR regexes together to get one big regex
     regex = r"((" + ")|(".join(regexes) + "))"
-    single_regex = [regex]
-    return single_regex
+    return regex
 
 
-def find_keyword_hits(patients, regexes, substance):
+def find_keyword_hits(patients, regex, substance):
     docs_with_hits = []
 
     for patient in patients:
         for doc in patient.doc_list:
             keywordhit_json = KeywordHitJSON(substance)
 
-            has_hit = False
-            for regex in regexes:
-                # JSON format hits
-                find_json_doc_hits(doc, regex, keywordhit_json)
-
-                # Debug format hits
-                doc_hits = find_doc_hits(doc, regex)
-                doc.keyword_hits[substance].extend(doc_hits)
-                if doc_hits:
-                    has_hit = True
-
+            # JSON format hits
+            has_hit = find_json_doc_hits(doc, regex, keywordhit_json)
             doc.keyword_hits_json[substance] = keywordhit_json
             if has_hit:
                 docs_with_hits.append(doc)
+
+            # Debug format hits
+            '''
+            doc_hits = find_doc_hits(doc, regex)
+            doc.keyword_hits[substance].extend(doc_hits)
+            if (has_hit and not doc_hits) or (doc_hits and not has_hit):
+                print("KeywordHit Error! JSON and normal mismatch")
+            '''
+            # end debug
 
     return docs_with_hits
 
@@ -100,6 +99,7 @@ def find_doc_hits(doc, regex):
 
 def find_json_doc_hits(doc, regex, keywordhit_json):
     matches = re.finditer(regex, doc.text, re.IGNORECASE)
+    has_hit = False
 
     for match in matches:
         span_tuple = match.span()
@@ -107,3 +107,7 @@ def find_json_doc_hits(doc, regex, keywordhit_json):
 
         keywordhit_json.spans.append(span)
         keywordhit_json.value = POSITIVE
+
+        has_hit = True
+
+    return has_hit
