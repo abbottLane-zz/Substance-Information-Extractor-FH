@@ -23,7 +23,7 @@ if USER == spencer:
     # GOLD annotation sources
     gold_annotation_dir = florian_dir + r"SmokingStatusAnnotator\resources\gold\\"
     # Data sources
-    data_repo_dir = florian_dir + r"sortedNotes\sortedNotes\\"
+    data_repo_dir = florian_dir + r"sortedNotes\sortedNotes\combined\\"
     # Output files
     CLASSF_EVAL_FILENAME = data_dir + r"SystemOutput\Evaluation\EventDetectionEval.txt"
     SUBSTANCE_IE_DATA_FOLDER = data_dir

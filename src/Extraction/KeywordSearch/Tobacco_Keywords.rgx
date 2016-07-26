@@ -10,7 +10,6 @@ pack/day
 \w+\s+and a half packs?
 pack and a half
 (\d+(-\d+)? )?pack years?
-ppd(?=\W)
 (\d+-| +)?pack(-| )years?
 pack ?/ ?y(ea)?r
 nicotine
