@@ -42,13 +42,14 @@ elif USER == will:
     ## Silver Annotations sources
     #silver_annotations_dir = r"C:\Users\wlane\Documents\Substance_IE_Data\resources\SilverOutput\\"
     ## Data sources
-    data_repo_dir = r"C:\Users\wlane\Documents\Substance_IE_Data\output\\"
+    #data_repo_dir = r"C:\Users\wlane\Documents\Substance_IE_Data\output\\"
+    data_repo_dir = "C:\Users\wlane\Documents\Florian_smoking\smoking_status\\full_data_set\\"
     # Output files
     CLASSF_EVAL_FILENAME = r"C:\Users\s____________________WILL'S PATH_____________________nce_IE_Data\SystemOutput\
                                 Evaluation\EventDetectionEval.txt"
     SUBSTANCE_IE_DATA_FOLDER = r"C:\Users\wlane\Documents\Substance_IE_Data\\"
     FLORIAN_FULL_DATA = "C:\Users\wlane\Documents\Florian_smoking\smoking_status\\full_data_set\\"
-    DOCS_NEEDING_ANNOTATION_DIR =  r"C:\Users\wlane\Documents\Substance_IE_Data\Docs_to_annotate\\"
+    DOCS_NEEDING_ANNOTATION_DIR =  r"C:\Users\wlane\Documents\Substance_IE_Data\FLORDocs_to_annotate\\"
 
 else:
     print("Error: unknown user in SystemUtilities/Configuration")

@@ -31,14 +31,14 @@ def get_metadata_dict():
 
 def is_it_discharge_instructions(doc):
     """The definition of what a discharge instruction looks like could be different in another data set."""
-    split_text = doc.text.split()
+    split_text = doc.text.split("\n")
+
     # Check first 4 lines for patient discharge instructions because we really really dont want any of those
     if len(split_text) > 4:
-        if split_text[0] == "<%PATEDBLOB%>" or \
-                        "Patient Discharge Instructions" in split_text[0] or\
-                        "Patient Discharge Instructions" in split_text[1] or \
-                        "Patient Discharge Instructions" in split_text[2] or \
-                        "Patient Discharge Instructions" in split_text[3]:
+        if "Discharge Instructions" in split_text[0] or\
+                        "Discharge Instructions" in split_text[1] or \
+                        "Discharge Instructions" in split_text[2] or \
+                        "Discharge Instructions" in split_text[3]:
             return True
     return False
 
