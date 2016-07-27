@@ -71,34 +71,3 @@ i2b2_test_gold_dir = gold_annotation_dir + "i2b2\i2b2_test.GOLD"
 i2b2_train_gold_dir = gold_annotation_dir + "i2b2\i2b2_train.GOLD"
 flor_sentence_level_annotations_dir = gold_annotation_dir + "\sentences"
 
-
-# Set up which gold and raw data sets to use based on the ENV variable
-def get_environment_gold_data(env):
-    if env == RUNTIME_ENV.TRAIN:
-        test_data = []
-        train_data = [doc_train_gold_dir, patients_train_gold_dir]
-        return test_data, train_data
-
-    elif env == RUNTIME_ENV.TEST_DEV:
-        test_data = [doc_dev_gold_dir, patients_dev_gold_dir]
-        train_data = []
-        return test_data, train_data
-
-    elif env == RUNTIME_ENV.TEST_EVAL:
-        test_data = [doc_test_gold_dir, patients_test_gold_dir]
-        train_data = []
-        return test_data, train_data
-
-    elif env == RUNTIME_ENV.TRAIN_AND_TEST_DEV:
-        test_data = [doc_dev_gold_dir, patients_dev_gold_dir]
-        train_data = [patients_train_gold_dir, doc_train_gold_dir]
-        return test_data, train_data
-
-    elif env == RUNTIME_ENV.TRAIN_AND_TEST_EVAL:
-        test_data = [doc_test_gold_dir, patients_test_gold_dir]
-        train_data = [doc_train_gold_dir, patients_train_gold_dir]
-        return test_data, train_data
-
-
-def get_environment_text_data(env):
-    return [data_repo_dir]

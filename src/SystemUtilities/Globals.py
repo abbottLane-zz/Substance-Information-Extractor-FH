@@ -6,10 +6,6 @@ spencer = "spencer"
 # Runtime environments
 class RUNTIME_ENV:
     TRAIN = "train"
-    TEST_DEV = "devtest"
-    TEST_EVAL = "evaltest"
-    TRAIN_AND_TEST_EVAL = "eval_train_test"
-    TRAIN_AND_TEST_DEV = "test_train_test"
     EXECUTE = "execute"
 
 

@@ -6,35 +6,59 @@ from os import listdir
 from os.path import isfile, join
 
 
-def main():
-    print "Loading patient-level gold labels ..."
-    patient_tob_gold_labels = Configuration.patients_all_gold_dir
-    patient_alc_gold_labels = None
+def main(environment):
+    if environment == Configuration.RUNTIME_ENV.TRAIN:
+        print "Running in TRAINING environment with TRAINING data ..."
+        print "Loading patient-level gold labels ..."
+        patient_tob_gold_labels = Configuration.patients_all_gold_dir
+        patient_alc_gold_labels = None
 
-    print "Loading dev/train/test document splits ..."
-    dev_documents = load_split(Configuration.dev_csv)
-    training_documents = load_split(Configuration.train_csv)
-    testing_documents = load_split(Configuration.test_csv)
+        print "Loading training document split ..."
+        #dev_documents = load_split(Configuration.dev_csv)
+        training_documents = load_split(Configuration.train_csv)
+        #testing_documents = load_split(Configuration.test_csv)
 
-    print "Loading dev/train/test patient splits ..."
-    dev_patients = load_patients(dev_documents, patient_tob_gold_labels, patient_alc_gold_labels)
-    training_patients = load_patients(training_documents, patient_tob_gold_labels, patient_alc_gold_labels)
-    testing_patients = load_patients(testing_documents, patient_tob_gold_labels, patient_alc_gold_labels)
+        print "Loading training patient splits ..."
+        #dev_patients = load_patients(dev_documents, patient_tob_gold_labels, patient_alc_gold_labels)
+        training_patients = load_patients(training_documents, patient_tob_gold_labels, patient_alc_gold_labels)
+        #testing_patients = load_patients(testing_documents, patient_tob_gold_labels, patient_alc_gold_labels)
 
-    print "Loading sentence-level annotations ..."
-    # Load Sentence-level annotations, if available
-    sentence_level_annotations_dir = Configuration.flor_sentence_level_annotations_dir
-    sent_ann_dict = load_sentence_annotations(sentence_level_annotations_dir)
+        print "Loading sentence-level annotations ..."
+        # Load Sentence-level annotations, if available
+        sentence_level_annotations_dir = Configuration.flor_sentence_level_annotations_dir
+        sent_ann_dict = load_sentence_annotations(sentence_level_annotations_dir)
 
-    print "Setting sentence-level annotations ..."
-    # Set sentence-level annotations
-    set_sentence_level_annotations(dev_patients, sent_ann_dict)
-    set_sentence_level_annotations(training_patients, sent_ann_dict)
-    set_sentence_level_annotations(testing_patients, sent_ann_dict)
+        print "Setting sentence-level annotations ..."
+        # Set sentence-level annotations
+        #set_sentence_level_annotations(dev_patients, sent_ann_dict)
+        set_sentence_level_annotations(training_patients, sent_ann_dict)
+        #set_sentence_level_annotations(testing_patients, sent_ann_dict)
 
-    print "Patient objects ready for processing."
-    print "Done."
-    # TODO: Patient objects for dev/test/train are fully populated above. Do something with them.
+        return training_patients
+
+    elif environment == Configuration.RUNTIME_ENV.EXECUTE:
+        print "Running in EXECUTE environment with DEV data ..."
+        print "Loading patient-level gold labels ..."
+        patient_tob_gold_labels = Configuration.patients_all_gold_dir
+        patient_alc_gold_labels = None
+
+        print "Loading dev document splits ..."
+        dev_documents = load_split(Configuration.dev_csv)
+
+        print "Loading dev patient splits ..."
+        dev_patients = load_patients(dev_documents, patient_tob_gold_labels, patient_alc_gold_labels)
+
+        print "Loading sentence-level annotations ..."
+        # Load Sentence-level annotations, if available
+        sentence_level_annotations_dir = Configuration.flor_sentence_level_annotations_dir
+        sent_ann_dict = load_sentence_annotations(sentence_level_annotations_dir)
+
+        print "Setting sentence-level annotations ..."
+        # Set sentence-level annotations
+        set_sentence_level_annotations(dev_patients, sent_ann_dict)
+
+        return dev_patients
+
 
 
 
@@ -184,4 +208,4 @@ def load_patients(documents, patient_tob_gold_labels_path, patient_alc_gold_labe
 
 
 if __name__ == '__main__':
-    main()
+    main(Configuration.RUNTIME_ENV.TRAIN)
