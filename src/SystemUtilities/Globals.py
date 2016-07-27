@@ -2,6 +2,7 @@
 will = "will"
 spencer = "spencer"
 
+
 # Runtime environments
 class RUNTIME_ENV:
     TRAIN = "train"
@@ -15,7 +16,7 @@ class RUNTIME_ENV:
 # Data Loading
 BLOB_FIELDS = 5
 METADATA_ROWS = 262882
-CAISIS_ROWS=2058
+CAISIS_ROWS = 2058
 DELIMITER = r"1234567890qwertyuiop"
 
 # Substances
@@ -23,8 +24,9 @@ SUBSTANCE = "SUBSTANCE"
 ALCOHOL = "Alcohol"
 DRUG = "Drug"
 TOBACCO = "Tobacco"
-SUBSTANCE_TYPES = [ALCOHOL, TOBACCO]
-ML_CLASSIFIER_SUBSTANCES = [TOBACCO]  # Substances using ML classification for event detection
+SECONDHAND = "Secondhand"
+SUBSTANCE_TYPES = [ALCOHOL, TOBACCO, SECONDHAND]
+ML_CLASSIFIER_SUBSTANCES = [TOBACCO, ALCOHOL, SECONDHAND]  # Substances using ML classification for event detection
 
 # Classification Labels
 HAS_SUBSTANCE = "has_subs_info"
@@ -37,12 +39,26 @@ MONEY = "MONEY"
 PERCENT = "PERCENT"
 
 # Statuses
+STATUS = "STATUS"
 UNKNOWN = "UNKNOWN"
 CURRENT = "CURRENT"
 FORMER = "FORMER"
 YES = "YES"
 NONE = "NONE"
 STATUSES = [UNKNOWN, CURRENT, FORMER, YES, NONE]
+
+# Attributes
+TYPE = "TYPE"
+AMOUNT = "AMOUNT"
+DURATION = "DURATION"
+QUIT_DATE = "QUITDATE"
+QUIT_TIME_AGO = "QUITTIMEAGO"
+QUIT_AGE = "QUITAGE"
+
+ATTRIBS = dict()
+ATTRIBS[TOBACCO] = [TYPE, AMOUNT, DURATION, QUIT_DATE, QUIT_TIME_AGO, QUIT_AGE]
+ATTRIBS[SECONDHAND] = [AMOUNT]
+ATTRIBS[ALCOHOL] = [AMOUNT, DURATION, QUIT_DATE, QUIT_TIME_AGO, QUIT_AGE]
 
 # Model filename suffixes
 EVENT_DETECT_MODEL_SUFFIX = "_detection_model.p"

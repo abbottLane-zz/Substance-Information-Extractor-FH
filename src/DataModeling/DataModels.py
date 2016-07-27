@@ -1,4 +1,4 @@
-from SystemUtilities.Globals import SUBSTANCE_TYPES
+from SystemUtilities.Globals import *
 
 
 # Source data data structures
@@ -37,10 +37,13 @@ class Sentence(Data):
 
 # Substance information templates
 class Event:
-    def __init__(self, event_type):
-        self.type = event_type
+    def __init__(self, substance):
+        self.substance = substance
         self.status = ""
         self.attributes = {}
+
+        for attrib in ATTRIBS[substance]:
+            self.attributes[attrib] = ""
 
 
 class Attribute:
