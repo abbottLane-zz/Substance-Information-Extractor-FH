@@ -20,11 +20,13 @@ def write_split(splitname, doc_ids, id_text):
     with open(r"C:\Users\wlane\Documents\Substance_IE_Data\FLOR_filtered_tsv\flor_" + splitname + ".csv",
               "wb") as csvfile:
         batch_writer = csv.writer(csvfile, quoting=csv.QUOTE_ALL)
-        batch_writer.writerow(["ID", "TEXT", "GOLD_LABEL"])
+        batch_writer.writerow(["ID", "TEXT", "TOB_GOLD_LABEL", "ALC_GOLD_LABEL"])
         for id_annotation in doc_ids:
             id = id_annotation.split("\t")[0]
-            ann = id_annotation.split("\t")[1]
-            batch_writer.writerow([id, id_text[id], ann])
+            tobacco_annotation = id_annotation.split("\t")[1]
+            alc_annotation = "UNKNOWN" # UNKNOWN here is the alcohol status. Flor's docs dont annotate for this
+                                       # But we still need to populate the field because the DataLoader expects it
+            batch_writer.writerow([id, id_text[id], tobacco_annotation, alc_annotation])
     pass
 
 

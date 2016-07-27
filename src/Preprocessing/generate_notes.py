@@ -1,8 +1,6 @@
 import openpyxl
 from os import listdir
-
 from os.path import isfile, join
-
 import SystemUtilities.Configuration as c
 import SystemUtilities.Globals as g
 import re
