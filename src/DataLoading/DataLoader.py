@@ -35,7 +35,8 @@ def main():
     print "Patient objects ready for processing."
     print "Done."
     # TODO: Patient objects for dev/test/train are fully populated above. Do something with them.
-    tmp = 9
+
+
 
 def set_sentence_level_annotations(patients, sent_ann_dict):
     for patient in patients:
@@ -49,13 +50,15 @@ def set_sentence_level_annotations(patients, sent_ann_dict):
                     sentence.predicted_events.append(evntObj)
     pass
 
+
 def load_sentence_annotations(sentence_level_annotations_dir):
     sent_label_dict = dict()
-    labels = {'C': "CURRENT", 'P': "PAST", 'U': "UNKNOWN", 'S': "SMOKER", "N": "NON", 'c': "CURRENT", 'p': "PAST", 'u': "UNKNOWN", 's': "SMOKER", "n": "NON"}
+    labels = {'C': "CURRENT", 'P': "PAST", 'U': "UNKNOWN", 'S': "SMOKER", "N": "NON", 'c': "CURRENT", 'p': "PAST",
+              'u': "UNKNOWN", 's': "SMOKER", "n": "NON"}
 
     onlyfiles = [f for f in listdir(sentence_level_annotations_dir) if isfile(join(sentence_level_annotations_dir, f))]
-    for subsType in onlyfiles: # b/c sentence-level labels are organized into files by type (cig, alc, drug, etc)
-        with open(sentence_level_annotations_dir + "\\"+ f, "rb") as file:
+    for subsType in onlyfiles:  # b/c sentence-level labels are organized into files by type (cig, alc, drug, etc)
+        with open(sentence_level_annotations_dir + "\\" + f, "rb") as file:
             lines = file.readlines()
         for line in lines:
             tokens = line.split()
