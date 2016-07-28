@@ -19,7 +19,7 @@ def detect_sentence_events(patients):
                     classify_sent_for_substance(classf, featmap, sent, substance_type)
 
     # Substances detected with rules
-    # TODO -- rule-based event detection for Drugs, Alc?
+    # TODO -- rule-based event detection for Alc?
 
 
 def load_classifier(event_type):
@@ -72,18 +72,21 @@ def evaluate(patients):
 
     # Evaluate each sentence
     for doc in patients.doc_list:
+        # TODO -- redo event detection eval
+        '''
         for sent in doc.sent_list:
             tp, fp, fn = evaluate_sentence(sent, fn_sents, fp_sents, tp, fp, fn)
+        '''
 
     precision = float(tp) / float(tp + fp)
     recall = float(tp) / float(tp + fn)
 
     output_evaluation(precision, recall, fp_sents, fn_sents)
 
-
+'''
 def evaluate_sentence(sentence, fn_sents, fp_sents, tp, fp, fn):
-    gold_classfs = [e.type for e in sentence.gold_events]
-    predicted_classfs = [p.type for p in sentence.predicted_events]
+    gold_classfs = [e.substance_type for e in sentence.gold_events]
+    predicted_classfs = [p.substance_type for p in sentence.predicted_events]
 
     # Find true pos, false pos, and false neg
     for classf in predicted_classfs:
@@ -98,6 +101,7 @@ def evaluate_sentence(sentence, fn_sents, fp_sents, tp, fp, fn):
             fn_sents[classf].append(sentence.text)
 
     return tp, fp, fn
+'''
 
 
 def output_evaluation(precision, recall, fp_sents, fn_sents):

@@ -1,6 +1,7 @@
 import re
 
 from SystemUtilities.Globals import *
+from DataModeling.DataModels import Span
 
 
 class KeywordHitJSON:
@@ -26,12 +27,6 @@ class KeywordHit:
         self.text = text
         self.span_start = span_start
         self.span_end = span_end
-
-
-class Span:
-    def __init__(self, start, stop):
-        self.start = start
-        self.stop = stop
 
 
 def search_keywords(patients):

@@ -20,10 +20,7 @@ def sentence_features_and_labels(patients):
 
                 # Labels per sentences
                 for substance_type in SUBSTANCE_TYPES:
-                    has_event = False
-                    for gold_event in sent.gold_events:
-                        if substance_type == gold_event.event_type:
-                            has_event = True
+                    has_event = check_sent_highlight_overlap(substance_type, sent, doc.highlighted_spans)
 
                     if has_event:
                         labels_per_subst[substance_type].append(HAS_SUBSTANCE)
@@ -74,3 +71,14 @@ def tokenize(sent_text):
                 processed_grams.append(gram)
 
     return processed_grams
+
+
+def check_sent_highlight_overlap(substance_type, sent, highlighted_spans):
+    sent_has_subst = False
+
+    for gold_span in highlighted_spans[substance_type]:
+        # If sentence span is not completely before or after gold span, there must be overlap
+        if not(sent.span_in_doc_end <= gold_span.start or sent.span_in_doc_start >= gold_span.stop):
+            sent_has_subst = True
+
+    return sent_has_subst

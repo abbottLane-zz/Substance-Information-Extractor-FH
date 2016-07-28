@@ -34,27 +34,44 @@ def extract_sentence_level_info(patients):
 
 
 def evaluate_extraction(patients):
-    # Evaluate classification
-    evaluate_sentence_level_info(patients)
-
-    # Evaluate sentence level status & attributes
+    # Sentence level
+    evaluate_sent_level_info(patients)
 
     # Evaluate document level status
+    evaluate_doc_level_info(patients)
 
     # Evaluate patient level status
 
     # Evaluate templates
 
 
-def evaluate_sentence_level_info(patients):
-    # Find substance references
+def evaluate_sent_level_info(patients):
+    # Status info detection and each attribute
+
+    pass
+
+
+def evaluate_doc_level_info(patients):
+    # Event detection
     EventDetect.evaluate(patients)
 
-    # Classify substance status
+    # Status classification
 
-    # Find attributes
+    # Extraction of each attribute
 
-    # Tie attributes to substance references
+    # Event-Attribute linking
+
+    # Template
+    pass
+
+
+def evaluate_patient_level_info(patients):
+    # Status classification
+
+    # Each attribute
+
+    # Template
+    pass
 
 
 if __name__ == '__main__':

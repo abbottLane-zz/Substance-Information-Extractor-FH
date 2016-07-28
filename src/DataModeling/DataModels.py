@@ -18,27 +18,43 @@ class Patient(Data):
 class Document(Data):
     def __init__(self, id_num, text):
         Data.__init__(self, id_num)
+        self.highlighted_spans = {}  # {substance : [gold HighlightedSpan]}
         self.text = text
         self.sent_list = []
+
         self.keyword_hits = {}  # {substance_type : [KeywordHit objs]}
         self.keyword_hits_json = {}
-
         for substance in SUBSTANCE_TYPES:
             self.keyword_hits[substance] = []
 
 
-class Sentence(Data):
-    def __init__(self, id_num, text):
-        Data.__init__(self, id_num)
+class Sentence:
+    def __init__(self, id_num, text, span_in_doc_start, span_in_doc_end):
+        self.id = id_num
+        self.predicted_events = []
+
         self.text = text
-        # self.span_in_doc_start = span_in_doc_start
-        # self.span_in_doc_end = span_in_doc_end
+        self.span_in_doc_start = span_in_doc_start
+        self.span_in_doc_end = span_in_doc_end
+
+
+class HighlightedSpan:
+    def __init__(self, field, value, span_start, span_end):
+        self.field = field
+        self.value = value
+        self.span = Span(span_start, span_end)
+
+
+class Span:
+    def __init__(self, start, stop):
+        self.start = start
+        self.stop = stop
 
 
 # Substance information templates
 class Event:
     def __init__(self, substance):
-        self.substance = substance
+        self.substance_type = substance
         self.status = ""
         self.attributes = {}
 
