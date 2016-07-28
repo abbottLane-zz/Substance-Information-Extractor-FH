@@ -3,7 +3,7 @@
 from SystemUtilities.Globals import *
 
 # User-specific configuration
-USER = spencer
+USER = will
 
 # Environment/run type
 ENV = RUNTIME_ENV.TRAIN
@@ -24,6 +24,9 @@ if USER == spencer:
     gold_annotation_dir = florian_dir + r"SmokingStatusAnnotator\resources\gold\\"
     # Data sources
     data_repo_dir = florian_dir + r"sortedNotes\sortedNotes\combined\\"
+    dev_csv = "C:\Users\wlane\Documents\Substance_IE_Data\FLOR_filtered_tsv\\flor_dev.csv"
+    test_csv = "C:\Users\wlane\Documents\Substance_IE_Data\FLOR_filtered_tsv\\flor_test.csv"
+    train_csv = "C:\Users\wlane\Documents\Substance_IE_Data\FLOR_filtered_tsv\\flor_train.csv"
     # Output files
     CLASSF_EVAL_FILENAME = data_dir + r"SystemOutput\Evaluation\EventDetectionEval.txt"
     SUBSTANCE_IE_DATA_FOLDER = data_dir
@@ -39,17 +42,19 @@ elif USER == will:
     MODEL_DIR = "C:\Users\wlane\Documents\Substance_IE_Data\resources\Models\\"
     ## GOLD annotation sources
     gold_annotation_dir = r"C:\Users\wlane\Documents\Florian_smoking\smoking_status\SmokingStatusAnnotator\resources\gold\\"
-    ## Silver Annotations sources
-    #silver_annotations_dir = r"C:\Users\wlane\Documents\Substance_IE_Data\resources\SilverOutput\\"
+
     ## Data sources
-    #data_repo_dir = r"C:\Users\wlane\Documents\Substance_IE_Data\output\\"
-    data_repo_dir = "C:\Users\wlane\Documents\Florian_smoking\smoking_status\\full_data_set\\"
+    data_repo_dir = r"C:\Users\wlane\Documents\Substance_IE_Data\output\\"
+    dev_csv = "C:\Users\wlane\Documents\Substance_IE_Data\FLOR_filtered_tsv\\flor_dev.csv"
+    test_csv = "C:\Users\wlane\Documents\Substance_IE_Data\FLOR_filtered_tsv\\flor_test.csv"
+    train_csv = "C:\Users\wlane\Documents\Substance_IE_Data\FLOR_filtered_tsv\\flor_train.csv"
     # Output files
     CLASSF_EVAL_FILENAME = r"C:\Users\s____________________WILL'S PATH_____________________nce_IE_Data\SystemOutput\
                                 Evaluation\EventDetectionEval.txt"
     SUBSTANCE_IE_DATA_FOLDER = r"C:\Users\wlane\Documents\Substance_IE_Data\\"
     FLORIAN_FULL_DATA = "C:\Users\wlane\Documents\Florian_smoking\smoking_status\\full_data_set\\"
     DOCS_NEEDING_ANNOTATION_DIR =  r"C:\Users\wlane\Documents\Substance_IE_Data\FLORDocs_to_annotate\\"
+
 
 else:
     print("Error: unknown user in SystemUtilities/Configuration")
@@ -64,35 +69,5 @@ patients_test_gold_dir = gold_annotation_dir + "patients_testing.GOLD"
 patients_train_gold_dir = gold_annotation_dir + "patients_training.GOLD"
 i2b2_test_gold_dir = gold_annotation_dir + "i2b2\i2b2_test.GOLD"
 i2b2_train_gold_dir = gold_annotation_dir + "i2b2\i2b2_train.GOLD"
+flor_sentence_level_annotations_dir = gold_annotation_dir + "\sentences"
 
-
-# Set up which gold and raw data sets to use based on the ENV variable
-def get_environment_gold_data(env):
-    if env == RUNTIME_ENV.TRAIN:
-        test_data = []
-        train_data = [doc_train_gold_dir, patients_train_gold_dir]
-        return test_data, train_data
-
-    elif env == RUNTIME_ENV.TEST_DEV:
-        test_data = [doc_dev_gold_dir, patients_dev_gold_dir]
-        train_data = []
-        return test_data, train_data
-
-    elif env == RUNTIME_ENV.TEST_EVAL:
-        test_data = [doc_test_gold_dir, patients_test_gold_dir]
-        train_data = []
-        return test_data, train_data
-
-    elif env == RUNTIME_ENV.TRAIN_AND_TEST_DEV:
-        test_data = [doc_dev_gold_dir, patients_dev_gold_dir]
-        train_data = [patients_train_gold_dir, doc_train_gold_dir]
-        return test_data, train_data
-
-    elif env == RUNTIME_ENV.TRAIN_AND_TEST_EVAL:
-        test_data = [doc_test_gold_dir, patients_test_gold_dir]
-        train_data = [doc_train_gold_dir, patients_train_gold_dir]
-        return test_data, train_data
-
-
-def get_environment_text_data(env):
-    return [data_repo_dir]

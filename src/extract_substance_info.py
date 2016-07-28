@@ -5,11 +5,12 @@ from SystemUtilities.Globals import *
 from SystemUtilities.Configuration import *
 from DataModeling.DataModels import *
 from Extraction.EventDetection import Execution as EventDetect
+import DataLoading.DataLoader
 
 
 def main():
     # Load Data
-    patients = []
+    patients = DataLoading.DataLoader.main(ENV)
 
     # Determine sentence level info
     extract_sentence_level_info(patients)
