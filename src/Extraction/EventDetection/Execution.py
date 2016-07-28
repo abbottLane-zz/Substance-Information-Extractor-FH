@@ -19,7 +19,7 @@ def detect_sentence_events(patients):
                     classify_sent_for_substance(classf, featmap, sent, substance_type)
 
     # Substances detected with rules
-    # TODO -- rule-based event detection for Alc?
+    # -- would go here --
 
 
 def load_classifier(event_type):
@@ -72,36 +72,42 @@ def evaluate(patients):
 
     # Evaluate each sentence
     for doc in patients.doc_list:
-        # TODO -- redo event detection eval
-        '''
         for sent in doc.sent_list:
-            tp, fp, fn = evaluate_sentence(sent, fn_sents, fp_sents, tp, fp, fn)
-        '''
+            tp, fp, fn = evaluate_sentence(sent, doc.highlighted_spans, fn_sents, fp_sents, tp, fp, fn)
 
     precision = float(tp) / float(tp + fp)
     recall = float(tp) / float(tp + fn)
 
     output_evaluation(precision, recall, fp_sents, fn_sents)
 
-'''
-def evaluate_sentence(sentence, fn_sents, fp_sents, tp, fp, fn):
-    gold_classfs = [e.substance_type for e in sentence.gold_events]
-    predicted_classfs = [p.substance_type for p in sentence.predicted_events]
 
-    # Find true pos, false pos, and false neg
-    for classf in predicted_classfs:
-        if classf in gold_classfs:
+def evaluate_sentence(sent, doc, fn_sents, fp_sents, tp, fp, fn):
+    gold_substs = find_sent_gold_substs(sent, doc)
+    predicted_substs = [p.substance_type for p in sent.predicted_events]
+
+    # Find true pos, false pos
+    for classf in predicted_substs:
+        if classf in gold_substs:
             tp += 1
         else:
             fp += 1
-            fp_sents[classf].append(sentence.text)
-    for classf in gold_classfs:
-        if classf not in predicted_classfs:
+            fp_sents[classf].append(sent.text)
+    # Find false neg
+    for classf in gold_substs:
+        if classf not in predicted_substs:
             fn += 1
-            fn_sents[classf].append(sentence.text)
-
+            fn_sents[classf].append(sent.text)
     return tp, fp, fn
-'''
+
+
+def find_sent_gold_substs(sent, doc):
+    gold_substs = set()
+    for substance in doc.highlighted_spans:
+        for gold_span in doc.highlighted_spans[substance]:
+            overlap = check_sent_overlap(gold_span.start, gold_span.stop, sent.span_in_doc_start, sent.span_in_doc_end)
+            if overlap:
+                gold_substs.add(substance)
+    return list(gold_substs)
 
 
 def output_evaluation(precision, recall, fp_sents, fn_sents):
