@@ -31,7 +31,7 @@ class KeywordHit:
 
 def search_keywords(patients):
     docs_with_hits = set()
-    for substance in SUBSTANCE_TYPES:
+    for substance in KEYWORD_SUBSTANCES:
         regex = get_regex_from_file(substance)
         docs_with_substance = find_keyword_hits(patients, regex, substance)
 
