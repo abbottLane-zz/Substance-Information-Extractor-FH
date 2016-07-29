@@ -5,6 +5,7 @@ from SystemUtilities.Globals import *
 from SystemUtilities.Configuration import *
 from DataModeling.DataModels import *
 from Extraction.EventDetection import Execution as EventDetect
+from Extraction import PatientFromDocs, DocFromSents
 import DataLoading.DataLoader
 
 
@@ -16,8 +17,12 @@ def main():
     extract_sentence_level_info(patients)
 
     # Determine document level info
+    DocFromSents.get_doc_level_info(patients)
 
     # Determine patient level info
+    PatientFromDocs.get_patient_level_info(patients)
+
+    # TODO -- Do something with filled patients object
 
     if ENV != RUNTIME_ENV.EXECUTE:
         evaluate_extraction(patients)
