@@ -63,10 +63,13 @@ def main(dir):
         else:
             if count == 0:
                 copyfile(c.NOTE_OUTPUT_DIR + file, c.DEV_SPLIT_DIR+ "\\" + file)
+                dev_dic[id] = c.DEV_SPLIT_DIR+ "\\" + file
             elif count == 1:
                 copyfile(c.NOTE_OUTPUT_DIR + "\\" + file, c.TEST_SPLIT_DIR+ "\\" + file)
+                test_dict[id] = c.TEST_SPLIT_DIR + "\\" + file
             else:
                 copyfile(c.NOTE_OUTPUT_DIR + "\\" + file, c.TRAIN_SPLIT_DIR+ "\\" + file)
+                train_dict[id] = c.TRAIN_SPLIT_DIR + "\\" + file
             count += 1
             count %= 5
 

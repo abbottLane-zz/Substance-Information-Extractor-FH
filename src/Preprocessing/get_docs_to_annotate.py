@@ -35,10 +35,15 @@ def is_it_discharge_instructions(doc):
 
     # Check first 4 lines for patient discharge instructions because we really really dont want any of those
     if len(split_text) > 4:
-        if "Discharge Instructions" in split_text[0] or \
-                        "Discharge Instructions" in split_text[1] or \
-                        "Discharge Instructions" in split_text[2] or \
-                        "Discharge Instructions" in split_text[3]:
+        if "Discharge Instruction" in split_text[0] or \
+                        "Discharge Instruction" in split_text[1] or \
+                        "Discharge Instruction" in split_text[2] or \
+                        "Discharge Instruction" in split_text[3]:
+            return True
+        if "Discharge Summary" in split_text[0] or \
+                        "Discharge Summary" in split_text[1] or \
+                        "Discharge Summary" in split_text[2] or \
+                        "Discharge Summary" in split_text[3]:
             return True
     return False
 

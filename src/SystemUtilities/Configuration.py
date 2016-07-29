@@ -37,6 +37,7 @@ if USER == spencer:
     METADATA_OUT = data_dir + r"SystemOutput\Metadata"
     DOCS_NEEDING_ANNOTATION_DIR = data_dir + r"SystemOutput\DocsToAnnotate\\"
 elif USER == will:
+    data_dir = r"C:\Users\wlane\Documents\Substance_IE_Data\\"
     RAW_DATA_DIR = r"C:\Users\wlane\Documents\Substance_IE_Data\resources\exposure_notes_utf8.txt"
     METADATA_DIR = r"C:\Users\wlane\Documents\Substance_IE_Data\resources\metadata_partdeux.xlsx"
     CAISIS_DIR = r"C:\Users\wlane\Documents\Substance_IE_Data\resources\caisis_exposure_labels.xlsx"

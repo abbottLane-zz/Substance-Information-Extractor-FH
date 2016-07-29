@@ -34,9 +34,13 @@ def main():
     print("Filtering out documents with duplicate text spans whose context is also redundant ...")
     docs_with_keywords = filter_out_texts_with_duplicate_keyword_hit_and_context(docs_with_keywords)
 
+    # sort document objs based on id
+    docs_with_keywords_list = list(docs_with_keywords)
+    docs_with_keywords_list.sort(key=lambda x: x.id)
+
     # Based on Flor's divisions, derive list of documents that need annotation
     print("Generating list of documents that need annotations...")
-    splitter = DataSplitter(docs_with_keywords)
+    splitter = DataSplitter(docs_with_keywords_list)
     splitter.write_notes_needing_annotation(split)
     print("Done.")
 
@@ -61,7 +65,11 @@ def load_data(data_src):
 def create_documents_from_data(data):
     print("Creating Documents from data...")
     documents = list()
-    for id, text in data.iteritems():
+
+    data_keys = sorted(data.keys())
+    for key in data_keys:
+        id = key
+        text = data[key]
         new_doc = Document(id, text)
         sent_tokenize_list = sent_tokenize(text.decode("utf-8"))
         new_doc.sent_list=sent_tokenize_list
@@ -80,7 +88,9 @@ def create_patients_from_documents(documents):
 
     # read through patients in dictionary and make patient objects for each
     patients = list()
-    for id, doc_list in patientId_docList.iteritems():
+    patient_id_keys = sorted(patientId_docList.keys())
+    for id in patient_id_keys:
+        doc_list=patientId_docList[id]
         new_patient = Patient(id)
         new_patient.doc_list = doc_list
         patients.append(new_patient)
@@ -102,6 +112,7 @@ def get_sent_start_stop_idx(text, idx_b, idx_e):
 
 def are_equal(text1, text2, hits): # right now, equality is defined as all matches' contexts being identical
     matched_hit =0
+    #for text1 in list_of_texts:
     for hit in hits:
         idx_b = hit.span_start
         idx_e = hit.span_end
@@ -129,19 +140,26 @@ def filter_by_type(TYPE, doc, docs_to_keep, keywordList_text):
 
     if hash not in keywordList_text and len(doc.keyword_hits[TYPE]) != 0:
         docs_to_keep.add(doc)
+        # keywordList_text[hash] = list()
+        # keywordList_text[hash].append(doc.text)
         keywordList_text[hash] = doc.text
     elif len(doc.keyword_hits[TYPE]) != 0:
         they_are = are_equal(keywordList_text[hash], doc.text, doc.keyword_hits[TYPE])
         if not they_are:
             docs_to_keep.add(doc)
+            # keywordList_text[hash].append(doc.text)
             keywordList_text[hash] = doc.text
     pass
 
 
 def filter_out_texts_with_duplicate_keyword_hit_and_context(docs_with_keywords):
+    # sort document objs based on id
+    docs_with_keywords_list = list(docs_with_keywords)
+    docs_with_keywords_list.sort(key=lambda x: x.id)
+
     docs_to_keep =set()
     keywordList_text = dict()
-    for doc in docs_with_keywords:
+    for doc in docs_with_keywords_list:
         filter_by_type(ALCOHOL,doc,docs_to_keep, keywordList_text)
         filter_by_type(TOBACCO, doc, docs_to_keep, keywordList_text)
     return docs_to_keep
