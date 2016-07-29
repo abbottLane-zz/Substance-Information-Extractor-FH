@@ -3,10 +3,10 @@
 from SystemUtilities.Globals import *
 
 # User-specific configuration
-USER = will
+USER = spencer
 
 # Environment/run type
-ENV = RUNTIME_ENV.TRAIN
+ENV = RUNTIME_ENV.EXECUTE
 
 # User-specific paths
 gold_annotation_dir = ""
@@ -24,7 +24,7 @@ if USER == spencer:
     gold_annotation_dir = florian_dir + r"SmokingStatusAnnotator\resources\gold\\"
     # Data sources
     data_repo_dir = florian_dir + r"sortedNotes\sortedNotes\combined\\"
-    dev_csv = "C:\Users\wlane\Documents\Substance_IE_Data\FLOR_filtered_tsv\\flor_dev.csv"
+    dev_csv = data_dir + r"FLOR_filtered_tsv\flor_dev.csv"
     test_csv = "C:\Users\wlane\Documents\Substance_IE_Data\FLOR_filtered_tsv\\flor_test.csv"
     train_csv = "C:\Users\wlane\Documents\Substance_IE_Data\FLOR_filtered_tsv\\flor_train.csv"
     # Output files

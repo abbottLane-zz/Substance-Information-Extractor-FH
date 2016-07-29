@@ -1,7 +1,9 @@
 import csv
-from nltk.tokenize import sent_tokenize
+from nltk.tokenize import *
 from DataModeling.DataModels import Document, Event, Patient, Sentence
 from SystemUtilities import Configuration
+from SystemUtilities.Globals import *
+from Extraction.KeywordSearch import KeywordSearch
 from os import listdir
 from os.path import isfile, join
 
@@ -14,15 +16,16 @@ def main(environment):
         patient_alc_gold_labels = None
 
         print "Loading training document split ..."
-        #dev_documents = load_split(Configuration.dev_csv)
+        # dev_documents = load_split(Configuration.dev_csv)
         training_documents = load_split(Configuration.train_csv)
-        #testing_documents = load_split(Configuration.test_csv)
+        # testing_documents = load_split(Configuration.test_csv)
 
         print "Loading training patient splits ..."
-        #dev_patients = load_patients(dev_documents, patient_tob_gold_labels, patient_alc_gold_labels)
+        # dev_patients = load_patients(dev_documents, patient_tob_gold_labels, patient_alc_gold_labels)
         training_patients = load_patients(training_documents, patient_tob_gold_labels, patient_alc_gold_labels)
-        #testing_patients = load_patients(testing_documents, patient_tob_gold_labels, patient_alc_gold_labels)
+        # testing_patients = load_patients(testing_documents, patient_tob_gold_labels, patient_alc_gold_labels)
 
+        '''
         print "Loading sentence-level annotations ..."
         # Load Sentence-level annotations, if available
         sentence_level_annotations_dir = Configuration.flor_sentence_level_annotations_dir
@@ -33,6 +36,7 @@ def main(environment):
         #set_sentence_level_annotations(dev_patients, sent_ann_dict)
         set_sentence_level_annotations(training_patients, sent_ann_dict)
         #set_sentence_level_annotations(testing_patients, sent_ann_dict)
+        '''
 
         return training_patients
 
@@ -48,6 +52,7 @@ def main(environment):
         print "Loading dev patient splits ..."
         dev_patients = load_patients(dev_documents, patient_tob_gold_labels, patient_alc_gold_labels)
 
+        '''
         print "Loading sentence-level annotations ..."
         # Load Sentence-level annotations, if available
         sentence_level_annotations_dir = Configuration.flor_sentence_level_annotations_dir
@@ -56,12 +61,12 @@ def main(environment):
         print "Setting sentence-level annotations ..."
         # Set sentence-level annotations
         set_sentence_level_annotations(dev_patients, sent_ann_dict)
+        '''
 
         return dev_patients
 
 
-
-
+'''
 def set_sentence_level_annotations(patients, sent_ann_dict):
     for patient in patients:
         for doc in patient.doc_list:
@@ -91,6 +96,7 @@ def load_sentence_annotations(sentence_level_annotations_dir):
             if label in labels:
                 sent_label_dict[sentence.rstrip()] = subsType + "_" + labels[label]
     return sent_label_dict
+'''
 
 
 def read_csv(filepath):
@@ -115,21 +121,60 @@ def read_csv(filepath):
     return document_tuples
 
 
-def split_document_into_sentences(doc):
-    text = doc.text
-    sent_tokenize_list = sent_tokenize(text)
+def get_doc_sentences(doc):
+    # Split sentences
+    split_sentences, sent_spans = split_doc_text(doc.text)
 
+    # Create sentence objects and stuff into doc
     sentence_object_list = list()
-    for sent in sent_tokenize_list:
-        sentObj = Sentence(doc.id, sent)
-        sentence_object_list.append(sentObj)
+    for sent, span in zip(split_sentences, sent_spans):
+        sent_obj = Sentence(doc.id, sent, span[0], span[1])
+        sentence_object_list.append(sent_obj)
+
+    # Assign doc's keywords to appropriate sentences
+    assign_keywords_to_sents(sentence_object_list, doc)
     return sentence_object_list
+
+
+def split_doc_text(text):
+    sentences = sent_tokenize(text)
+    spans = list(PunktSentenceTokenizer().span_tokenize(text))
+    return sentences, spans
+
+
+def assign_keywords_to_sents(sents, doc):
+    for event in doc.gold_events:
+        substance = event.substance_type
+        doc_hits = doc.keyword_hits[substance]
+        keyword_index = 0
+        sent_index = 0
+
+        # Iterate through both sentences and keywords
+        while not(keyword_index == len(doc_hits) or sent_index == len(sents)):
+            sent_start = sents[sent_index].span_in_doc_start
+            sent_end = sents[sent_index].span_in_doc_end
+            keyword_start = doc_hits[keyword_index].span_start
+            keyword_end = doc_hits[keyword_index].span_end
+
+            # If current keyword is past current sentence, go to next sentence
+            if keyword_start > sent_end:
+                sent_index += 1
+            # If sentence is past keyword, go to next keyword
+            elif sent_start > keyword_end:
+                keyword_index += 1
+            # Else, they overlap and keyword should be assigned to sentence
+            else:
+                sents[sent_index].keyword_hits[substance].append(doc_hits[keyword_index])
+                keyword_index += 1
 
 
 def load_split(split_csv_path):
     """ Returns a list of document objects for the given split """
     document_tuples = read_csv(split_csv_path)
     document_objs = list()
+
+    keyword_regexes = {s: KeywordSearch.get_regex_from_file(s) for s in KEYWORD_SUBSTANCES}
+
     for tup in document_tuples:
         doc_id = tup[0]
         text = tup[1]
@@ -137,25 +182,33 @@ def load_split(split_csv_path):
         alc_gold_label = tup[3]
         doc = Document(doc_id, text)
 
-        if tob_gold_label != "UNKNOWN":
-            # Populate Tobacco Events
-            tob_event = Event("Tobacco")
-            tob_event.status = tob_gold_label.rstrip()
-            if tob_event.status != "":
-                doc.gold_events.append(tob_event)
-        if alc_gold_label != "UNKNOWN":
-            # Populate Alcohol Events
-            alc_event = Event("Alcohol")
-            alc_event.status = alc_gold_label.rstrip()
-            if alc_event.status != "":
-                doc.gold_events.append(alc_event)
+        # Populate events
+        if tob_gold_label != UNKNOWN:
+            populate_event(doc, tob_gold_label, TOBACCO, keyword_regexes[TOBACCO])
+        if alc_gold_label != UNKNOWN:
+            populate_event(doc, alc_gold_label, ALCOHOL, keyword_regexes[ALCOHOL])
 
-        # Populate sentence objects in the doc object
-        sentences = split_document_into_sentences(doc)
-        doc.sent_list = sentences
+        # Populate doc sentences
+        doc.sent_list = get_doc_sentences(doc)
 
         document_objs.append(doc)
+
     return document_objs
+
+
+def populate_event(doc, gold_label, substance, regex):
+    event = Event(substance)
+
+    event.status = gold_label.rstrip()
+    if event.status != "":
+        doc.gold_events.append(event)
+
+    load_doc_keywords(doc, substance, regex)
+
+
+def load_doc_keywords(doc, substance, regex):
+    hits = KeywordSearch.find_doc_hits(doc, regex)
+    doc.keyword_hits[substance].extend(hits)
 
 
 def load_patient_labels(patient_gold_labels_path):

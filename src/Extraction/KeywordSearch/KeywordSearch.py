@@ -1,4 +1,4 @@
-import re
+import re, os
 
 from SystemUtilities.Globals import *
 from DataModeling.DataModels import Span
@@ -7,7 +7,7 @@ from DataModeling.DataModels import Span
 class KeywordHitJSON:
     def __init__(self, substance):
         self.alg_version = ""
-        self.init_version(substance)
+        self.initialize_version(substance)
 
         self.name = substance + KEYWORD_HIT_NAME
         self.confidence = 0
@@ -15,7 +15,7 @@ class KeywordHitJSON:
         self.table = KEYWORD_HIT_TABLE
         self.value = NEGATIVE
 
-    def init_version(self, substance):
+    def initialize_version(self, substance):
         if substance == TOBACCO:
             self.alg_version = TOB_KEYWORD_VERSION
         elif substance == ALCOHOL:
@@ -42,7 +42,7 @@ def search_keywords(patients):
 
 
 def get_regex_from_file(substance):
-    filename = KEYWORD_FILE_DIR + substance + KEYWORD_FILE_SUFFIX
+    filename = os.path.dirname(__file__) + r"\\" + substance + KEYWORD_FILE_SUFFIX
     with open(filename, "r") as regex_file:
         regex_lines = regex_file.readlines()
         regexes = [r[:-1] for r in regex_lines]     # remove "\n" at end of each regex line
@@ -68,7 +68,7 @@ def find_keyword_hits(patients, regex, substance):
     return docs_with_hits
 
 
-def find_doc_hits(doc, regex, keywordhit_json):
+def find_doc_hits(doc, regex, keywordhit_json=None):
     matches = re.finditer(regex, doc.text, re.IGNORECASE)
     hits = []
     for match in matches:
@@ -80,7 +80,8 @@ def find_doc_hits(doc, regex, keywordhit_json):
         hit = KeywordHit(keyword_text, span_start, span_end)
         hits.append(hit)
 
-        add_json_hit(keywordhit_json, span_start, span_end)
+        if keywordhit_json:
+            add_json_hit(keywordhit_json, span_start, span_end)
 
     return hits
 

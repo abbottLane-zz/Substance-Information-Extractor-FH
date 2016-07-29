@@ -37,6 +37,10 @@ class Sentence:
         self.span_in_doc_start = span_in_doc_start
         self.span_in_doc_end = span_in_doc_end
 
+        self.keyword_hits = {}  # {substance_type : [KeywordHit objs]}
+        for substance in SUBSTANCE_TYPES:
+            self.keyword_hits[substance] = []
+
 
 class HighlightedSpan:
     def __init__(self, field, value, span_start, span_end):
