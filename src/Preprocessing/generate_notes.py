@@ -56,8 +56,40 @@ def get_blobs():
     blobs2.sort()
     return blobs2
 
+
+def populate_split_dict(doc_dir, patients_dir):
+    the_dict=dict()
+    with open(doc_dir) as d:
+        lines = d.readlines()
+    for line in lines:
+        id_label = line.split()
+        id = id_label[0]
+        label = id_label[1]
+        the_dict[id] = label
+    with open(patients_dir) as d:
+        lines = d.readlines()
+    for line in lines:
+        id_label = line.split()
+        id = id_label[0]
+        label = id_label[1]
+        the_dict[id] = label
+    return the_dict
+
+
+def populate_dir_dict():
+    dev_dict= populate_split_dict(c.doc_dev_gold_dir, c.patients_dev_gold_dir)
+    train_dict =populate_split_dict(c.doc_train_gold_dir, c.patients_train_gold_dir)
+    test_dict = populate_split_dict(c.doc_test_gold_dir, c.patients_test_gold_dir)
+    return dev_dict,train_dict,test_dict
+
+
 def write_note_files_to_disk(patients, flors_files):
     document_metadata= dict()
+    dev_dict, train_dict, test_dict = populate_dir_dict()
+    dev_docs = list()
+    train_docs = list()
+    test_docs = list()
+    unknown = list()
     for patient_id in patients.keys():
         doc_num_count = 0
         alt_num_count = 0
