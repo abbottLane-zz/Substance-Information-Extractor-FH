@@ -35,7 +35,7 @@ def is_it_discharge_instructions(doc):
 
     # Check first 4 lines for patient discharge instructions because we really really dont want any of those
     if len(split_text) > 4:
-        if "Discharge Instructions" in split_text[0] or\
+        if "Discharge Instructions" in split_text[0] or \
                         "Discharge Instructions" in split_text[1] or \
                         "Discharge Instructions" in split_text[2] or \
                         "Discharge Instructions" in split_text[3]:
@@ -69,12 +69,12 @@ def get_batches(documents_needing_annotation):
     return batches
 
 
-def write_docs_needing_annotation_to_csv_batches(documents_needing_annotation):
+def write_docs_needing_annotation_to_csv_batches(documents_needing_annotation, split):
     # Sort notes into batches of 100
     batches = get_batches(documents_needing_annotation)
     metadata_dict = get_metadata_dict()
     for batch in batches:
-        with open(c.DOCS_NEEDING_ANNOTATION_DIR + "annotation_batch_" + str(batch.id) + ".tsv", "wb") as csvfile:
+        with open(c.DOCS_NEEDING_ANNOTATION_DIR +"\\"+split+"\\"+ "annotation_batch_" + str(batch.id) + ".nlp.tsv", "wb") as csvfile:
             batch_writer = csv.writer(csvfile, quoting=csv.QUOTE_ALL)
             batch_writer.writerow(["MRN", "FillerOrderNo", "EventDate", "ObservationValue"])
             for document in batch.documents:
@@ -84,6 +84,7 @@ def write_docs_needing_annotation_to_csv_batches(documents_needing_annotation):
                 batch_writer.writerow([mrn, id, timestamp, document.text])
     print("tsv batch files ready for annotation written to: " + c.DOCS_NEEDING_ANNOTATION_DIR)
     pass
+
 
 
 class DataSplitter:
@@ -96,8 +97,8 @@ class DataSplitter:
         self.patients_dev_dict = dict()
         self.patients_train_dict = dict()
 
-    def write_notes_needing_annotation(self):
-        self.get_splits()
+    def write_notes_needing_annotation(self, split):
+        self.get_splits(split)
         pass
 
     def get_unannotated_documents(self, all_keyword_documents):
@@ -137,7 +138,20 @@ class DataSplitter:
             patients_dict[id] = label
         pass
 
-    def get_splits(self):
+    def split_by_flor(self, documents_needing_annotation, wanted_dict, unwanted1, unwanted2):
+        docs_belonging_to_relevant_split = list()
+        unclaimed = list()
+        for doc in documents_needing_annotation:
+            id = doc.id.split('_')[0]
+            id = id.split('-')[0]
+            if id in wanted_dict:
+                docs_belonging_to_relevant_split.append(doc)
+            elif id not in unwanted1 and id not in unwanted2:
+                unclaimed.append(doc)
+
+        return docs_belonging_to_relevant_split
+
+    def get_splits(self, split):
         doc_dev_gold_dir = c.doc_dev_gold_dir
         doc_test_gold_dir = c.doc_test_gold_dir
         doc_train_gold_dir = c.doc_train_gold_dir
@@ -155,4 +169,7 @@ class DataSplitter:
 
         documents_needing_annotation = self.get_list_of_documents_to_annotate()
         write_unannotated_info_to_file(documents_needing_annotation)
-        write_docs_needing_annotation_to_csv_batches(documents_needing_annotation)
+
+
+
+        write_docs_needing_annotation_to_csv_batches(documents_needing_annotation, split)

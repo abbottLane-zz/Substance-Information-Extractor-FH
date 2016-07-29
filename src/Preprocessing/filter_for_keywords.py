@@ -12,11 +12,21 @@ from Preprocessing.get_docs_to_annotate import DataSplitter
 
 
 def main():
+    # Determine environment. This script will only produce filtered tsv files for the appropriate environment
+    data_src = ""
+    split = ""
+    if ENV == RUNTIME_ENV.TRAIN:
+        data_src = TRAIN_SPLIT_DIR
+        split = "train"
+    if ENV == RUNTIME_ENV.EXECUTE:
+        data_src = DEV_SPLIT_DIR
+        split = "dev"
+
     # Read in from folder containing all available data
-    data_src = data_repo_dir
     data = load_data(data_src)
     documents = create_documents_from_data(data)
     patients = create_patients_from_documents(documents)
+
     print("Searching documents for keywords...")
     docs_with_keywords = KeywordSearch.search_keywords(patients)
 
@@ -27,7 +37,7 @@ def main():
     # Based on Flor's divisions, derive list of documents that need annotation
     print("Generating list of documents that need annotations...")
     splitter = DataSplitter(docs_with_keywords)
-    splitter.write_notes_needing_annotation()
+    splitter.write_notes_needing_annotation(split)
     print("Done.")
 
 

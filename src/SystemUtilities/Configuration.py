@@ -18,6 +18,9 @@ if USER == spencer:
     METADATA_DIR = data_dir + r"metadata_for_clinic_notes.xlsx"
     CAISIS_DIR = data_dir + r"caisis_exposure_labels.xlsx"
     NOTE_OUTPUT_DIR = data_dir + r"SystemOutput\Notes\\"
+    TRAIN_SPLIT_DIR = data_dir + r"notes_training\\"
+    DEV_SPLIT_DIR = data_dir + r"notes_dev\\"
+    TEST_SPLIT_DIR = data_dir + r"notes_testing\\"
     NOTE_OUTPUT_GOLD_LABELS_DIR = r"SystemOutput\Notes_annotations\\"
     MODEL_DIR = data_dir + r"SystemOutput\Models\\"
     # GOLD annotation sources
@@ -38,6 +41,9 @@ elif USER == will:
     METADATA_DIR = r"C:\Users\wlane\Documents\Substance_IE_Data\resources\metadata_partdeux.xlsx"
     CAISIS_DIR = r"C:\Users\wlane\Documents\Substance_IE_Data\resources\caisis_exposure_labels.xlsx"
     NOTE_OUTPUT_DIR = r"C:\Users\wlane\Documents\Substance_IE_Data\output\\"
+    TRAIN_SPLIT_DIR =  r"C:\Users\wlane\Documents\Substance_IE_Data\notes_training\\"
+    DEV_SPLIT_DIR = r"C:\Users\wlane\Documents\Substance_IE_Data\notes_dev"
+    TEST_SPLIT_DIR = r"C:\Users\wlane\Documents\Substance_IE_Data\notes_testing\\"
     NOTE_OUTPUT_GOLD_LABELS_DIR = r"C:\Users\wlane\Documents\Substance_IE_Data\output_annotations\\"
     MODEL_DIR = "C:\Users\wlane\Documents\Substance_IE_Data\resources\Models\\"
     ## GOLD annotation sources
@@ -53,7 +59,7 @@ elif USER == will:
                                 Evaluation\EventDetectionEval.txt"
     SUBSTANCE_IE_DATA_FOLDER = r"C:\Users\wlane\Documents\Substance_IE_Data\\"
     FLORIAN_FULL_DATA = "C:\Users\wlane\Documents\Florian_smoking\smoking_status\\full_data_set\\"
-    DOCS_NEEDING_ANNOTATION_DIR =  r"C:\Users\wlane\Documents\Substance_IE_Data\FLORDocs_to_annotate\\"
+    DOCS_NEEDING_ANNOTATION_DIR =  r"C:\Users\wlane\Documents\Substance_IE_Data\Docs_to_annotate\\"
 
 
 else:
