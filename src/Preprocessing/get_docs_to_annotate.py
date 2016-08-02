@@ -1,3 +1,5 @@
+import re
+
 import SystemUtilities.Configuration as c
 import SystemUtilities.Globals as g
 import os
@@ -35,6 +37,13 @@ def is_it_discharge_instructions(doc):
 
     # Check first 4 lines for patient discharge instructions because we really really dont want any of those
     if len(split_text) > 4:
+        # p = re.compile(text2[hit.span_start:hit.span_end])
+        # m = p.search(text1)
+        # span = m.span()
+        p = re.compile("assessment", re.IGNORECASE)
+        if p.match(split_text[0]):
+            return True
+
         if "Discharge Instruction" in split_text[0] or \
                         "Discharge Instruction" in split_text[1] or \
                         "Discharge Instruction" in split_text[2] or \
@@ -44,6 +53,11 @@ def is_it_discharge_instructions(doc):
                         "Discharge Summary" in split_text[1] or \
                         "Discharge Summary" in split_text[2] or \
                         "Discharge Summary" in split_text[3]:
+            return True
+        if "DISCHARGE SUMMARY" in split_text[0] or \
+                        "DISCHARGE SUMMARY" in split_text[1] or \
+                        "DISCHARGE SUMMARY" in split_text[2] or \
+                        "DISCHARGE SUMMARY" in split_text[3]:
             return True
     return False
 
@@ -64,7 +78,10 @@ def get_batches(documents_needing_annotation):
                 batch = CSVBatch(batch_num)
                 batch_num += 1
                 batch.add_document(doc)
-            elif count == BATCH_SIZE or total_doc_count == len(documents_needing_annotation):
+                if count == BATCH_SIZE or total_doc_count == len(documents_needing_annotation)-1:
+                    batches.append(batch)
+                    count = -1
+            elif count == BATCH_SIZE or total_doc_count == len(documents_needing_annotation)-1:
                 batch.add_document(doc)
                 batches.append(batch)
                 count = -1
