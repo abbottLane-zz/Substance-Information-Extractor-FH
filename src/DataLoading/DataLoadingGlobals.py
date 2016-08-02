@@ -6,6 +6,7 @@ PROJECT = 'NLP'
 # Query result field titles
 SOC_HISTORIES = 'SocialHistories'
 ROWS = 'rows'
+CREATED_BY = 'CreatedBy'
 FIELD_ID = 'FieldResultId'
 FIELD_NAME = 'Field'
 VALUE = 'Value'

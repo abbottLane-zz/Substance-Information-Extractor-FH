@@ -11,7 +11,9 @@ class Field:
 
 
 def get_annotations_from_server():
-    # type: () -> object
+    """
+    :return: {annotator_id: {MRN: {doc_id: [Event]}}} where there is a gold Event for each substance type for each doc
+    """
     context = labkey.utils.create_server_context(SERVER, PROJECT, use_ssl=True)
 
     all_fields = labkey.query.select_rows(
@@ -32,17 +34,38 @@ def get_annotations_from_server():
         query_name='report'
     )
 
-    fields_per_report = find_fields(all_fields, all_offsets)
-    events_per_report = convert_to_report_substance_events(fields_per_report)
-    patient_doc_annotations = match_reports_to_patients(events_per_report, reports)
+    # Grab relevant fields and offsets for each annotator
+    field_results_per_annotr = field_query_results(all_fields)
+    offset_results_per_annotr = offset_query_results(all_offsets, field_results_per_annotr)
 
+    patient_doc_annotations = fill_annotation_objects(field_results_per_annotr, offset_results_per_annotr, reports)
     return patient_doc_annotations
 
 
-def find_fields(all_fields, all_offsets):
-    field_query_results = [f for f in all_fields[ROWS] if (f[u'TargetTable'] == SOC_HISTORIES)]
-    fields, field_names_per_report = create_field_objects(field_query_results)
-    add_field_offsets(fields, all_offsets)
+def field_query_results(all_fields):
+    field_results_per_annotator = {}  # {annotator_id: [social history rows]}
+
+    results = [f for f in all_fields[ROWS] if (f[u'TargetTable'] == SOC_HISTORIES)]
+    for field in results:
+        annotator = field[CREATED_BY]
+        if annotator not in field_results_per_annotator:
+            field_results_per_annotator[annotator] = []
+        field_results_per_annotator[annotator].append(field)
+
+    return field_results_per_annotator
+
+
+def offset_query_results(all_offsets, field_results_per_annotator):
+    offset_results_per_annotator = {annotator: [] for annotator in field_results_per_annotator}
+    for annotator in offset_results_per_annotator:
+        offset_results_per_annotator[annotator] = [o for o in all_offsets[ROWS] if (o[CREATED_BY] == annotator)]
+
+    return offset_results_per_annotator
+
+
+def find_fields(field_results, offset_results):
+    fields, field_names_per_report = create_field_objects(field_results)
+    add_field_offsets(fields, offset_results)
     fields_per_report = find_fields_per_report(fields, field_names_per_report)
     return fields_per_report
 
@@ -67,8 +90,8 @@ def update_fields_per_report(field, field_id, fields_per_report):
     fields_per_report[report_id].append(field_id)
 
 
-def add_field_offsets(fields, all_offsets):
-    for offset in all_offsets[ROWS]:
+def add_field_offsets(fields, offset_results):
+    for offset in offset_results:
         field_id = offset[FIELD_ID]
         if field_id in fields:
             span = Span(offset[START_POS], offset[STOP_POS])
@@ -92,13 +115,7 @@ def convert_to_report_substance_events(fields_per_report):
     events_per_report = {}
     for report_id in fields_per_report:
         events_per_report[report_id] = create_events()
-
-        fields = fields_per_report[report_id]
-        for field in fields:
-            for substance in SUBSTANCE_TYPES:
-                if field.name in field_names_per_subst[substance]:
-                    add_field_to_event(field, substance, events_per_report[report_id][substance])
-                    break
+        fill_events(fields_per_report, report_id, field_names_per_subst, events_per_report)
 
     return events_per_report
 
@@ -124,6 +141,15 @@ def create_events():
     for substance in SUBSTANCE_TYPES:
         events[substance] = Event(substance)
     return events
+
+
+def fill_events(fields_per_report, report_id, field_names_per_subst, events_per_report):
+    fields = fields_per_report[report_id]
+    for field in fields:
+        for substance in SUBSTANCE_TYPES:
+            if field.name in field_names_per_subst[substance]:
+                add_field_to_event(field, substance, events_per_report[report_id][substance])
+                break
 
 
 def add_field_to_event(field, substance, event):
@@ -157,6 +183,11 @@ def add_to_patient_doc_events(report, report_id, events_per_report, doc_events_p
     doc_events_per_patient[mrn][doc_id] = events_per_report[report_id]
 
 
-if __name__ == '__main__':
-    annot = get_annotations_from_server()
-    print(annot)
+def fill_annotation_objects(field_results_per_annotator, offset_results_per_annotator, reports):
+    patient_docs_per_annotator = {}
+    for annotator in field_results_per_annotator:
+        fields_per_report = find_fields(field_results_per_annotator[annotator], offset_results_per_annotator[annotator])
+        events_per_report = convert_to_report_substance_events(fields_per_report)
+        patient_doc_annotations = match_reports_to_patients(events_per_report, reports)
+        patient_docs_per_annotator[annotator] = patient_doc_annotations
+    return patient_docs_per_annotator
