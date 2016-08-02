@@ -62,9 +62,6 @@ class Event:
         self.status = ""
         self.attributes = {}
 
-        for attrib in ATTRIBS[substance]:
-            self.attributes[attrib] = ""
-
 
 class Attribute:
     def __init__(self, attribute_type, span_start, span_end, text):
