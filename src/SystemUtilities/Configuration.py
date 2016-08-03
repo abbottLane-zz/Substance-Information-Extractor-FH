@@ -3,7 +3,7 @@
 from SystemUtilities.Globals import *
 
 # User-specific configuration
-USER = spencer
+USER = will
 
 # Environment/run type
 ENV = RUNTIME_ENV.EXECUTE
