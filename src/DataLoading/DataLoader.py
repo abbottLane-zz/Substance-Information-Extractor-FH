@@ -1,46 +1,27 @@
 import csv
 from nltk.tokenize import *
+
+from DataLoading import ServerQuery
 from DataModeling.DataModels import Document, Event, Patient, Sentence
 from SystemUtilities import Configuration
 from SystemUtilities.Globals import *
 from Extraction.KeywordSearch import KeywordSearch
 from os import listdir
 from os.path import isfile, join
+import sys
 
 
 def main(environment):
+    reload(sys)
+    sys.setdefaultencoding('utf8')
+
     if environment == Configuration.RUNTIME_ENV.TRAIN:
-        print "Running in TRAINING environment with TRAINING data ..."
-        print "Loading patient-level gold labels ..."
-        patient_tob_gold_labels = Configuration.patients_all_gold_dir
-        patient_alc_gold_labels = None
-
-        print "Loading training document split ..."
-        # dev_documents = load_split(Configuration.dev_csv)
-        training_documents = load_split(Configuration.train_csv)
-        # testing_documents = load_split(Configuration.test_csv)
-
-        print "Loading training patient splits ..."
-        # dev_patients = load_patients(dev_documents, patient_tob_gold_labels, patient_alc_gold_labels)
-        training_patients = load_patients(training_documents, patient_tob_gold_labels, patient_alc_gold_labels)
-        # testing_patients = load_patients(testing_documents, patient_tob_gold_labels, patient_alc_gold_labels)
-
-        '''
-        print "Loading sentence-level annotations ..."
-        # Load Sentence-level annotations, if available
-        sentence_level_annotations_dir = Configuration.flor_sentence_level_annotations_dir
-        sent_ann_dict = load_sentence_annotations(sentence_level_annotations_dir)
-
-        print "Setting sentence-level annotations ..."
-        # Set sentence-level annotations
-        #set_sentence_level_annotations(dev_patients, sent_ann_dict)
-        set_sentence_level_annotations(training_patients, sent_ann_dict)
-        #set_sentence_level_annotations(testing_patients, sent_ann_dict)
-        '''
-
-        return training_patients
+        florian_training_patients = load_florian_patients(Configuration.train_csv)
+        labkey_training_patients = load_labkey_patients()
+        return florian_training_patients.extend(labkey_training_patients)
 
     elif environment == Configuration.RUNTIME_ENV.EXECUTE:
+        # todo: condense this (see above), add labkey data loading functionality
         print "Running in EXECUTE environment with DEV data ..."
         print "Loading patient-level gold labels ..."
         patient_tob_gold_labels = Configuration.patients_all_gold_dir
@@ -97,7 +78,40 @@ def load_sentence_annotations(sentence_level_annotations_dir):
                 sent_label_dict[sentence.rstrip()] = subsType + "_" + labels[label]
     return sent_label_dict
 '''
+def load_labkey_patients():
+    # Load full data note repo from which TRAIN or TEST will pic and return a subset of docs
+    noteID_text_dict = load_data_repo(Configuration.NOTE_OUTPUT_DIR)
 
+    print "Loading training data annotations from labkey server ..."
+    test_anns = ServerQuery.get_annotations_from_server()  # testing: stub data only
+    labkey_patients = build_patients_from_labkey(test_anns, noteID_text_dict)
+    return labkey_patients
+
+def load_florian_patients(csv_split_dir):
+    print "Running in TRAINING environment with TRAINING data ..."
+    print "Loading patient-level gold labels ..."
+    patient_tob_gold_labels = Configuration.patients_all_gold_dir
+    patient_alc_gold_labels = None
+
+    print "Loading training document split ..."
+    documents = load_split(csv_split_dir)
+
+    print "Loading training patient splits ..."
+    patients = load_patients(documents, patient_tob_gold_labels, patient_alc_gold_labels)
+
+    '''
+    print "Loading sentence-level annotations ..."
+    # Load Sentence-level annotations, if available
+    sentence_level_annotations_dir = Configuration.flor_sentence_level_annotations_dir
+    sent_ann_dict = load_sentence_annotations(sentence_level_annotations_dir)
+
+    print "Setting sentence-level annotations ..."
+    # Set sentence-level annotations
+    #set_sentence_level_annotations(dev_patients, sent_ann_dict)
+    set_sentence_level_annotations(training_patients, sent_ann_dict)
+    #set_sentence_level_annotations(testing_patients, sent_ann_dict)
+    '''
+    return patients
 
 def read_csv(filepath):
     ID = "ID"
@@ -137,7 +151,7 @@ def get_doc_sentences(doc):
 
 
 def split_doc_text(text):
-    sentences = sent_tokenize(text)
+    sentences = sent_tokenize(text.encode("utf8"))
     spans = list(PunktSentenceTokenizer().span_tokenize(text))
     return sentences, spans
 
@@ -150,7 +164,7 @@ def assign_keywords_to_sents(sents, doc):
         sent_index = 0
 
         # Iterate through both sentences and keywords
-        while not(keyword_index == len(doc_hits) or sent_index == len(sents)):
+        while not (keyword_index == len(doc_hits) or sent_index == len(sents)):
             sent_start = sents[sent_index].span_in_doc_start
             sent_end = sents[sent_index].span_in_doc_end
             keyword_start = doc_hits[keyword_index].span_start
@@ -258,6 +272,58 @@ def load_patients(documents, patient_tob_gold_labels_path, patient_alc_gold_labe
             if alc_event.status != "":
                 pat.gold_events.append(alc_event)
     return patient_objects
+
+
+def load_data_repo(NOTE_OUTPUT_DIR):
+    id_text_dict = dict()
+    all_notes = [f for f in listdir(NOTE_OUTPUT_DIR) if isfile(join(NOTE_OUTPUT_DIR, f))]
+    for note in all_notes:
+        with open(NOTE_OUTPUT_DIR + "\\" + note, "rb") as f:
+            id_text_dict[note] = f.read()
+    return id_text_dict
+
+
+def get_labkey_documents(annId_patient_dict, docID_text_dict):
+    annotater_ids = sorted(annId_patient_dict.keys())
+    labkey_documents = list()
+    for annotater_id in annotater_ids:
+        patient_dict = annId_patient_dict[annotater_id]
+        pat_ids = sorted(patient_dict.keys())
+        for pat_id in pat_ids:
+            docId_events = patient_dict[pat_id]  # {patientId : {eventType : EventObject}}
+            for docId, event_dict in docId_events.iteritems():
+                doc_obj = Document(docId, docID_text_dict[docId])
+                # populate the docObj's event list
+                for type, event in event_dict.iteritems():
+                    doc_obj.gold_events.append(event)
+                # split and assign document sentences from raw text
+                doc_obj.sent_list = get_doc_sentences(doc_obj)
+                labkey_documents.append(doc_obj)
+    return labkey_documents
+
+
+def get_labkey_patients(labkey_documents):
+    patients_dict = dict()
+    patients_list = list()
+    for doc in labkey_documents:
+        patId = doc.id.split("_")[0]
+        if patId not in patients_dict:
+            patients_dict[patId] = list()
+            patients_dict[patId].append(doc)
+        else:
+            patients_dict[patId].append(doc)
+
+    for pid, doclist in patients_dict.iteritems():
+        patient = Patient(pid)
+        patient.doc_list=doclist
+        patients_list.append(patient)
+    return patients_list
+
+
+def build_patients_from_labkey(annId_patient_dict, docID_text_dict):
+    labkey_documents = get_labkey_documents(annId_patient_dict, docID_text_dict)
+    labkey_patients = get_labkey_patients(labkey_documents)
+    return labkey_patients
 
 
 if __name__ == '__main__':
