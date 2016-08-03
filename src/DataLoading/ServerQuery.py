@@ -3,13 +3,6 @@ from DataModeling.DataModels import *
 from DataLoadingGlobals import *
 
 
-class Field:
-    def __init__(self, name, value):
-        self.name = name
-        self.value = value
-        self.spans = []
-
-
 def get_annotations_from_server():
     """
     :return: {annotator_id: {MRN: {doc_id: [Event]}}} where there is a gold Event for each substance type for each doc
@@ -110,12 +103,12 @@ def find_fields_per_report(fields, field_names_per_report):
 
 
 def convert_to_report_substance_events(fields_per_report):
-    field_names_per_subst = find_substance_field_names()
+    substances_of_fields = find_substances_of_fields()
 
     events_per_report = {}
     for report_id in fields_per_report:
         events_per_report[report_id] = create_events()
-        fill_events(fields_per_report, report_id, field_names_per_subst, events_per_report)
+        fill_events(fields_per_report, report_id, substances_of_fields, events_per_report)
 
     return events_per_report
 
@@ -136,20 +129,33 @@ def find_substance_field_names():
     return fields_per_subst
 
 
+def find_substances_of_fields():
+    substance_per_field_name = {}
+    for subst in SUBSTANCE_TYPES:
+        # Status
+        status = subst + STATUS
+        substance_per_field_name[status] = subst
+
+        # Attributes
+        for attrib in ATTRIBS[subst]:
+            attrib_label = subst + attrib
+            substance_per_field_name[attrib_label] = subst
+
+    return substance_per_field_name
+
+
 def create_events():
     events = {}
     for substance in SUBSTANCE_TYPES:
-        events[substance] = Event(substance)
+        events[substance] = AnnotatedEvent(substance)
     return events
 
 
-def fill_events(fields_per_report, report_id, field_names_per_subst, events_per_report):
+def fill_events(fields_per_report, report_id, substances_of_fields, events_per_report):
     fields = fields_per_report[report_id]
     for field in fields:
-        for substance in SUBSTANCE_TYPES:
-            if field.name in field_names_per_subst[substance]:
-                add_field_to_event(field, substance, events_per_report[report_id][substance])
-                break
+        substance = substances_of_fields[field.name]
+        add_field_to_event(field, substance, events_per_report[report_id][substance])
 
 
 def add_field_to_event(field, substance, event):
@@ -158,8 +164,9 @@ def add_field_to_event(field, substance, event):
 
     if field_name == STATUS:
         event.status = field.value
+        event.status_spans = field.spans
     elif field_name in ATTRIBS[substance]:
-        event.attributes[field_name] = field.value
+        event.attributes[field_name] = AnnotatedAttribute(field_name, field.spans, field.value)
 
 
 def match_reports_to_patients(events_per_report, all_reports):

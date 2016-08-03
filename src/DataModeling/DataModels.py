@@ -42,6 +42,13 @@ class Sentence:
             self.keyword_hits[substance] = []
 
 
+class Field:
+    def __init__(self, name, value):
+        self.name = name
+        self.value = value
+        self.spans = []
+
+
 class HighlightedSpan:
     def __init__(self, field, value, span_start, span_end):
         self.field = field
@@ -60,7 +67,7 @@ class Event:
     def __init__(self, substance):
         self.substance_type = substance
         self.status = ""
-        self.attributes = {}
+        self.attributes = {}    # {attrib_name: Attribute object}
 
 
 class Attribute:
@@ -68,4 +75,17 @@ class Attribute:
         self.type = attribute_type
         self.span_start = span_start
         self.span_end = span_end
+        self.text = text
+
+
+class AnnotatedEvent(Event):
+    def __init__(self, substance):
+        Event.__init__(self, substance)
+        self.status_spans = []
+
+
+class AnnotatedAttribute:
+    def __init__(self, attribute_type, spans, text):
+        self.type = attribute_type
+        self.spans = spans
         self.text = text
