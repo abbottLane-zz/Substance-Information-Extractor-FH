@@ -157,6 +157,7 @@ def split_doc_text(text):
 
 
 def assign_keywords_to_sents(sents, doc):
+    """ Used for features in ML as well as assigning attributes to events """
     for event in doc.gold_events:
         substance = event.substance_type
         doc_hits = doc.keyword_hits[substance]
