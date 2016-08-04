@@ -55,11 +55,6 @@ def split_doc_text(text):
     text= re.sub("\r", "",text) # Carriage Returns are EVIL !!!!!
     sentences = PunktSentenceTokenizer().sentences_from_text(text.encode("utf8"))
     spans = list(PunktSentenceTokenizer().span_tokenize(text.encode("utf8")))
-
-    # print text
-    # print "\n========================================\n"
-    # for span in spans:
-    #     print str(span) +":"+ text[span[0]:span[1]]
     return sentences, spans
 
 
