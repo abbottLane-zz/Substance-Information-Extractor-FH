@@ -4,10 +4,11 @@ from SystemUtilities.Globals import *
 
 class FieldIAAInfo:
     """ Matrix information for Fleiss Kappa calculation """
-    def __init__(self, rows, column_sums):
+    def __init__(self, rows, column_sums, occurrences=0):
         self.rows = rows
         self.column_sums = column_sums
         self.total = sum(column_sums)
+        self.occurrences = occurrences
 
 
 def main():
@@ -76,6 +77,7 @@ def get_single_field_value_info(annotations, substance, field):
     column_map_index = 0
     column_sums = []
     rows = []
+    occurrences = 0
 
     for doc_id in annotations:
         row = [0 for _ in column_value_map]
@@ -83,6 +85,10 @@ def get_single_field_value_info(annotations, substance, field):
         for annotator in annotations[doc_id]:
             event = annotations[doc_id][annotator][substance]
             value = get_field_value(event, field)
+
+            # Keep track of non-blank values
+            if value:
+                occurrences += 1
 
             # update rows and columns
             if value not in column_value_map:
@@ -97,7 +103,7 @@ def get_single_field_value_info(annotations, substance, field):
 
         rows.append(row)
 
-    return FieldIAAInfo(rows, column_sums)
+    return FieldIAAInfo(rows, column_sums, occurrences)
 
 
 def get_single_field_spans_info(annotations, substance, field):
@@ -107,6 +113,7 @@ def get_single_field_spans_info(annotations, substance, field):
     column_map_index = 0
     column_sums = []
     rows = []
+    occurrences = 0
 
     for doc_id in annotations:
         row = [0 for _ in column_value_map]
@@ -114,6 +121,10 @@ def get_single_field_spans_info(annotations, substance, field):
         for annotator in annotations[doc_id]:
             event = annotations[doc_id][annotator][substance]
             value = get_field_spans(event, field)
+
+            # Keep track of non-blank values
+            if value:
+                occurrences += 1
 
             value_in_map, column = check_if_exact_spans_in_map(column_value_map, value)
 
@@ -129,7 +140,7 @@ def get_single_field_spans_info(annotations, substance, field):
 
         rows.append(row)
 
-    return FieldIAAInfo(rows, column_sums)
+    return FieldIAAInfo(rows, column_sums, occurrences)
 
 
 def check_if_exact_spans_in_map(seen_span_lists, span_list):
@@ -180,26 +191,11 @@ def get_field_spans(event, field):
 def find_iaa(list_of_field_infos, num_of_annotators):
     """ Fleiss kappa calculation using each field's matrix info in FieldIAAInfo objects """
     combined_info = combine_different_value_field_infos(list_of_field_infos)
-    total = combined_info.total
 
-    # Find Pj for calculating Pe
-    pj = [float(c)/float(total) for c in combined_info.column_sums]
-    expected_prob = sum([c**2 for c in pj])
-
-    # Find Pi for calculating P
-    pi = []
-    for row in combined_info.rows:
-        pi_coefficient = float(1)/float(num_of_annotators*(num_of_annotators-1))
-        pi_sum = sum([v**2 for v in row]) - num_of_annotators
-        pi.append(pi_coefficient * pi_sum)
-
-    observed_prob = float(sum(pi))/float(len(pi))
-
-    # Use P and Pe to calculate kappa
-    if expected_prob != 1:
-        kappa = float((observed_prob - expected_prob))/float((1 - expected_prob))
+    if combined_info.occurrences > 0:
+        kappa = calculate_fleiss_kappa(combined_info, num_of_annotators)
     else:
-        kappa = 1
+        kappa = None
 
     return kappa
 
@@ -208,18 +204,21 @@ def combine_different_value_field_infos(list_of_field_infos):
     """ Simply append rows and columns together """
     rows = []
     column_sums = []
+    occurrences = 0
     if list_of_field_infos:
         for field_index, field_info in enumerate(list_of_field_infos):
             rows.extend(field_info.rows)
             column_sums.extend(field_info.column_sums)
+            occurrences += field_info.occurrences
 
-    return FieldIAAInfo(rows, column_sums)
+    return FieldIAAInfo(rows, column_sums, occurrences)
 
 
 def combine_same_value_field_infos(list_of_field_infos):
     """ append rows and sum columns together """
     rows = []
     column_sums = []
+    occurrences = 0
     if list_of_field_infos:
 
         # Set column_sum to the column_sums of the first field
@@ -227,13 +226,37 @@ def combine_same_value_field_infos(list_of_field_infos):
         for field_index, field_info in enumerate(list_of_field_infos):
             # Grab each row
             rows.extend(field_info.rows)
+            occurrences += field_info.occurrences
 
             # Add all non-first column sums to the first one
             if field_index > 0:
                 for column_index, column_sum in enumerate(field_info.column_sums):
                     column_sums[column_index] += column_sum
 
-    return FieldIAAInfo(rows, column_sums)
+    return FieldIAAInfo(rows, column_sums, occurrences)
+
+
+def calculate_fleiss_kappa(combined_info, num_of_annotators):
+    # Find Pj for calculating Pe
+    pj = [float(c) / float(combined_info.total) for c in combined_info.column_sums]
+    expected_prob = sum([c ** 2 for c in pj])
+
+    # Find Pi for calculating P
+    pi = []
+    for row in combined_info.rows:
+        pi_coefficient = float(1) / float(num_of_annotators * (num_of_annotators - 1))
+        pi_sum = sum([v ** 2 for v in row]) - num_of_annotators
+        pi.append(pi_coefficient * pi_sum)
+
+    observed_prob = float(sum(pi)) / float(len(pi))
+
+    # Use P and Pe to calculate kappa
+    if expected_prob != 1:
+        kappa = float((observed_prob - expected_prob)) / float((1 - expected_prob))
+    else:
+        kappa = 1
+
+    return kappa
 
 
 if __name__ == '__main__':
