@@ -38,6 +38,7 @@ if USER == spencer:
     DOCS_NEEDING_ANNOTATION_DIR = data_dir + r"SystemOutput\DocsToAnnotate\\"
     # IAA
     IAA_DISAGREEMENT_LOG = data_dir + "SystemOutput\IAA\disagreement_log.txt"
+    IAA_OUT_FILE = data_dir + "SystemOutput\IAA\IAA.txt"
 elif USER == will:
     data_dir = r"C:\Users\wlane\Documents\Substance_IE_Data\\"
     RAW_DATA_DIR = r"C:\Users\wlane\Documents\Substance_IE_Data\resources\exposure_notes_utf8.txt"

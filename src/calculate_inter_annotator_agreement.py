@@ -1,6 +1,6 @@
 from DataLoading import ServerQuery, IAADataFiltering
 from SystemUtilities.Globals import *
-from SystemUtilities.Configuration import IAA_DISAGREEMENT_LOG
+from SystemUtilities.Configuration import IAA_DISAGREEMENT_LOG, IAA_OUT_FILE
 
 
 class FieldIAAInfo:
@@ -27,14 +27,8 @@ def calculate_iaa(annotations, num_of_annotators):
     value_infos, highlight_infos = field_iaa_info(annotations)
 
     # kappa for each individual field
-    for subst in SUBSTANCE_TYPES:
-        print("\n" + subst)
-        fields = [STATUS] + ATTRIBS[subst]
-        for field in fields:
-            value_kappa = find_iaa([value_infos[subst][field]], num_of_annotators)
-            span_kappa = find_iaa([highlight_infos[subst][field]], num_of_annotators)
-            print(field + " value: " + str(value_kappa))
-            print("\t\tspans: " + str(span_kappa))
+    output_iaa(value_infos, highlight_infos, num_of_annotators)
+
 
     # Event Detection/ Status Classification (status info highlighting + field values)
     # status_list = [value_infos[subst][STATUS] for subst in SUBSTANCE_TYPES]
@@ -48,40 +42,46 @@ def calculate_iaa(annotations, num_of_annotators):
 
 
 def field_iaa_info(annotations):
+    """ Find Fleiss kappa matrix info for each field """
     value_field_infos = {subst: {} for subst in SUBSTANCE_TYPES}
     highlight_field_infos = {subst: {} for subst in SUBSTANCE_TYPES}
 
-    log_file = open(IAA_DISAGREEMENT_LOG, "w")
-    log_file.write("Disagreements:\n----------------------\n\n")
+    value_disagreements = {}
+    span_disagreements = {}
 
+    # Find matrix info and disagreements for each field
     for substance in SUBSTANCE_TYPES:
         for field in FIELDS:
             # value IAA
-            value_field_infos[substance][field] = get_single_field_info(annotations, substance, field, log_file)
+            value_field_infos[substance][field] = get_single_field_info(annotations, substance, field,
+                                                                        value_disagreements)
 
             # highlighted regions IAA
-            highlight_field_infos[substance][field] = get_single_field_info(annotations, substance, field, log_file,
-                                                                            spans_instead_of_value=True)
+            highlight_field_infos[substance][field] = \
+                get_single_field_info(annotations, substance, field, span_disagreements, spans_instead_of_value=True)
+
+    log_disagreements(value_disagreements, span_disagreements)
 
     return value_field_infos, highlight_field_infos
 
 
-def get_single_field_info(annotations, substance, field, log_file, spans_instead_of_value=False):
+def get_single_field_info(annotations, substance, field, disagreements, spans_instead_of_value=False):
     if spans_instead_of_value:
-        field = get_single_field_spans_info(annotations, substance, field, log_file)
+        field = get_single_field_spans_info(annotations, substance, field, disagreements)
     else:
-        field = get_single_field_value_info(annotations, substance, field, log_file)
+        field = get_single_field_value_info(annotations, substance, field, disagreements)
 
     return field
 
 
-def get_single_field_value_info(annotations, substance, field, log_file):
+def get_single_field_value_info(annotations, substance, field, disagreements):
     """ Track matrix of inter-annotated values for a field """
     column_value_map = {}   # {value: column number}
     map_decoder = []        # [value]
     column_map_index = 0
     column_sums = []
     rows = []
+
     occurrences = 0
 
     for doc_id in annotations:
@@ -108,7 +108,7 @@ def get_single_field_value_info(annotations, substance, field, log_file):
                 column_sums[column] += 1
 
         rows.append(row)
-        log_disagreements(log_file, row, map_decoder, substance, field, doc_id)
+        field_disagreements_per_doc(disagreements, row, map_decoder, substance, field, doc_id)
 
     return FieldIAAInfo(rows, column_sums, occurrences)
 
@@ -120,6 +120,8 @@ def get_single_field_spans_info(annotations, substance, field, log_file):
     column_map_index = 0
     column_sums = []
     rows = []
+
+    disagreements = []
     occurrences = 0
 
     for doc_id in annotations:
@@ -133,6 +135,7 @@ def get_single_field_spans_info(annotations, substance, field, log_file):
             if value:
                 occurrences += 1
 
+            # Check if the value given is new or a duplicate
             value_in_map, column = check_if_exact_spans_in_map(column_value_map, value)
 
             # update rows and columns
@@ -146,7 +149,7 @@ def get_single_field_spans_info(annotations, substance, field, log_file):
                 column_sums[column] += 1
 
         rows.append(row)
-        log_disagreements(log_file, row, column_value_map, substance, field, doc_id)
+        disagreements.append(field_disagreements_per_doc(log_file, row, column_value_map, substance, field, doc_id))
 
     return FieldIAAInfo(rows, column_sums, occurrences)
 
@@ -267,7 +270,8 @@ def calculate_fleiss_kappa(combined_info, num_of_annotators):
     return kappa
 
 
-def log_disagreements(log_file, row, column_value_map, substance, field, doc_id):
+def field_disagreements_per_doc(disagreements, row, column_value_map, substance, field, doc_id):
+    """ Track the disagreements found for a specific field for each doc """
     if len(row) > 1:
         # Find values used by any annotator
         values = []
@@ -275,10 +279,74 @@ def log_disagreements(log_file, row, column_value_map, substance, field, doc_id)
             if count != 0:
                 values.append(column_value_map[column_index])
 
-        # If there are more than one, print them to the log
+        # If there are more than one, track them as disagreements
         if len(values) > 1:
-            log_file.write(substance + field + " " + doc_id + ":\n\t")
-            log_file.write(str(values) + "\n")
+            if doc_id not in disagreements:
+                disagreements[doc_id] = {substance: {} for substance in SUBSTANCE_TYPES}
+            if field not in disagreements[doc_id][substance]:
+                disagreements[doc_id][substance][field] = values
+
+
+def log_disagreements(value_disagreements, span_disagreements):
+    """ Output disagreements to a log file """
+    log_file = open(IAA_DISAGREEMENT_LOG, "w")
+    log_file.write("Disagreements:\n------------------\n\n")
+    docs_with_disagreements = set(value_disagreements.keys()) | set(span_disagreements.keys())
+
+    for doc_id in docs_with_disagreements:
+        log_file.write("\n" + doc_id + "\n\t")
+
+        # Field value disagreements
+        if doc_id in value_disagreements:
+            write_disagreements_to_file(value_disagreements, doc_id, log_file)
+            log_file.write("\n\t")
+
+        # field highlighted span disagreements
+        if doc_id in span_disagreements:
+            write_disagreements_to_file(span_disagreements, doc_id, log_file, values_are_spans=True)
+            log_file.write("\n\t")
+
+
+def write_disagreements_to_file(disagreements, doc_id, log_file, values_are_spans=False):
+    for substance in disagreements[doc_id]:
+        for field in disagreements[doc_id][substance]:
+            values = get_disagreeing_values(disagreements[doc_id][substance][field], values_are_spans)
+            log_file.write(substance + field + ":\n\t\t")
+            log_file.write(str(values) + "\n\t")
+
+
+def get_disagreeing_values(values, values_are_spans):
+    """ Get values in a format that will work for printing to a file """
+    values_for_printing = []
+
+    if not values_are_spans:
+        # If not spans then no need to convert
+        values_for_printing = values
+    else:
+        # Convert Span object lists to tuples for printing
+        for span_list in values:
+
+            spans_for_printing = []
+            for span in span_list:
+                span_for_printing = (span.start, span.stop)
+                spans_for_printing.append(span_for_printing)
+
+            values_for_printing.append(spans_for_printing)
+
+    return values_for_printing
+
+
+def output_iaa(value_infos, highlight_infos, num_of_annotators):
+    iaa_file = open(IAA_OUT_FILE, "w")
+
+    for subst in SUBSTANCE_TYPES:
+        iaa_file.write("\n" + subst + "\n")
+        fields = [STATUS] + ATTRIBS[subst]
+        for field in fields:
+            value_kappa = find_iaa([value_infos[subst][field]], num_of_annotators)
+            span_kappa = find_iaa([highlight_infos[subst][field]], num_of_annotators)
+            iaa_file.write(field + "\n\tvalue: " + str(value_kappa) + "\n")
+            iaa_file.write("\tspans: " + str(span_kappa) + "\n")
 
 
 if __name__ == '__main__':
