@@ -1,4 +1,5 @@
 import labkey
+import re
 from DataModeling.DataModels import *
 from DataLoadingGlobals import *
 
@@ -36,10 +37,10 @@ def get_annotations_from_server():
 
 
 def field_query_results(all_fields):
+    """ Get every field for each annotator """
     field_results_per_annotator = {}  # {annotator_id: [social history rows]}
 
-    results = [f for f in all_fields[ROWS] if (f[u'TargetTable'] == SOC_HISTORIES)]
-    for field in results:
+    for field in all_fields[ROWS]:
         annotator = field[CREATED_BY]
         if annotator not in field_results_per_annotator:
             field_results_per_annotator[annotator] = []
@@ -49,6 +50,7 @@ def field_query_results(all_fields):
 
 
 def offset_query_results(all_offsets, field_results_per_annotator):
+    """ Get the text spans for every field for each annotator """
     offset_results_per_annotator = {annotator: [] for annotator in field_results_per_annotator}
     for annotator in offset_results_per_annotator:
         offset_results_per_annotator[annotator] = [o for o in all_offsets[ROWS] if (o[CREATED_BY] == annotator)]
@@ -160,7 +162,7 @@ def fill_events(fields_per_report, report_id, substances_of_fields, events_per_r
 
 def add_field_to_event(field, substance, event):
     # Get rid of "Alcohol", "Tobacco", etc
-    field_name = field.name.lstrip(substance)
+    field_name = re.sub(substance, "", field.name)
 
     if field_name == STATUS:
         event.status = field.value
@@ -191,6 +193,8 @@ def add_to_patient_doc_events(report, report_id, events_per_report, doc_events_p
 
 
 def fill_annotation_objects(field_results_per_annotator, offset_results_per_annotator, reports):
+    """ Go through fields for each annotator and group the fields currently jumbled together into their respective
+    documents and group documents by MRN"""
     patient_docs_per_annotator = {}
     for annotator in field_results_per_annotator:
         fields_per_report = find_fields(field_results_per_annotator[annotator], offset_results_per_annotator[annotator])

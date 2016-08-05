@@ -3,7 +3,7 @@
 from SystemUtilities.Globals import *
 
 # User-specific configuration
-USER = will
+USER = spencer
 
 # Environment/run type
 ENV = RUNTIME_ENV.EXECUTE
@@ -36,6 +36,8 @@ if USER == spencer:
     FLORIAN_FULL_DATA = florian_dir + r"sortedNotes\sortedNotes\combined\\"
     METADATA_OUT = data_dir + r"SystemOutput\Metadata"
     DOCS_NEEDING_ANNOTATION_DIR = data_dir + r"SystemOutput\DocsToAnnotate\\"
+    # IAA
+    IAA_DISAGREEMENT_LOG = data_dir + "SystemOutput\IAA\disagreement_log.txt"
 elif USER == will:
     data_dir = r"C:\Users\wlane\Documents\Substance_IE_Data\\"
     RAW_DATA_DIR = r"C:\Users\wlane\Documents\Substance_IE_Data\resources\exposure_notes_utf8.txt"
@@ -61,6 +63,8 @@ elif USER == will:
     SUBSTANCE_IE_DATA_FOLDER = r"C:\Users\wlane\Documents\Substance_IE_Data\\"
     FLORIAN_FULL_DATA = "C:\Users\wlane\Documents\Florian_smoking\smoking_status\\full_data_set\\"
     DOCS_NEEDING_ANNOTATION_DIR =  r"C:\Users\wlane\Documents\Substance_IE_Data\Docs_to_annotate\\"
+    # IAA
+    IAA_DISAGREEMENT_LOG = data_dir + "SystemOutput\IAA\disagreement_log.txt"
 
 
 else:

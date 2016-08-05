@@ -1,5 +1,6 @@
 from DataLoading import ServerQuery, IAADataFiltering
 from SystemUtilities.Globals import *
+from SystemUtilities.Configuration import IAA_DISAGREEMENT_LOG
 
 
 class FieldIAAInfo:
@@ -50,30 +51,34 @@ def field_iaa_info(annotations):
     value_field_infos = {subst: {} for subst in SUBSTANCE_TYPES}
     highlight_field_infos = {subst: {} for subst in SUBSTANCE_TYPES}
 
+    log_file = open(IAA_DISAGREEMENT_LOG, "w")
+    log_file.write("Disagreements:\n----------------------\n\n")
+
     for substance in SUBSTANCE_TYPES:
         for field in FIELDS:
             # value IAA
-            value_field_infos[substance][field] = get_single_field_info(annotations, substance, field)
+            value_field_infos[substance][field] = get_single_field_info(annotations, substance, field, log_file)
 
             # highlighted regions IAA
-            highlight_field_infos[substance][field] = get_single_field_info(annotations, substance, field,
+            highlight_field_infos[substance][field] = get_single_field_info(annotations, substance, field, log_file,
                                                                             spans_instead_of_value=True)
 
     return value_field_infos, highlight_field_infos
 
 
-def get_single_field_info(annotations, substance, field, spans_instead_of_value=False):
+def get_single_field_info(annotations, substance, field, log_file, spans_instead_of_value=False):
     if spans_instead_of_value:
-        field = get_single_field_spans_info(annotations, substance, field)
+        field = get_single_field_spans_info(annotations, substance, field, log_file)
     else:
-        field = get_single_field_value_info(annotations, substance, field)
+        field = get_single_field_value_info(annotations, substance, field, log_file)
 
     return field
 
 
-def get_single_field_value_info(annotations, substance, field):
+def get_single_field_value_info(annotations, substance, field, log_file):
     """ Track matrix of inter-annotated values for a field """
     column_value_map = {}   # {value: column number}
+    map_decoder = []        # [value]
     column_map_index = 0
     column_sums = []
     rows = []
@@ -95,6 +100,7 @@ def get_single_field_value_info(annotations, substance, field):
                 row.append(1)
                 column_sums.append(1)
                 column_value_map[value] = column_map_index
+                map_decoder.append(value)
                 column_map_index += 1
             else:
                 column = column_value_map[value]
@@ -102,11 +108,12 @@ def get_single_field_value_info(annotations, substance, field):
                 column_sums[column] += 1
 
         rows.append(row)
+        log_disagreements(log_file, row, map_decoder, substance, field, doc_id)
 
     return FieldIAAInfo(rows, column_sums, occurrences)
 
 
-def get_single_field_spans_info(annotations, substance, field):
+def get_single_field_spans_info(annotations, substance, field, log_file):
     """ Track matrix of inter-annotated spans for a field """
     # Track matrix of annotated values
     column_value_map = []  # [value] -- can't do dict bc lists of spans aren't hashable
@@ -139,6 +146,7 @@ def get_single_field_spans_info(annotations, substance, field):
                 column_sums[column] += 1
 
         rows.append(row)
+        log_disagreements(log_file, row, column_value_map, substance, field, doc_id)
 
     return FieldIAAInfo(rows, column_sums, occurrences)
 
@@ -257,6 +265,20 @@ def calculate_fleiss_kappa(combined_info, num_of_annotators):
         kappa = 1
 
     return kappa
+
+
+def log_disagreements(log_file, row, column_value_map, substance, field, doc_id):
+    if len(row) > 1:
+        # Find values used by any annotator
+        values = []
+        for column_index, count in enumerate(row):
+            if count != 0:
+                values.append(column_value_map[column_index])
+
+        # If there are more than one, print them to the log
+        if len(values) > 1:
+            log_file.write(substance + field + " " + doc_id + ":\n\t")
+            log_file.write(str(values) + "\n")
 
 
 if __name__ == '__main__':
