@@ -40,7 +40,9 @@ def field_query_results(all_fields):
     """ Get every field for each annotator """
     field_results_per_annotator = {}  # {annotator_id: [social history rows]}
 
-    for field in all_fields[ROWS]:
+    filtered_fields = filter_fields(all_fields)
+
+    for field in filtered_fields:
         annotator = field[CREATED_BY]
         if annotator not in field_results_per_annotator:
             field_results_per_annotator[annotator] = []
@@ -173,11 +175,20 @@ def add_field_to_event(field, substance, event):
 
 def match_reports_to_patients(events_per_report, all_reports):
     doc_events_per_patient = {}
-    for report in all_reports[ROWS]:
-        report_id = report[REPORT_ID]
+    iaa_reports = [r for r in all_reports[ROWS] if r[JOB_ID] in IAA_JOB_IDS]
 
-        if report_id in events_per_report:
-            add_to_patient_doc_events(report, report_id, events_per_report, doc_events_per_patient)
+    for report in iaa_reports:
+        add_to_patient_doc_events(report, report[REPORT_ID], events_per_report, doc_events_per_patient)
+
+    '''
+    DEBUG
+    things = []
+    for mrn in doc_events_per_patient:
+        for doc in doc_events_per_patient[mrn]:
+            ev = doc_events_per_patient[mrn][doc][TOBACCO]
+            if ev.status:
+                things.append(doc)
+    '''
 
     return doc_events_per_patient
 
@@ -189,12 +200,17 @@ def add_to_patient_doc_events(report, report_id, events_per_report, doc_events_p
     if mrn not in doc_events_per_patient:
         doc_events_per_patient[mrn] = {}
 
-    doc_events_per_patient[mrn][doc_id] = events_per_report[report_id]
+    if report_id in events_per_report:
+        doc_events_per_patient[mrn][doc_id] = events_per_report[report_id]
+    else:
+        # Add empty events
+        # doc_events_per_patient[mrn][doc_id] = create_events()
+        pass
 
 
 def fill_annotation_objects(field_results_per_annotator, offset_results_per_annotator, reports):
     """ Go through fields for each annotator and group the fields currently jumbled together into their respective
-    documents and group documents by MRN"""
+    documents and group documents by MRN """
     patient_docs_per_annotator = {}
     for annotator in field_results_per_annotator:
         fields_per_report = find_fields(field_results_per_annotator[annotator], offset_results_per_annotator[annotator])
@@ -202,3 +218,13 @@ def fill_annotation_objects(field_results_per_annotator, offset_results_per_anno
         patient_doc_annotations = match_reports_to_patients(events_per_report, reports)
         patient_docs_per_annotator[annotator] = patient_doc_annotations
     return patient_docs_per_annotator
+
+
+def filter_fields(all_fields):
+    # by job run ID
+    right_job_id_fields = [f for f in all_fields[ROWS] if f[REPORT_JOB_ID] in IAA_JOB_IDS]
+
+    # by SocialHistory table
+    soc_history_fields = [f for f in right_job_id_fields if (f[u'TargetTable'] == SOC_HISTORIES)]
+
+    return soc_history_fields
