@@ -205,10 +205,7 @@ def fill_annotation_objects(field_results_per_annotator, offset_results_per_anno
     """ Go through fields for each annotator and group the fields currently jumbled together into their respective
     documents and group documents by MRN """
     events_per_report = find_events_per_report(field_results_per_annotator, offset_results_per_annotator)
-
     patient_doc_annotations = match_reports_to_patients(events_per_report, reports)
-    # for annotator in field_results_per_annotator:
-        # patient_docs_per_annotator[annotator] = patient_doc_annotations
     return patient_doc_annotations
 
 
