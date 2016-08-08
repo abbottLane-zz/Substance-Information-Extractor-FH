@@ -49,7 +49,7 @@ elif USER == will:
     DEV_SPLIT_DIR = r"C:\Users\wlane\Documents\Substance_IE_Data\notes_dev"
     TEST_SPLIT_DIR = r"C:\Users\wlane\Documents\Substance_IE_Data\notes_testing\\"
     NOTE_OUTPUT_GOLD_LABELS_DIR = r"C:\Users\wlane\Documents\Substance_IE_Data\output_annotations\\"
-    MODEL_DIR = "C:\Users\wlane\Documents\Substance_IE_Data\resources\Models\\"
+    MODEL_DIR = "C:\Users\wlane\Documents\Substance_IE_Data\\resources\Models\\"
     ## GOLD annotation sources
     gold_annotation_dir = r"C:\Users\wlane\Documents\Florian_smoking\smoking_status\SmokingStatusAnnotator\resources\gold\\"
 

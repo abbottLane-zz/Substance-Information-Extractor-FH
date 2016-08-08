@@ -1,11 +1,12 @@
 # train classifiers and extractors and output models
-
+import DataLoading.DataLoader
 from Extraction.EventDetection import Training as EventDetectionTraining
+from SystemUtilities.Configuration import ENV
 
 
 def main():
     # Load Data
-    patients = []  # list of filled Patient objects
+    patients = DataLoading.DataLoader.main(ENV)  # list of filled Patient objects
 
     # Event Detection
     EventDetectionTraining.train_event_detectors(patients)
