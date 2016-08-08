@@ -106,7 +106,7 @@ def find_fields_per_report(fields, field_names_per_report):
     return fields_per_report
 
 
-def convert_to_report_substance_events(fields_per_report):
+def convert_fields_to_substance_events(fields_per_report):
     substances_of_fields = find_substances_of_fields()
 
     events_per_report = {}
@@ -174,50 +174,47 @@ def add_field_to_event(field, substance, event):
 
 
 def match_reports_to_patients(events_per_report, all_reports):
-    doc_events_per_patient = {}
+    doc_events_per_patient = {annotator: {} for annotator in events_per_report}  # {annotator: {mrn: {doc: [Event]}}}
     iaa_reports = [r for r in all_reports[ROWS] if r[JOB_ID] in IAA_JOB_IDS]
 
     for report in iaa_reports:
-        add_to_patient_doc_events(report, report[REPORT_ID], events_per_report, doc_events_per_patient)
-
-    '''
-    DEBUG
-    things = []
-    for mrn in doc_events_per_patient:
-        for doc in doc_events_per_patient[mrn]:
-            ev = doc_events_per_patient[mrn][doc][TOBACCO]
-            if ev.status:
-                things.append(doc)
-    '''
+        add_events_to_patient(report, report[REPORT_ID], events_per_report, doc_events_per_patient)
 
     return doc_events_per_patient
 
 
-def add_to_patient_doc_events(report, report_id, events_per_report, doc_events_per_patient):
+def add_events_to_patient(report, report_id, events_per_report, doc_events_per_patient):
     mrn = report[MRN]
     doc_id = report[DOC_ID]
+    annotator = report[MODIFIED_BY]
 
-    if mrn not in doc_events_per_patient:
-        doc_events_per_patient[mrn] = {}
+    if annotator in doc_events_per_patient:
+        if mrn not in doc_events_per_patient[annotator]:
+            doc_events_per_patient[annotator][mrn] = {}
 
-    if report_id in events_per_report:
-        doc_events_per_patient[mrn][doc_id] = events_per_report[report_id]
-    else:
-        # Add empty events
-        # doc_events_per_patient[mrn][doc_id] = create_events()
-        pass
+        # Add events
+        if report_id in events_per_report[annotator]:
+            # Add filled events
+            doc_events_per_patient[annotator][mrn][doc_id] = events_per_report[annotator][report_id]
+        else:
+            # Add empty events
+            doc_events_per_patient[annotator][mrn][doc_id] = create_events()
 
 
 def fill_annotation_objects(field_results_per_annotator, offset_results_per_annotator, reports):
     """ Go through fields for each annotator and group the fields currently jumbled together into their respective
     documents and group documents by MRN """
-    patient_docs_per_annotator = {}
+    events_per_report = find_events_per_report(field_results_per_annotator, offset_results_per_annotator)
+    patient_doc_annotations = match_reports_to_patients(events_per_report, reports)
+    return patient_doc_annotations
+
+
+def find_events_per_report(field_results_per_annotator, offset_results_per_annotator):
+    events_per_report = {annotator: {} for annotator in field_results_per_annotator}
     for annotator in field_results_per_annotator:
         fields_per_report = find_fields(field_results_per_annotator[annotator], offset_results_per_annotator[annotator])
-        events_per_report = convert_to_report_substance_events(fields_per_report)
-        patient_doc_annotations = match_reports_to_patients(events_per_report, reports)
-        patient_docs_per_annotator[annotator] = patient_doc_annotations
-    return patient_docs_per_annotator
+        events_per_report[annotator] = convert_fields_to_substance_events(fields_per_report)
+    return events_per_report
 
 
 def filter_fields(all_fields):
