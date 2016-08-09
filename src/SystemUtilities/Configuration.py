@@ -3,7 +3,7 @@
 from SystemUtilities.Globals import *
 
 # User-specific configuration
-USER = spencer
+USER = will
 
 # Environment/run type
 ENV = RUNTIME_ENV.TRAIN
@@ -67,7 +67,34 @@ elif USER == will:
     # IAA
     IAA_DISAGREEMENT_LOG = r"C:\Users\wlane\Documents\Substance_IE_Data\disagreement_log.txt"
     IAA_OUT_FILE = r"C:\Users\wlane\Documents\Substance_IE_Data\IAA.txt"
+elif USER == emily:
+    data_dir = r"C:\Users\esilgard\Documents\Substance_IE_Data\\"
+    RAW_DATA_DIR = r"C:\Users\esilgard\Documents\Substance_IE_Data\resources\exposure_notes_utf8.txt"
+    METADATA_DIR = r"C:\Users\esilgard\Documents\Substance_IE_Data\resources\metadata_partdeux.xlsx"
+    CAISIS_DIR = r"C:\Users\esilgard\Documents\Substance_IE_Data\resources\caisis_exposure_labels.xlsx"
+    NOTE_OUTPUT_DIR = r"C:\Users\esilgard\Documents\Substance_IE_Data\output\\"
+    TRAIN_SPLIT_DIR = r"C:\Users\esilgard\Documents\Substance_IE_Data\notes_training\\"
+    DEV_SPLIT_DIR = r"C:\Users\esilgard\Documents\Substance_IE_Data\notes_dev"
+    TEST_SPLIT_DIR = r"C:\Users\esilgard\Documents\Substance_IE_Data\notes_testing\\"
+    NOTE_OUTPUT_GOLD_LABELS_DIR = r"C:\Users\esilgard\Documents\Substance_IE_Data\output_annotations\\"
+    MODEL_DIR = "C:\Users\esilgard\Documents\Substance_IE_Data\\resources\Models\\"
+    ## GOLD annotation sources
+    gold_annotation_dir = r"C:\Users\esilgard\Documents\Florian_smoking\smoking_status\SmokingStatusAnnotator\resources\gold\\"
 
+    ## Data sources
+    data_repo_dir = r"C:\Users\esilgard\Documents\Substance_IE_Data\output\\"
+    dev_csv = "C:\Users\esilgard\Documents\Substance_IE_Data\FLOR_filtered_tsv\\flor_dev.csv"
+    test_csv = "C:\Users\esilgard\Documents\Substance_IE_Data\FLOR_filtered_tsv\\flor_test.csv"
+    train_csv = "C:\Users\esilgard\Documents\Substance_IE_Data\FLOR_filtered_tsv\\flor_train.csv"
+    # Output files
+    CLASSF_EVAL_FILENAME = r"C:\Users\s____________________WILL'S PATH_____________________nce_IE_Data\SystemOutput\
+                                    Evaluation\EventDetectionEval.txt"
+    SUBSTANCE_IE_DATA_FOLDER = r"C:\Users\esilgard\Documents\Substance_IE_Data\\"
+    FLORIAN_FULL_DATA = "C:\Users\esilgard\Documents\Florian_smoking\smoking_status\\full_data_set\\"
+    DOCS_NEEDING_ANNOTATION_DIR = r"C:\Users\esilgard\Documents\Substance_IE_Data\Docs_to_annotate\\"
+    # IAA
+    IAA_DISAGREEMENT_LOG = r"C:\Users\esilgard\Documents\Substance_IE_Data\disagreement_log.txt"
+    IAA_OUT_FILE = r"C:\Users\esilgard\Documents\Substance_IE_Data\IAA.txt"
 
 else:
     print("Error: unknown user in SystemUtilities/Configuration")

@@ -1,6 +1,7 @@
 # train classifiers and extractors and output models
 import DataLoading.DataLoader
 from Extraction.EventDetection import Training as EventDetectionTraining
+from Extraction.StatusClassification import Training as StatusClassificationTraining
 from SystemUtilities.Configuration import ENV
 
 
@@ -12,6 +13,7 @@ def main():
     EventDetectionTraining.train_event_detectors(patients)
 
     # Status classification
+    StatusClassificationTraining.train_status_classifiers(patients)
 
     # Attribute Extraction
 

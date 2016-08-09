@@ -23,8 +23,6 @@ def sentence_features_and_labels(patients):
                 # Labels per sentences
                 for substance_type in SUBSTANCE_TYPES:
                     has_event = check_has_event_by_gold(substance_type, sent)
-                    # has_event = check_sent_highlight_overlap(substance_type, sent, doc.highlighted_spans)
-                    #  ^ I assume this is not for training, but for execution?
                     if has_event:
                         labels_per_subst[substance_type].append(HAS_SUBSTANCE)
                     else:
@@ -76,14 +74,12 @@ def tokenize(sent_text):
     return processed_grams
 
 def check_has_event_by_gold(substance_type, sent):
-    '''Checks whether the sentence has an Event obj of the relevant subsType based on gold labels'''
-    # TODO: why do sentence level gold labels live in "predicted events" ?
-    tmp = 9
-    if len(sent.predicted_events) ==0:
+    ''' Checks whether the sentence has an Event obj of the relevant subsType based on gold labels '''
+    if len(sent.gold_events) == 0:
         return False
 
-    for event in sent.predicted_events:
-        if event.substance_type == substance_type and event.status_spans > 1:
+    for event in sent.gold_events:
+        if event.substance_type == substance_type and event.status_spans > 0:
             return True
     return False
 
