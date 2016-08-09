@@ -28,11 +28,9 @@ class Document(Data):
             self.keyword_hits[substance] = []
 
 
-class Sentence:
+class Sentence(Data):
     def __init__(self, id_num, text, span_in_doc_start, span_in_doc_end):
-        self.id = id_num
-        self.predicted_events = []
-
+        Data.__init__(self, id_num)
         self.text = text
         self.span_in_doc_start = span_in_doc_start
         self.span_in_doc_end = span_in_doc_end

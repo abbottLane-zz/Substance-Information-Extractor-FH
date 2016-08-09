@@ -13,26 +13,39 @@ from os.path import isfile, join
 import sys
 
 
+
 def main(environment):
     reload(sys)
     sys.setdefaultencoding('utf8')
 
+    print "Loading training data annotations from labkey server ..."
+    annotation_metadata = ServerQuery.get_annotations_from_server()  # testing: stub data only
+
     if environment == Configuration.RUNTIME_ENV.TRAIN:
-        labkey_training_patients = load_labkey_patients()
+        split_set = load_split_info(environment)
+        labkey_training_patients = load_labkey_patients(annotation_metadata, split_set)
         return labkey_training_patients
 
     elif environment == Configuration.RUNTIME_ENV.EXECUTE:
         # TODO: Implement data loading process for execution environment with dev data
         return None
 
+def load_split_info(environment):
+    lines = list()
+    if environment == Configuration.RUNTIME_ENV.EXECUTE:
+        with open(Configuration.data_dir + "notes_dev_def.txt", "rb") as file:
+            lines = file.read().splitlines()
+    elif environment == Configuration.RUNTIME_ENV.TRAIN:
+        with open(Configuration.data_dir + "notes_train_def.txt", "rb") as file:
+            lines = file.read().splitlines()
+    return set(lines)
 
-def load_labkey_patients():
+
+def load_labkey_patients(test_anns, split_set):
     # Load full data note repo from which TRAIN or TEST will pic and return a subset of docs
     noteID_text_dict = load_data_repo(Configuration.NOTE_OUTPUT_DIR)
 
-    print "Loading training data annotations from labkey server ..."
-    test_anns = ServerQuery.get_annotations_from_server()  # testing: stub data only
-    labkey_patients = build_patients_from_labkey(test_anns, noteID_text_dict)
+    labkey_patients = build_patients_from_labkey(test_anns, noteID_text_dict, split_set)
     return labkey_patients
 
 
@@ -72,7 +85,7 @@ def assign_goldLabels_to_sents(sents, doc):
                     elif sent.span_in_doc_start > event_span_end:
                         break  # skip to the next event
                     else:
-                        sent.predicted_events.append(gold_event)
+                        sent.gold_events.append(gold_event)
                         break  # skip to the next event
     pass
 
@@ -139,7 +152,7 @@ def load_data_repo(NOTE_OUTPUT_DIR):
     return id_text_dict
 
 
-def get_labkey_documents(annId_patient_dict, docID_text_dict):
+def get_labkey_documents(annId_patient_dict, docID_text_dict, split_set):
     annotater_ids = sorted(annId_patient_dict.keys())
     labkey_documents = list()
     for annotater_id in annotater_ids:
@@ -148,15 +161,16 @@ def get_labkey_documents(annId_patient_dict, docID_text_dict):
         for pat_id in pat_ids:
             docId_events = patient_dict[pat_id]  # {patientId : {eventType : EventObject}}
             for docId, event_dict in docId_events.iteritems():
-                doc_obj = Document(docId, docID_text_dict[docId])
-                # populate the docObj's event list
-                for type, event in event_dict.iteritems():
-                    doc_obj.gold_events.append(event)
-                # split and assign document sentences from raw text
-                doc_obj.sent_list = get_doc_sentences(doc_obj)
-                labkey_documents.append(doc_obj)
-                # Match spans to sentence level
-                assign_goldLabels_to_sents(doc_obj.sent_list, doc_obj)
+                if docId in split_set:
+                    doc_obj = Document(docId, docID_text_dict[docId])
+                    # populate the docObj's event list
+                    for type, event in event_dict.iteritems():
+                        doc_obj.gold_events.append(event)
+                    # split and assign document sentences from raw text
+                    doc_obj.sent_list = get_doc_sentences(doc_obj)
+                    labkey_documents.append(doc_obj)
+                    # Match spans to sentence level
+                    assign_goldLabels_to_sents(doc_obj.sent_list, doc_obj)
 
     return labkey_documents
 
@@ -179,8 +193,8 @@ def get_labkey_patients(labkey_documents):
     return patients_list
 
 
-def build_patients_from_labkey(annId_patient_dict, docID_text_dict):
-    labkey_documents = get_labkey_documents(annId_patient_dict, docID_text_dict)
+def build_patients_from_labkey(annId_patient_dict, docID_text_dict, split_set):
+    labkey_documents = get_labkey_documents(annId_patient_dict, docID_text_dict, split_set)
     labkey_patients = get_labkey_patients(labkey_documents)
     return labkey_patients
 
