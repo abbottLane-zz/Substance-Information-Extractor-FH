@@ -1,4 +1,4 @@
-from DataLoading import ServerQuery, IAA, IAADataFiltering
+from DataLoading import ServerQuery, IAA
 
 
 def main():

@@ -37,7 +37,8 @@ if USER == spencer:
     METADATA_OUT = data_dir + r"SystemOutput\Metadata"
     DOCS_NEEDING_ANNOTATION_DIR = data_dir + r"SystemOutput\DocsToAnnotate\\"
     # IAA
-    IAA_DISAGREEMENT_LOG = data_dir + "SystemOutput\IAA\disagreement_log.txt"
+    IAA_DISAGREEMENT_LOG = data_dir + "SystemOutput\IAA\disagreement_log.tsv"
+    SPAN_DISAGREEMENT_LOG = data_dir + "SystemOutput\IAA\span_disagreement_log.tsv"
     IAA_OUT_FILE = data_dir + "SystemOutput\IAA\IAA.txt"
 elif USER == will:
     data_dir = r"C:\Users\wlane\Documents\Substance_IE_Data\\"
@@ -65,7 +66,7 @@ elif USER == will:
     FLORIAN_FULL_DATA = "C:\Users\wlane\Documents\Florian_smoking\smoking_status\\full_data_set\\"
     DOCS_NEEDING_ANNOTATION_DIR =  r"C:\Users\wlane\Documents\Substance_IE_Data\Docs_to_annotate\\"
     # IAA
-    IAA_DISAGREEMENT_LOG = data_dir + "SystemOutput\IAA\disagreement_log.txt"
+    IAA_DISAGREEMENT_LOG = data_dir + "SystemOutput\IAA\disagreement_log.tsv"
 
 
 else:

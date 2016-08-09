@@ -1,5 +1,6 @@
+import csv
 from SystemUtilities.Globals import *
-from SystemUtilities.Configuration import IAA_DISAGREEMENT_LOG, IAA_OUT_FILE
+from SystemUtilities.Configuration import IAA_DISAGREEMENT_LOG, IAA_OUT_FILE, SPAN_DISAGREEMENT_LOG
 
 
 class FieldIAAInfo:
@@ -267,28 +268,27 @@ def field_disagreements_per_doc(disagreements, row, column_value_map, substance,
 
 def log_disagreements(value_disagreements, span_disagreements):
     """ Output disagreements to a log file """
-    log_file = open(IAA_DISAGREEMENT_LOG, "w")
-    log_file.write("Disagreements:\n--------------\n\n")
-    docs_with_disagreements = value_disagreements.keys()
-    # set(value_disagreements.keys()) | set(span_disagreements.keys())
+    # Get field value and span disagreements
+    docs_with_disagreements = set(value_disagreements.keys()) | set(span_disagreements.keys())
 
+    # Set up file output
+    tsv_file = open(IAA_DISAGREEMENT_LOG, "wb")
+    tsv_writer = csv.writer(tsv_file, delimiter='\t', quoting=csv.QUOTE_ALL)
+    # span_tsv_file = open(SPAN_DISAGREEMENT_LOG, "wb")
+    # span_tsv_writer = csv.writer(span_tsv_file, delimiter='\t', quoting=csv.QUOTE_ALL)
+
+    # Write disagreements to file
     for doc_id in docs_with_disagreements:
-        log_file.write("\n" + doc_id + "\n\t")
-
         # Field value disagreements
         if doc_id in value_disagreements:
-            write_disagreements_to_file(value_disagreements, doc_id, log_file)
-            log_file.write("\n\t")
+            write_disagreements_to_tsv_file(value_disagreements, doc_id, tsv_writer)
 
-        # field highlighted span disagreements
-        '''
-        if doc_id in span_disagreements:
-            write_disagreements_to_file(span_disagreements, doc_id, log_file, values_are_spans=True)
-            log_file.write("\n\t")
-        '''
+        # Field highlighted span disagreements
+        # if doc_id in span_disagreements:
+            # write_disagreements_to_tsv_file(value_disagreements, doc_id, span_tsv_writer, values_are_spans=True)
 
 
-def write_disagreements_to_file(disagreements, doc_id, log_file, values_are_spans=False):
+def write_disagreements_to_text_file(disagreements, doc_id, log_file, values_are_spans=False):
     for substance in disagreements[doc_id]:
         for field in disagreements[doc_id][substance]:
             values = get_disagreeing_values(disagreements[doc_id][substance][field], values_are_spans)
@@ -296,8 +296,23 @@ def write_disagreements_to_file(disagreements, doc_id, log_file, values_are_span
             log_file.write(str(values) + "\n\t")
 
 
+def write_disagreements_to_tsv_file(disagreements, doc_id, tsv_writer, values_are_spans=False):
+    for substance in disagreements[doc_id]:
+        for field in disagreements[doc_id][substance]:
+            values = disagreements[doc_id][substance][field]
+            # values =  get_disagreeing_values(disagreements[doc_id][substance][field], values_are_spans)
+            write_tsv_line(values, tsv_writer, doc_id, substance, field)
+
+
+def write_tsv_line(values, tsv_writer, doc_id, substance, field):
+    row = [doc_id, substance + field]
+    row.extend(values)
+    tsv_writer.writerow(row)
+
+
 def get_disagreeing_values(values, values_are_spans):
-    """ Get values in a format that will work for printing to a file """
+    """ Get values in a format that will work for printing to a file
+    Used if printing both """
     values_for_printing = []
 
     if not values_are_spans:
