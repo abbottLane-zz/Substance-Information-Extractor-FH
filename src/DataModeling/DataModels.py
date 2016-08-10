@@ -81,11 +81,6 @@ class AnnotatedEvent(Event):
         Event.__init__(self, substance)
         self.status_spans = []
 
-        '''
-        for attrib in ATTRIBS[substance]:
-            self.attributes[attrib] = ""
-        '''
-
 
 class AnnotatedAttribute:
     def __init__(self, attribute_type, spans, text):

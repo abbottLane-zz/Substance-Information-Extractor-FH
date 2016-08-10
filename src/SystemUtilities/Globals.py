@@ -62,9 +62,11 @@ FIELDS = [STATUS, TYPE, AMOUNT, DURATION, QUIT_DATE, QUIT_TIME_AGO, QUIT_AGE]
 # Model filename suffixes
 EVENT_DETECT_MODEL_SUFFIX = "_detection_model.p"
 STATUS_CLASSF_MODEL_SUFFIX = "_status_clsf_model.p"
+EVENT_FILLER_MODEL_NAME = "event_filler_model.p"
 
 EVENT_DETECT_FEATMAP_SUFFIX = "_detection_featmap.p"
 STATUS_CLASSF_FEATMAP_SUFFIX = "_status_clsf_featmap.p"
+EVENT_FILLER_FEATMAP_NAME = "event_filler_featmap.p"
 
 # Substance Keyword/Regex files
 KEYWORD_FILE_DIR = "..\Extraction\KeywordSearch\\"

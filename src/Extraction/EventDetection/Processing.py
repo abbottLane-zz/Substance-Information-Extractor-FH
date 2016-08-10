@@ -3,9 +3,8 @@ import string
 from SystemUtilities.Globals import *
 
 
-
-
 def sentence_features_and_labels(patients):
+    """ Used for labelled data """
     sent_feat_dicts = []    # List of sentence feature dictionaries
     labels_per_subst = {}       # Substance type : list of labels for each sentence (HAS/DOESN'T HAVE)
 
@@ -34,9 +33,8 @@ def sentence_features_and_labels(patients):
 def get_features(sent_obj):
     feats = {}
 
-    grams = tokenize(sent_obj.text)
-
     # Unigrams
+    grams = tokenize(sent_obj.text)
     for gram in grams:
         feats[gram] = True
 
@@ -73,8 +71,9 @@ def tokenize(sent_text):
 
     return processed_grams
 
+
 def check_has_event_by_gold(substance_type, sent):
-    ''' Checks whether the sentence has an Event obj of the relevant subsType based on gold labels '''
+    """ Checks whether the sentence has an Event obj of the relevant subsType based on gold labels """
     if len(sent.gold_events) == 0:
         return False
 
@@ -82,6 +81,7 @@ def check_has_event_by_gold(substance_type, sent):
         if event.substance_type == substance_type and event.status_spans > 0:
             return True
     return False
+
 
 def check_sent_highlight_overlap(substance_type, sent, highlighted_spans):
     sent_has_subst = False
