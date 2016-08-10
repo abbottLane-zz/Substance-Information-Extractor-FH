@@ -26,3 +26,25 @@ def vectorize_train_data(sentences, labels):
         feature_map[feat] = index
 
     return sentence_vectors, np.array(labels), feature_map
+
+
+def classify_instance(classifier, feature_map, features):
+    number_of_sentences = 1
+    number_of_features = len(feature_map)
+
+    # Vectorize sentences and classify
+    test_vectors = [vectorize_sentence(feats, feature_map) for feats in features]
+    test_array = np.reshape(test_vectors, (number_of_sentences, number_of_features))
+    classifications = classifier.predict(test_array)
+
+    return classifications
+
+
+def vectorize_sentence(feats, feature_map):
+    vector = [0 for _ in range(len(feature_map))]
+    grams = feats.keys()
+    for gram in grams:
+        if gram in feature_map:
+            index = feature_map[gram]
+            vector[index] = 1
+    return vector

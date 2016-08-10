@@ -14,7 +14,7 @@ def main():
     EventDetectionTraining.train_event_detectors(patients)
 
     # Status classification
-    StatusClassificationTraining.train_status_classifiers(patients)
+    # StatusClassificationTraining.train_status_classifiers(patients)
 
     # Attribute Extraction
 
