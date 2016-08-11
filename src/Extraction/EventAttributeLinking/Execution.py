@@ -1,5 +1,3 @@
-from sklearn.externals import joblib
-import cPickle as Pickle
 from SystemUtilities.Configuration import *
 import Processing
 from Extraction import Classification
