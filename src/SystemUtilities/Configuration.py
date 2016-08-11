@@ -3,7 +3,7 @@
 from SystemUtilities.Globals import *
 
 # User-specific configuration
-USER = will
+USER = spencer
 
 # Environment/run type
 ENV = RUNTIME_ENV.TRAIN
@@ -111,4 +111,3 @@ patients_train_gold_dir = gold_annotation_dir + "patients_training.GOLD"
 i2b2_test_gold_dir = gold_annotation_dir + "i2b2\i2b2_test.GOLD"
 i2b2_train_gold_dir = gold_annotation_dir + "i2b2\i2b2_train.GOLD"
 flor_sentence_level_annotations_dir = gold_annotation_dir + "\sentences"
-

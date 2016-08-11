@@ -5,6 +5,7 @@ import cPickle as Pickle
 from SystemUtilities.Configuration import *
 from DataModeling.DataModels import Event
 from Processing import *
+from Extraction import Classification
 
 
 # Add sentence-level predicted events in Patient object
@@ -35,13 +36,7 @@ def load_classifier(event_type):
 def classify_sent_for_substance(classifier, feature_map, sent, substance):
     sent_feats = get_features(sent)
 
-    number_of_sentences = 1
-    number_of_features = len(feature_map)
-
-    # Vectorize sentences and classify
-    test_vectors = [vectorize_sentence(feats, feature_map) for feats in sent_feats]
-    test_array = np.reshape(test_vectors, (number_of_sentences, number_of_features))
-    classifications = classifier.predict(test_array)
+    classifications = Classification.classify_instance(classifier, feature_map, sent_feats)
 
     # Add detected event to sentence
     if classifications[0] == HAS_SUBSTANCE:
@@ -49,11 +44,4 @@ def classify_sent_for_substance(classifier, feature_map, sent, substance):
         sent.predicted_events.append(event)
 
 
-def vectorize_sentence(feats, feature_map):
-    vector = [0 for _ in range(len(feature_map))]
-    grams = feats.keys()
-    for gram in grams:
-        if gram in feature_map:
-            index = feature_map[gram]
-            vector[index] = 1
-    return vector
+
