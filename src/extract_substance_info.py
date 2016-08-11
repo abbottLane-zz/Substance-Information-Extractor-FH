@@ -32,10 +32,12 @@ def main():
 
 def extract_sentence_level_info(patients):
     # Find substance references
-    EventDetect.detect_sentence_events(patients)
+    print("Classifying substance references...")
+    sentences_with_events = EventDetect.detect_sentence_events(patients)
 
     # Classify substance status
-    Execution.classify_sentence_status(patients)
+    print("Classifying substance status...")
+    Execution.classify_sentence_status(sentences_with_events)
 
     # Find attributes
 
