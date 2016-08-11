@@ -28,12 +28,24 @@ def vectorize_train_data(sentences, labels):
     return sentence_vectors, np.array(labels), feature_map
 
 
+def classify_many_instances(classifier, feature_map, features_per_instance):
+    number_of_sentences = len(features_per_instance)
+    number_of_features = len(feature_map)
+
+    # Vectorize sentences and classify
+    test_vectors = [vectorize_sentence(feats, feature_map) for feats in features_per_instance]
+    test_array = np.reshape(test_vectors, (number_of_sentences, number_of_features))
+    classifications = classifier.predict(test_array)
+
+    return classifications
+
+
 def classify_instance(classifier, feature_map, features):
     number_of_sentences = 1
     number_of_features = len(feature_map)
 
     # Vectorize sentences and classify
-    test_vectors = [vectorize_sentence(feats, feature_map) for feats in features]
+    test_vectors = vectorize_sentence(features, feature_map)
     test_array = np.reshape(test_vectors, (number_of_sentences, number_of_features))
     classifications = classifier.predict(test_array)
 

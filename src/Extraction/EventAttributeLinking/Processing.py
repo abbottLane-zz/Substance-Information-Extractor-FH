@@ -1,29 +1,26 @@
 from SystemUtilities.Parameter_Configuration import SURR_WORDS_WINDOW
-from SystemUtilities.Configuration import *
 from Globals import *
 
 
-def features(patients):
+def features(doc):
     """ Features for data without annotations """
     feature_sets = []
     attributes = []
 
-    for patient in patients:
-        for doc in patient.doc_list:
-            previous_sent = None
-            for sent in doc.sent_list:
-                for event in sent.predicted_events:
-                    for attrib in event.attributes:
-                        add_attribute_feats(sent, attrib, previous_sent, feature_sets)
-                        attributes.append(attrib)
-                previous_sent = sent
+    previous_sent = None
+    for sent in doc.sent_list:
+        for event in sent.predicted_events:
+            for attrib in event.attributes:
+                add_attribute_feats(sent, attrib, previous_sent, feature_sets)
+                attributes.append(attrib)
+        previous_sent = sent
 
     return feature_sets, attributes
 
 
 def features_and_labels(patients):
     """ Features and labels for data with annotations """
-    feature_sets = []   # Most recent keyword substance type, closest following keyword, sentence unigrams
+    feature_sets = []
     labels = []         # Attributes are assigned to a substance type
 
     for patient in patients:
