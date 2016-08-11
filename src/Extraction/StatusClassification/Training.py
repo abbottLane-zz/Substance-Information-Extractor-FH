@@ -8,20 +8,12 @@ from SystemUtilities.Configuration import STATUS_CLASSF_FEATMAP_SUFFIX, STATUS_C
 
 
 def train_status_classifier(patients):
-    classifiers = {}
-    feat_maps = {}
-    feat_dicts = {}
-
     alcohol_sents = get_sentences_from_patients(patients, Globals.ALCOHOL)
     tobac_sents = get_sentences_from_patients(patients, Globals.TOBACCO)
-
 
     # Create Feature-Label pairs for each Subs Abuse type
     alc_feats, alc_labels = get_features(alcohol_sents, Globals.ALCOHOL)
     tbc_feats, tbc_labels = get_features(tobac_sents, Globals.TOBACCO)
-
-    feat_dicts[Globals.ALCOHOL] = alc_feats
-    feat_dicts[Globals.TOBACCO] = tbc_feats
 
     # Create Model
     alc_classifier, alc_feature_map = train_model(alc_feats, alc_labels)

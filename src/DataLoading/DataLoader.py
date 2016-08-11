@@ -27,8 +27,9 @@ def main(environment):
         return labkey_training_patients
 
     elif environment == Configuration.RUNTIME_ENV.EXECUTE:
-        # TODO: Implement data loading process for execution environment with dev data
-        return None
+        split_set = load_split_info(Configuration.RUNTIME_ENV.TRAIN) # TODO: split should not be explicitly stated like this. It only is ATM b/c Labkey has no annotated testing data
+        labkey_testing_patients = load_labkey_patients(annotation_metadata, split_set)
+        return labkey_testing_patients
 
 def load_split_info(environment):
     lines = list()
