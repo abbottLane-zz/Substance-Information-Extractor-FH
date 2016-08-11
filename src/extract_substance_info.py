@@ -6,6 +6,7 @@ from SystemUtilities.Configuration import *
 from DataModeling.DataModels import *
 from Extraction.EventDetection import Execution as EventDetect
 from Extraction import PatientFromDocs, DocFromSents
+from Extraction.StatusClassification import Execution
 import DataLoading.DataLoader
 
 
@@ -33,6 +34,7 @@ def extract_sentence_level_info(patients):
     EventDetect.detect_sentence_events(patients)
 
     # Classify substance status
+    Execution.classify_sentence_status(patients)
 
     # Find attributes
 

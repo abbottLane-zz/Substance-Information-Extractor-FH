@@ -39,6 +39,22 @@ class Sentence(Data):
         for substance in SUBSTANCE_TYPES:
             self.keyword_hits[substance] = []
 
+    def get_status_label_and_evidence(self, type):
+        for evnt in self.gold_events:
+            if evnt.substance_type == type:
+                return_status = evnt.status
+                return_text_data = self.__get_text_from_spans(evnt.status_spans, self.span_in_doc_start, self.span_in_doc_end)
+                return return_status, return_text_data
+        return "unknown", "evidence unavailable"
+
+    def __get_text_from_spans(self, span_list, sent_begin, sent_end):
+        spans = list()
+        for span in span_list:
+            true_start = span.start - sent_begin
+            true_end = span.stop - sent_begin
+            if true_start > -1 and true_start < len(self.text) and true_end <= len(self.text):
+                spans.append((self.text[true_start:true_end], Span(true_start, true_end)))
+        return spans
 
 class Field:
     def __init__(self, name, value):
