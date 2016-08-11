@@ -1,6 +1,7 @@
 from SystemUtilities.Configuration import *
 import Processing
 from Extraction import Classification
+from DataModeling.DataModels import DocumentAttribute, Span
 
 
 def link_attributes_to_substances(patients):
@@ -8,13 +9,11 @@ def link_attributes_to_substances(patients):
 
     for patient in patients:
         for doc in patient.doc_list:
+            # Find all values for all fields for all substances
             attributes_per_substance = find_attributes_per_substance(classifier, feature_map, doc)
 
-            # Choose which attributes to keep
-            # TODO
-
-            # Put selected attributes in the document level
-            put_attributes_in_doc(doc, attributes_per_substance)
+            # Put the appropriate values into doc objects
+            put_attributes_in_doc_events(doc, attributes_per_substance)
 
 
 def load_event_filling_classifier():
@@ -44,9 +43,25 @@ def find_attributes_per_substance(classifier, feature_map, doc):
     return attribs_found_per_substance
 
 
-def put_attributes_in_doc(doc, attribs_per_substance):
-    for substance in attribs_per_substance:
-        for attribute in attribs_per_substance[substance]:
-            #doc.predicted_events[substance].attributes[attribute] = attribs_per_substance[substance][attribute]
-            # TODO -- refactor events to dict
-            pass
+def put_attributes_in_doc_events(doc, attribs_per_substance):
+    for event in doc.predicted_events:
+        for attribute in attribs_per_substance[event.substance_type]:
+            all_values_for_field = attribs_per_substance[event.substance_type][attribute]
+            event.attributes[attribute] = create_document_attribute(all_values_for_field)
+
+
+def create_document_attribute(all_values_for_field):
+    # Choose document level value
+    selected_value = select_doc_value_from_all_values(all_values_for_field)
+
+    # Create document level attribute object
+    document_attribute = DocumentAttribute(selected_value.type, selected_value.span_start, selected_value.span_end,
+                                           selected_value.text, all_values_for_field)
+
+    return document_attribute
+
+
+def select_doc_value_from_all_values(all_attributes):
+    # TODO -- better selection criteria
+    selected_value = all_attributes[0]
+    return selected_value

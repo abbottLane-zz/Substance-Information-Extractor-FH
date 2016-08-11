@@ -56,6 +56,7 @@ class Sentence(Data):
                 spans.append((self.text[true_start:true_end], Span(true_start, true_end)))
         return spans
 
+
 class Field:
     def __init__(self, name, value):
         self.name = name
@@ -90,6 +91,23 @@ class Attribute:
         self.span_start = span_start
         self.span_end = span_end
         self.text = text
+
+
+class DocumentAttribute(Attribute):
+    def __init__(self, attribute_type, span_start, span_end, text, all_values_for_field):
+        Attribute.__init__(self, attribute_type, span_start, span_end, text)
+        self.all_value_spans = []   # list of Span objects -- all values found for this field
+
+        # find all values' spans
+        spans = [Span(attrib.span_start, attrib.span_end) for attrib in all_values_for_field]
+        self.all_value_spans = spans
+
+
+class PatientAttribute(Attribute):
+    def __init__(self, attribute_type, span_start, span_end, text):
+        Attribute.__init__(self, attribute_type, span_start, span_end, text)
+
+        self.all_doc_value_spans = {}   # {doc_id: [Span]} -- all values found for this field for each doc
 
 
 class AnnotatedEvent(Event):
