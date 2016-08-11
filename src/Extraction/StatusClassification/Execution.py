@@ -24,8 +24,7 @@ def classify_sentence_status(sentences):
             sent = sentences[i]
             for event in sent.predicted_events:
                 if event.substance_type == event_type:
-                    # TODO: will is working on this
-                    pass
+                    event.status = classifications[i]
     pass
 
 

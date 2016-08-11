@@ -10,26 +10,34 @@ from SystemUtilities.Configuration import STATUS_CLASSF_FEATMAP_SUFFIX, STATUS_C
 def train_status_classifier(patients):
     alcohol_sents = get_sentences_from_patients(patients, Globals.ALCOHOL)
     tobac_sents = get_sentences_from_patients(patients, Globals.TOBACCO)
+    secondhand_sents = get_sentences_from_patients(patients, Globals.SECONDHAND)
 
     # Create Feature-Label pairs for each Subs Abuse type
     alc_feats, alc_labels = get_features(alcohol_sents, Globals.ALCOHOL)
     tbc_feats, tbc_labels = get_features(tobac_sents, Globals.TOBACCO)
+    scd_hnd_feats, scd_hnd_labels = get_features(secondhand_sents, Globals.SECONDHAND)
 
     # Create Model
     alc_classifier, alc_feature_map = train_model(alc_feats, alc_labels)
     tob_classifier, tob_feature_map = train_model(tbc_feats, tbc_labels)
+    scd_hnd_classifier, scd_hnd_feature_map = train_model(scd_hnd_feats, scd_hnd_labels)
 
     # Set output directory pointers for model files
     classf_alc_file = MODEL_DIR + Globals.ALCOHOL + STATUS_CLASSF_MODEL_SUFFIX
     classf_tob_file = MODEL_DIR + Globals.TOBACCO + STATUS_CLASSF_MODEL_SUFFIX
+    classf_scndhnd_file = MODEL_DIR + Globals.SECONDHAND + STATUS_CLASSF_MODEL_SUFFIX
     featmap_alc_file = MODEL_DIR + Globals.ALCOHOL + STATUS_CLASSF_FEATMAP_SUFFIX
     featmap_tob_file = MODEL_DIR + Globals.TOBACCO + STATUS_CLASSF_FEATMAP_SUFFIX
+    featmap_scndhnd_file = MODEL_DIR + Globals.SECONDHAND + STATUS_CLASSF_FEATMAP_SUFFIX
+
 
     # write models files
     joblib.dump(alc_classifier, classf_alc_file)
     Pickle.dump(alc_feature_map, open(featmap_alc_file, "wb"))
     joblib.dump(tob_classifier, classf_tob_file)
     Pickle.dump(tob_feature_map, open(featmap_tob_file, "wb"))
+    joblib.dump(scd_hnd_classifier, classf_scndhnd_file)
+    Pickle.dump(scd_hnd_feature_map, open(featmap_scndhnd_file, "wb"))
     pass
 
 def get_sentences_from_patients(patients, subs_type):

@@ -39,7 +39,7 @@ def classify_sent_for_substance(classifier, feature_map, sent, substance, senten
     # Add detected event to sentence
     if classifications[0] == HAS_SUBSTANCE:
         event = Event(substance)
-        sent.predicted_events[substance]=event#append(event)
+        sent.predicted_events.append(event)
         sentences_predicted_to_have_events.append(sent)
 
 
