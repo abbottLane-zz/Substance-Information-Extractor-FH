@@ -6,7 +6,7 @@ from Extraction import Classification
 
 
 def link_attributes_to_substances(patients):
-    classifier, feature_map = load_classifier()
+    classifier, feature_map = load_event_filling_classifier()
 
     for patient in patients:
         for doc in patient.doc_list:
@@ -19,13 +19,11 @@ def link_attributes_to_substances(patients):
             put_attributes_in_doc(doc, attributes_per_substance)
 
 
-def load_classifier():
+def load_event_filling_classifier():
     classifier_file = MODEL_DIR + EVENT_FILLER_MODEL_NAME
     feature_map_file = MODEL_DIR + EVENT_FILLER_FEATMAP_NAME
 
-    classifier = joblib.load(classifier_file)
-    feature_map = Pickle.load(open(feature_map_file, "rb"))
-
+    classifier, feature_map = Classification.load_classifier(classifier_file, feature_map_file)
     return classifier, feature_map
 
 

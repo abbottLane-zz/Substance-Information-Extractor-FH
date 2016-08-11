@@ -1,3 +1,5 @@
+from sklearn.externals import joblib
+import cPickle as Pickle
 import numpy as np
 from sklearn.feature_extraction import DictVectorizer
 from sklearn.svm import LinearSVC
@@ -60,3 +62,17 @@ def vectorize_sentence(feats, feature_map):
             index = feature_map[gram]
             vector[index] = 1
     return vector
+
+
+def load_classifier(classifier_file, feature_map_file):
+    classifier = None
+    feature_map = None
+
+    try:
+        classifier = joblib.load(classifier_file)
+        feature_map = Pickle.load(open(feature_map_file, "rb"))
+    except IOError:
+        print("Error: can't find trained models. Run \"train_models.py\" and make sure model files are in the correct"
+              "location with the correct names")
+
+    return classifier, feature_map

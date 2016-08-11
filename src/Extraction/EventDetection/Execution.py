@@ -12,7 +12,7 @@ from Extraction import Classification
 def detect_sentence_events(patients):
     # Substances detected with ML classifier
     for substance_type in ML_CLASSIFIER_SUBSTANCES:
-        classifier, feature_map = load_classifier(substance_type)
+        classifier, feature_map = load_event_classifier(substance_type)
 
         for patient in patients:
             for doc in patient.doc_list:
@@ -23,13 +23,11 @@ def detect_sentence_events(patients):
     # -- would go here --
 
 
-def load_classifier(event_type):
+def load_event_classifier(event_type):
     classifier_file = MODEL_DIR + event_type + EVENT_DETECT_MODEL_SUFFIX
     feature_map_file = MODEL_DIR + event_type + EVENT_DETECT_FEATMAP_SUFFIX
 
-    classifier = joblib.load(classifier_file)
-    feature_map = Pickle.load(open(feature_map_file, "rb"))
-
+    classifier, feature_map = Classification.load_classifier(classifier_file, feature_map_file)
     return classifier, feature_map
 
 
