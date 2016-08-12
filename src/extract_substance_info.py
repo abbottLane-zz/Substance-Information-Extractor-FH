@@ -37,10 +37,6 @@ def extract_sentence_level_info(patients):
     # Classify substance status
     print("Classifying substance status...")
     Execution.classify_sentence_status(sentences_with_events)
-    tmp = 0
-
-    # Find attributes
-    # TODO -- extract sentence level attributes
 
 
 def evaluate_extraction(patients):
@@ -56,7 +52,7 @@ def evaluate_extraction(patients):
 
 
 def evaluate_sent_level_info(patients):
-    # Status info detection and each attribute
+    # Status info detection
 
     pass
 
