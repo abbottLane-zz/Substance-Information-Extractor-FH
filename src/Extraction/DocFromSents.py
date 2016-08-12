@@ -1,4 +1,34 @@
 from SystemUtilities.Globals import STATUS_HIERARCHY, UNKNOWN
+from Extraction.EventAttributeLinking import Execution as EventFilling
+from DataModeling.DataModels import DocumentEvent
+
+
+def get_doc_level_info(patients):
+    for patient in patients:
+        for doc in patient.doc_list:
+            # make doc events
+            find_doc_events(doc)
+
+            # doc status
+            get_doc_level_status(patients)
+
+            # Tie attributes to substance references
+            EventFilling.link_attributes_to_substances(patients)
+
+
+def find_doc_events(doc):
+    substances_in_docs = substances_found_in_sents(doc)
+
+    for substance in substances_in_docs:
+        doc.predicted_events.append(DocumentEvent(substance))
+
+
+def substances_found_in_sents(doc):
+    substances_in_docs = set()
+    for sent in doc.sent_list:
+        for event in sent.predicted_events:
+            substances_in_docs.add(event.substance_type)
+    return substances_in_docs
 
 
 def get_doc_level_status(patients):
@@ -6,7 +36,7 @@ def get_doc_level_status(patients):
 
     for patient in patients:
         for doc in patient.doc_list:
-            for doc_event in doc.predicted_events:   # TODO -- will this be populated???
+            for doc_event in doc.predicted_events:
                 substance = doc_event.substance_type
 
                 sentence_level_statuses = get_sent_level_statuses_for_doc(doc, substance)

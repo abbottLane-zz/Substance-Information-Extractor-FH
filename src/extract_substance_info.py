@@ -5,7 +5,6 @@ from SystemUtilities.Globals import *
 from SystemUtilities.Configuration import *
 from DataModeling.DataModels import *
 from Extraction.EventDetection import Execution as EventDetect
-from Extraction.EventAttributeLinking import Execution as EventFilling
 from Extraction import PatientFromDocs, DocFromSents
 from Extraction.StatusClassification import Execution
 import DataLoading.DataLoader
@@ -19,7 +18,7 @@ def main():
     extract_sentence_level_info(patients)
 
     # Determine document level info
-    DocFromSents.get_doc_level_status(patients)
+    DocFromSents.get_doc_level_info(patients)
 
     # Determine patient level info
     PatientFromDocs.get_patient_level_info(patients)
@@ -41,9 +40,7 @@ def extract_sentence_level_info(patients):
     tmp = 0
 
     # Find attributes
-
-    # Tie attributes to substance references
-    EventFilling.link_attributes_to_substances(patients)
+    # TODO -- extract sentence level attributes
 
 
 def evaluate_extraction(patients):

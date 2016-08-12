@@ -16,10 +16,12 @@ def detect_sentence_events(patients):
         for patient in patients:
             for doc in patient.doc_list:
                 for sent in doc.sent_list:
-                    classify_sent_for_substance(classifier, feature_map, sent, substance_type, sentences_predicted_to_have_events)
+                    classify_sent_for_substance(classifier, feature_map, sent, substance_type,
+                                                sentences_predicted_to_have_events)
 
     # Substances detected with rules
     # -- would go here --
+
     return sentences_predicted_to_have_events
 
 

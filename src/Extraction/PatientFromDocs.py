@@ -6,7 +6,7 @@ def get_patient_level_info(patients):
 
     for patient in patients:
         # Get events
-        # TODO -- events from docs
+        find_patient_events(patient)
 
         # Get status
         get_patient_status(patient)
@@ -38,7 +38,7 @@ def get_patient_status(patient):
 
 def sort_docs_chronologically(doc_list):
     sorted_docs = []
-    # TODO
+    # TODO -- sort_docs_chronologically to find patient status
     return sorted_docs
 
 
