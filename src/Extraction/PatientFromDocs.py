@@ -1,4 +1,5 @@
 from SystemUtilities.Globals import *
+from DataModeling.DataModels import Event
 
 
 def get_patient_level_info(patients):
@@ -14,6 +15,21 @@ def get_patient_level_info(patients):
         # TODO -- attribs from docs
 
 
+def find_patient_events(patient):
+    substances_in_docs = substances_found_in_docs(patient)
+
+    for substance in substances_in_docs:
+        patient.predicted_events.append(Event(substance))
+
+
+def substances_found_in_docs(patient):
+    substances_in_docs = set()
+    for doc in patient.doc_list:
+        for event in doc.predicted_events:
+            substances_in_docs.add(event.substance_type)
+    return substances_in_docs
+
+
 def get_patient_status(patient):
     for pred_event in patient.predicted_events:
         chronological_docs = sort_docs_chronologically(patient.doc_list)
@@ -23,8 +39,7 @@ def get_patient_status(patient):
 def sort_docs_chronologically(doc_list):
     sorted_docs = []
     # TODO
-    raise NotImplementedError
-    # return sorted_docs
+    return sorted_docs
 
 
 def get_patient_subst_status(docs, substance):

@@ -85,11 +85,30 @@ class Event:
         self.attributes = {}    # {attrib_name: Attribute object}
 
 
+class DocumentEvent(Event):
+    def __init__(self, substance):
+        Event.__init__(self, substance)
+        self.status_spans = []  # list of Span objects -- all values found for this field
+
+
+class PatientEvent(Event):
+    def __init__(self, substance):
+        Event.__init__(self, substance)
+        self.status_spans = {}  # {doc_id: [Span]} -- all values found for this field for each doc
+
+
 class Attribute:
     def __init__(self, attribute_type, span_start, span_end, text):
         self.type = attribute_type
         self.span_start = span_start
         self.span_end = span_end
+        self.text = text
+
+
+class AnnotatedAttribute:
+    def __init__(self, attribute_type, spans, text):
+        self.type = attribute_type
+        self.spans = spans
         self.text = text
 
 
@@ -108,16 +127,3 @@ class PatientAttribute(Attribute):
         Attribute.__init__(self, attribute_type, span_start, span_end, text)
 
         self.all_doc_value_spans = {}   # {doc_id: [Span]} -- all values found for this field for each doc
-
-
-class AnnotatedEvent(Event):
-    def __init__(self, substance):
-        Event.__init__(self, substance)
-        self.status_spans = []
-
-
-class AnnotatedAttribute:
-    def __init__(self, attribute_type, spans, text):
-        self.type = attribute_type
-        self.spans = spans
-        self.text = text

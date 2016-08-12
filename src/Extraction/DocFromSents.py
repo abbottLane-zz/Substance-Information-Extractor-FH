@@ -6,7 +6,7 @@ def get_doc_level_status(patients):
 
     for patient in patients:
         for doc in patient.doc_list:
-            for doc_event in doc.predicted_events:
+            for doc_event in doc.predicted_events:   # TODO -- will this be populated???
                 substance = doc_event.substance_type
 
                 sentence_level_statuses = get_sent_level_statuses_for_doc(doc, substance)

@@ -151,7 +151,7 @@ def find_substances_of_fields():
 def create_events():
     events = {}
     for substance in SUBSTANCE_TYPES:
-        events[substance] = AnnotatedEvent(substance)
+        events[substance] = DocumentEvent(substance)
     return events
 
 

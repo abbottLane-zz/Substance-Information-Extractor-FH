@@ -1,7 +1,7 @@
 from SystemUtilities.Configuration import *
 import Processing
 from Extraction import Classification
-from DataModeling.DataModels import DocumentAttribute, Span
+from DataModeling.DataModels import DocumentAttribute
 
 
 def link_attributes_to_substances(patients):
@@ -58,10 +58,11 @@ def create_document_attribute(all_values_for_field):
     document_attribute = DocumentAttribute(selected_value.type, selected_value.span_start, selected_value.span_end,
                                            selected_value.text, all_values_for_field)
 
+
     return document_attribute
 
 
 def select_doc_value_from_all_values(all_attributes):
-    # TODO -- better selection criteria
+    # TODO -- better selection criteria: prefer by precision then prefer by amount
     selected_value = all_attributes[0]
     return selected_value
