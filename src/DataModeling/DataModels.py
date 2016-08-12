@@ -123,7 +123,12 @@ class DocumentAttribute(Attribute):
 
 
 class PatientAttribute(Attribute):
-    def __init__(self, attribute_type, span_start, span_end, text):
+    def __init__(self, attribute_type, span_start, span_end, text, doc_id, all_values_for_field, all_doc_ids):
         Attribute.__init__(self, attribute_type, span_start, span_end, text)
 
+        self.document = doc_id
         self.all_doc_value_spans = {}   # {doc_id: [Span]} -- all values found for this field for each doc
+
+        # find all spans for the attribute for all docs
+        for attrib, doc_id in zip(all_values_for_field, all_doc_ids):
+            self.all_doc_value_spans[doc_id] = attrib.all_value_spans

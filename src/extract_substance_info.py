@@ -21,7 +21,7 @@ def main():
     DocFromSents.get_doc_level_info(patients)
 
     # Determine patient level info
-    PatientFromDocs.get_patient_level_info(patients)
+    # PatientFromDocs.get_patient_level_info(patients)
 
     # TODO -- Do something with filled patients object
 

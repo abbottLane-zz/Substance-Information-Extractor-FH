@@ -44,10 +44,12 @@ def find_attributes_per_substance(classifier, feature_map, doc):
 
 
 def put_attributes_in_doc_events(doc, attribs_per_substance):
+    """ doc.attributes = {attribute_name: DocumentAttribute} """
     for event in doc.predicted_events:
-        for attribute in attribs_per_substance[event.substance_type]:
-            all_values_for_field = attribs_per_substance[event.substance_type][attribute]
-            event.attributes[attribute] = create_document_attribute(all_values_for_field)
+        for attribute_name in attribs_per_substance[event.substance_type]:
+            all_values_for_field = attribs_per_substance[event.substance_type][attribute_name]
+            if all_values_for_field:
+                event.attributes[attribute_name] = create_document_attribute(all_values_for_field)
 
 
 def create_document_attribute(all_values_for_field):
@@ -57,7 +59,6 @@ def create_document_attribute(all_values_for_field):
     # Create document level attribute object
     document_attribute = DocumentAttribute(selected_value.type, selected_value.span_start, selected_value.span_end,
                                            selected_value.text, all_values_for_field)
-
 
     return document_attribute
 
