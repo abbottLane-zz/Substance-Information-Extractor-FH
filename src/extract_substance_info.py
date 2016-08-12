@@ -19,7 +19,7 @@ def main():
     extract_sentence_level_info(patients)
 
     # Determine document level info
-    DocFromSents.get_doc_level_info(patients)
+    DocFromSents.get_doc_level_status(patients)
 
     # Determine patient level info
     PatientFromDocs.get_patient_level_info(patients)
