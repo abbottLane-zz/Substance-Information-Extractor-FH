@@ -105,10 +105,10 @@ def get_attributes_for_all_docs(patient, substance):
     return all_doc_attribs, doc_ids
 
 
-def create_patient_attributes(all_doc_attribs, doc_ids, patient_event):
+def create_patient_attributes(all_doc_attribs, all_doc_ids, patient_event):
     for field in all_doc_attribs:
         doc_attribs = all_doc_attribs[field]
-        doc_ids = doc_ids[field]
+        doc_ids = all_doc_ids[field]
 
         if doc_attribs:
             # Choose the value for the paitent level field

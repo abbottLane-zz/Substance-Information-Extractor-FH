@@ -4,7 +4,8 @@
 from SystemUtilities.Globals import *
 from SystemUtilities.Configuration import *
 from DataModeling.DataModels import *
-from Extraction.EventDetection import Execution as EventDetect
+from Extraction.EventDetection import Execution as EventDetectExecution
+from Extraction.EventDetection import Evaluation as EventDetectEvaluation
 from Extraction import PatientFromDocs, DocFromSents
 from Extraction.StatusClassification import Execution
 import DataLoading.DataLoader
@@ -21,7 +22,7 @@ def main():
     DocFromSents.get_doc_level_info(patients)
 
     # Determine patient level info
-    # PatientFromDocs.get_patient_level_info(patients)
+    PatientFromDocs.get_patient_level_info(patients)
 
     # TODO -- Do something with filled patients object
 
@@ -32,7 +33,7 @@ def main():
 def extract_sentence_level_info(patients):
     # Find substance references
     print("Classifying substance references...")
-    sentences_with_events = EventDetect.detect_sentence_events(patients)
+    sentences_with_events = EventDetectExecution.detect_sentence_events(patients)
 
     # Classify substance status
     print("Classifying substance status...")
@@ -59,7 +60,7 @@ def evaluate_sent_level_info(patients):
 
 def evaluate_doc_level_info(patients):
     # Event detection
-    EventDetect.evaluate(patients)
+    EventDetectEvaluation.evaluate(patients)
 
     # Status classification
 
