@@ -4,16 +4,14 @@ from Extraction import Classification
 from DataModeling.DataModels import DocumentAttribute
 
 
-def link_attributes_to_substances(patients):
+def link_attributes_to_substances(doc):
     classifier, feature_map = load_event_filling_classifier()
 
-    for patient in patients:
-        for doc in patient.doc_list:
-            # Find all values for all fields for all substances
-            attributes_per_substance = find_attributes_per_substance(classifier, feature_map, doc)
+    # Find all values for all fields for all substances
+    attributes_per_substance = find_attributes_per_substance(classifier, feature_map, doc)
 
-            # Put the appropriate values into doc objects
-            put_attributes_in_doc_events(doc, attributes_per_substance)
+    # Put the appropriate values into doc objects
+    put_attributes_in_doc_events(doc, attributes_per_substance)
 
 
 def load_event_filling_classifier():

@@ -18,12 +18,24 @@ def evaluate(patients):
     for patient in patients:
         for doc in patient.doc_list:
             for sent in doc.sent_list:
-                tp, fp, fn = evaluate_sentence(sent, doc.highlighted_spans, fn_sents, fp_sents, tp, fp, fn)
+                tp, fp, fn = evaluate_sentence(sent, doc, fn_sents, fp_sents, tp, fp, fn)
 
-    precision = float(tp) / float(tp + fp)
-    recall = float(tp) / float(tp + fn)
-
+    precision, recall, f1 = calculate_precision_recall_f1(tp, fp, fn)
     output_evaluation(precision, recall, fp_sents, fn_sents)
+
+
+def calculate_precision_recall_f1(tp, fp, fn):
+    precision = 0
+    recall = 0
+    f1 = 0
+
+    if tp:
+        precision = float(tp) / float(tp + fp)
+        recall = float(tp) / float(tp + fn)
+
+        f1 = 2*(precision * recall)/(precision+recall)
+
+    return precision, recall, f1
 
 
 def evaluate_sentence(sent, doc, fn_sents, fp_sents, tp, fp, fn):

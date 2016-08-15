@@ -13,22 +13,25 @@ from SystemUtilities import Shelver
 
 def main():
     # Load Data
+    '''
     patients = DataLoading.DataLoader.main(ENV)
 
     # Determine sentence level info
     extract_sentence_level_info(patients)
     Shelver.shelve_patients(patients)
-    # patients = Shelver.unshelve_patients()
+    '''
+    patients = Shelver.unshelve_patients()
 
     # Determine document level info
     DocFromSents.get_doc_level_info(patients)
 
     # Determine patient level info
     PatientFromDocs.get_patient_level_info(patients)
+    Shelver.shelve_full_patients(patients)
+    # patients = Shelver.unshelve_patients()
 
     if ENV != RUNTIME_ENV.EXECUTE:
-        # evaluate_extraction(patients)
-        pass
+        evaluate_extraction(patients)
 
     return patients
 
@@ -85,4 +88,4 @@ def evaluate_patient_level_info(patients):
 
 
 if __name__ == '__main__':
-    patients = main()
+    patient_substance_info = main()
