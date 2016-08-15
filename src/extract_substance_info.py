@@ -1,7 +1,6 @@
 # extract and output substance information using the models trained in train_models.py
 # output evaluation on test data or output results on unlabeled data
 
-from SystemUtilities.Globals import *
 from SystemUtilities.Configuration import *
 from DataModeling.DataModels import *
 from Extraction.EventDetection import Execution as EventDetectExecution
@@ -9,6 +8,7 @@ from Extraction.EventDetection import Evaluation as EventDetectEvaluation
 from Extraction import PatientFromDocs, DocFromSents
 from Extraction.StatusClassification import Execution
 import DataLoading.DataLoader
+from SystemUtilities import Shelver
 
 
 def main():
@@ -17,6 +17,8 @@ def main():
 
     # Determine sentence level info
     extract_sentence_level_info(patients)
+    Shelver.shelve_patients(patients)
+    # patients = Shelver.unshelve_patients()
 
     # Determine document level info
     DocFromSents.get_doc_level_info(patients)
@@ -24,10 +26,11 @@ def main():
     # Determine patient level info
     PatientFromDocs.get_patient_level_info(patients)
 
-    # TODO -- Do something with filled patients object
-
     if ENV != RUNTIME_ENV.EXECUTE:
-        evaluate_extraction(patients)
+        # evaluate_extraction(patients)
+        pass
+
+    return patients
 
 
 def extract_sentence_level_info(patients):
@@ -82,4 +85,4 @@ def evaluate_patient_level_info(patients):
 
 
 if __name__ == '__main__':
-    main()
+    patients = main()

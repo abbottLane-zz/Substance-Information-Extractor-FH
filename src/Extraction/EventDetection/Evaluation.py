@@ -15,9 +15,10 @@ def evaluate(patients):
         fp_sents[event_type] = []
 
     # Evaluate each sentence
-    for doc in patients.doc_list:
-        for sent in doc.sent_list:
-            tp, fp, fn = evaluate_sentence(sent, doc.highlighted_spans, fn_sents, fp_sents, tp, fp, fn)
+    for patient in patients:
+        for doc in patient.doc_list:
+            for sent in doc.sent_list:
+                tp, fp, fn = evaluate_sentence(sent, doc.highlighted_spans, fn_sents, fp_sents, tp, fp, fn)
 
     precision = float(tp) / float(tp + fp)
     recall = float(tp) / float(tp + fn)
@@ -45,6 +46,7 @@ def evaluate_sentence(sent, doc, fn_sents, fp_sents, tp, fp, fn):
 
 
 def find_sent_gold_substs(sent, doc):
+    """@type doc: Document"""
     gold_substs = set()
     for substance in doc.highlighted_spans:
         for gold_span in doc.highlighted_spans[substance]:
