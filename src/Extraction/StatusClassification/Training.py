@@ -8,14 +8,12 @@ from SystemUtilities.Configuration import STATUS_CLASSF_FEATMAP_SUFFIX, STATUS_C
 
 
 def train_status_classifier(patients):
-    alcohol_sents = get_sentences_from_patients(patients, Globals.ALCOHOL)
-    tobac_sents = get_sentences_from_patients(patients, Globals.TOBACCO)
-    secondhand_sents = get_sentences_from_patients(patients, Globals.SECONDHAND)
+    sentences = get_sentences_from_patients(patients)
 
     # Create Feature-Label pairs for each Subs Abuse type
-    alc_feats, alc_labels = get_features(alcohol_sents, Globals.ALCOHOL)
-    tbc_feats, tbc_labels = get_features(tobac_sents, Globals.TOBACCO)
-    scd_hnd_feats, scd_hnd_labels = get_features(secondhand_sents, Globals.SECONDHAND)
+    alc_feats, alc_labels = get_features(sentences, Globals.ALCOHOL)
+    tbc_feats, tbc_labels = get_features(sentences, Globals.TOBACCO)
+    scd_hnd_feats, scd_hnd_labels = get_features(sentences, Globals.SECONDHAND)
 
     # Create Model
     alc_classifier, alc_feature_map = train_model(alc_feats, alc_labels)
@@ -40,15 +38,13 @@ def train_status_classifier(patients):
     Pickle.dump(scd_hnd_feature_map, open(featmap_scndhnd_file, "wb"))
     pass
 
-def get_sentences_from_patients(patients, subs_type):
+def get_sentences_from_patients(patients):
     sentences = list()
     for patient in patients:
         for document in patient.doc_list:
             for sent_obj in document.sent_list:
                 if (len(sent_obj.gold_events)) > 0: # if the sentence has an event
-                    for curr_event in sent_obj.gold_events:
-                        if curr_event.substance_type == subs_type:
-                            sentences.append(sent_obj)
+                    sentences.append(sent_obj)
     return sentences
 
 def get_features(sents, subs_type):
