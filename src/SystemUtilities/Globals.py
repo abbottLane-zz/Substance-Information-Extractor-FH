@@ -83,3 +83,30 @@ POSITIVE = "Positive"
 NEGATIVE = "Negative"
 TOB_KEYWORD_VERSION = "TobaccoKeywordHit1.0"
 ALC_KEYWORD_VERSION = "AlcoholKeywordHit1.0"
+
+attrib_extraction_features = [
+    "useClassFeature=true",
+    "useWord=true",
+    "useNGrams=true",
+    "noMidNGrams=true",
+    "useDisjunctive=true",
+    "maxNGramLeng=3",
+    "usePrev=true",
+    "useNext=true",
+    "useSequences=true",
+    "usePrevSequences=true",
+    "maxLeft=1",
+    "useTypeSeqs=true",
+    "useTypeSeqs2=true",
+    "useTypeySequences=true",
+    "wordShape=chris2useLC"
+]
+
+entity_types = [
+    "Amount",
+    "Duration",
+    "QuitDate",
+    "QuitTimeAgo",
+    "QuitAge",
+    "SecondhandAmount"
+]

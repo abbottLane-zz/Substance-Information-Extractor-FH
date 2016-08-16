@@ -62,8 +62,7 @@ elif USER == will:
     test_csv = "C:\Users\wlane\Documents\Substance_IE_Data\FLOR_filtered_tsv\\flor_test.csv"
     train_csv = "C:\Users\wlane\Documents\Substance_IE_Data\FLOR_filtered_tsv\\flor_train.csv"
     # Output files
-    CLASSF_EVAL_FILENAME = r"C:\Users\s____________________WILL'S PATH_____________________nce_IE_Data\SystemOutput\
-                                Evaluation\EventDetectionEval.txt"
+    CLASSF_EVAL_FILENAME = r"C:\Users\wlane\Documents\Substance_IE_Data\Evaluation\EventDetectionEval.txt"
     SUBSTANCE_IE_DATA_FOLDER = r"C:\Users\wlane\Documents\Substance_IE_Data\\"
     FLORIAN_FULL_DATA = "C:\Users\wlane\Documents\Florian_smoking\smoking_status\\full_data_set\\"
     DOCS_NEEDING_ANNOTATION_DIR =  r"C:\Users\wlane\Documents\Substance_IE_Data\Docs_to_annotate\\"
@@ -92,8 +91,7 @@ elif USER == emily:
     test_csv = "C:\Users\esilgard\Documents\Substance_IE_Data\FLOR_filtered_tsv\\flor_test.csv"
     train_csv = "C:\Users\esilgard\Documents\Substance_IE_Data\FLOR_filtered_tsv\\flor_train.csv"
     # Output files
-    CLASSF_EVAL_FILENAME = r"C:\Users\s____________________WILL'S PATH_____________________nce_IE_Data\SystemOutput\
-                                    Evaluation\EventDetectionEval.txt"
+    CLASSF_EVAL_FILENAME = r"C:\User_____eval folder here ______on\EventDetectionEval.txt"
     SUBSTANCE_IE_DATA_FOLDER = r"C:\Users\esilgard\Documents\Substance_IE_Data\\"
     FLORIAN_FULL_DATA = "C:\Users\esilgard\Documents\Florian_smoking\smoking_status\\full_data_set\\"
     DOCS_NEEDING_ANNOTATION_DIR = r"C:\Users\esilgard\Documents\Substance_IE_Data\Docs_to_annotate\\"
