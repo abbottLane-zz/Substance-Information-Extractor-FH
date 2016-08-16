@@ -21,16 +21,6 @@ def main(environment):
     print "Loading training data annotations from labkey server ..."
     annotation_metadata = ServerQuery.get_annotations_from_server()  # testing: stub data only
 
-    # debug: just train on a subset
-    # tmp = dict()
-    # tmp[1111] = annotation_metadata[1111]
-    # tmp2 = dict()
-    # tmp2[1111] = dict()
-    # for i in range(0,6,1):
-    #     key = tmp[1111].keys()[i]
-    #     tmp2[1111][key] = tmp[1111][key]
-    # annotation_metadata = tmp2
-
     if environment == Configuration.RUNTIME_ENV.TRAIN:
         split_set = load_split_info(environment)
         labkey_training_patients = load_labkey_patients(annotation_metadata, split_set)
