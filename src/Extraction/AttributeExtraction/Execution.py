@@ -2,12 +2,12 @@ import re
 from nltk import StanfordNERTagger
 from SystemUtilities import Globals
 from Extraction.AttributeExtraction.SentenceTokenizer import strip_sec_headers_tokenized_text
-from SystemUtilities.Configuration import ATTRIB_EXTRACTION_DIR_HOME
+from SystemUtilities.Configuration import ATTRIB_EXTRACTION_DIR_HOME, STANFORD_NER_PATH
 from SystemUtilities.Globals import entity_types
 
 
-def extract(sentences_with_info, path="Extraction\\AttributeExtraction\\", model_path=ATTRIB_EXTRACTION_DIR_HOME,
-         stanford_ner_path="C:\Users\wlane\Documents\Substance_IE_Data\stanford-ner-2015-12-09\stanford-ner.jar"):
+def extract(sentences_with_info, model_path=ATTRIB_EXTRACTION_DIR_HOME,
+         stanford_ner_path=STANFORD_NER_PATH):
 
     # Divide sentence objects up by predicted abuse type
     sent_objs = get_sentences_containing_info_type(sentences_with_info)

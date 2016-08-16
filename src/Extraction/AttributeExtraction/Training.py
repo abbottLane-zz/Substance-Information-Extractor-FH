@@ -2,7 +2,7 @@ import subprocess
 import re
 import os
 from SentenceTokenizer import strip_sec_headers_tokenized_text
-from SystemUtilities.Configuration import STANFORD_NER_PATH, ATTRIB_EXTRACTION_DIR_HOME
+from SystemUtilities.Configuration import STANFORD_NER_PATH, ATTRIB_EXTRACTION_DIR_HOME, STANFORD_NER_LIB_ALL
 from SystemUtilities.Globals import entity_types, attrib_extraction_features
 
 
@@ -91,7 +91,7 @@ def create_prop_file(prop_file_name, train_file_name, features, model_name):
 
 
 def train_model(stanford_ner_path, prop_file_name, train_script_name):
-    subprocess.call([train_script_name, stanford_ner_path, prop_file_name], shell=True)
+    subprocess.call([train_script_name, stanford_ner_path, prop_file_name, STANFORD_NER_LIB_ALL], shell=True)
 
 def get_documents_from_patients(patients):
     sentences = list()
