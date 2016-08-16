@@ -1,9 +1,11 @@
 from DataModeling.DataModels import *
+from Extraction.GeneralEvaluation import *
 from SystemUtilities.Configuration import *
 from Processing import *
 
 
 def evaluate(patients):
+    """ Evaluate sentence and document level substance status info detection """
     fn_sents = {subst: [] for subst in SUBSTANCE_TYPES}   # {event type : [sentences]}
     fp_sents = {subst: [] for subst in SUBSTANCE_TYPES}   # {event type : [sentences]}
     tp_sent = 0
@@ -33,20 +35,6 @@ def evaluate(patients):
     # Output evaluation
     output_evaluation(precision_sent, recall_sent, f1_sent, fp_sents, fn_sents,
                       precision_doc, recall_doc, f1_doc, fn_docs, fp_docs)
-
-
-def calculate_precision_recall_f1(tp, fp, fn):
-    precision = None
-    recall = None
-    f1 = None
-
-    if tp:
-        precision = float(tp) / float(tp + fp)
-        recall = float(tp) / float(tp + fn)
-
-        f1 = 2*(precision * recall)/(precision+recall)
-
-    return precision, recall, f1
 
 
 def evaluate_sentence(sent, fn_sents, fp_sents, tp, fp, fn):
