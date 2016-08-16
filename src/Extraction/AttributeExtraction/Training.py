@@ -2,43 +2,13 @@ import subprocess
 import re
 import os
 from SentenceTokenizer import strip_sec_headers_tokenized_text
-from SystemUtilities.Configuration import STANFORD_NER_PATH, ATTRIB_EXTRACTION_DIR_HOME
-
-
-# TODO Move these globals to the globals file
-features = [
-    "useClassFeature=true",
-    "useWord=true",
-    "useNGrams=true",
-    "noMidNGrams=true",
-    "useDisjunctive=true",
-    "maxNGramLeng=3",
-    "usePrev=true",
-    "useNext=true",
-    "useSequences=true",
-    "usePrevSequences=true",
-    "maxLeft=1",
-    "useTypeSeqs=true",
-    "useTypeSeqs2=true",
-    "useTypeySequences=true",
-    "wordShape=chris2useLC"
-]
-
-entity_types = [
-    "Amount",
-    "Duration",
-    "QuitDate",
-    "QuitTimeAgo",
-    "QuitAge",
-    "SecondhandAmount"
-]
+from SystemUtilities.Configuration import STANFORD_NER_PATH, ATTRIB_EXTRACTION_DIR_HOME, STANFORD_NER_LIB_ALL
+from SystemUtilities.Globals import entity_types, attrib_extraction_features
 
 
 def train(patients, model_path=ATTRIB_EXTRACTION_DIR_HOME, script_path="Extraction\\AttributeExtraction\\",
           stanford_ner_path=STANFORD_NER_PATH,
           train_script_name="train_model.bat"):
-    global features
-    global entity_types
 
     # if os.environ['OS'] == "Windows_NT":
     #     train_script_name = "train_model.bat"
@@ -50,14 +20,14 @@ def train(patients, model_path=ATTRIB_EXTRACTION_DIR_HOME, script_path="Extracti
         prop_file_name = model_path + r"Prop-Files\\" + type + ".prop"
         model_name = model_path + r"Models\\" + "model-" + type + ".ser.gz"
         create_train_file(training_doc_objs, train_file_name, type)
-        create_prop_file(prop_file_name, train_file_name, features, model_name)
+        create_prop_file(prop_file_name, train_file_name, attrib_extraction_features, model_name)
         train_model(stanford_ner_path, prop_file_name, script_path+train_script_name)
 
 
 def create_train_file(training_sent_objs, train_file_name, type):
     """
     Sorry about the crazy embedded FOR loops and indents.
-    I will modularize better to make it prettier.
+    I will modularize better to make it prettier. - Martin
     """
     train_file = open(train_file_name, 'w')
     for sent_obj in training_sent_objs:
@@ -110,11 +80,6 @@ def create_train_file(training_sent_objs, train_file_name, type):
 
 
 def create_prop_file(prop_file_name, train_file_name, features, model_name):
-    # Windows ONLY: replace '\' with '\\'. Yes its very stupid, but so is Windows.
-    # train_file_name = train_file_name.replace(r"\\", r"\\\\") # of course, because windows is stupid, 1==4 and 2==8
-    # model_name = model_name.replace(r"\\", r"\\\\")
-    # End stupid Windows fix
-
     prop_file = open(prop_file_name, 'w')
     prop_file.write("trainFile = " + train_file_name + "\n")
     prop_file.write("serializeTo = " + model_name + "\n")
@@ -126,7 +91,7 @@ def create_prop_file(prop_file_name, train_file_name, features, model_name):
 
 
 def train_model(stanford_ner_path, prop_file_name, train_script_name):
-    subprocess.call([train_script_name, stanford_ner_path, prop_file_name], shell=True)
+    subprocess.call([train_script_name, stanford_ner_path, prop_file_name, STANFORD_NER_LIB_ALL], shell=True)
 
 def get_documents_from_patients(patients):
     sentences = list()

@@ -5,6 +5,7 @@ from SystemUtilities.Configuration import *
 from DataModeling.DataModels import *
 from Extraction.EventDetection import Execution as EventDetectExecution
 from Extraction.EventDetection import Evaluation as EventDetectEvaluation
+from Extraction.AttributeExtraction import Execution as AttributeExtractionExec
 from Extraction import PatientFromDocs, DocFromSents
 from Extraction.StatusClassification import Execution
 import DataLoading.DataLoader
@@ -13,12 +14,13 @@ from SystemUtilities import Shelver
 
 def main():
     # Load Data
-    patients = DataLoading.DataLoader.main(ENV)
+    #patients = DataLoading.DataLoader.main(ENV)
+
+    #Shelver.shelve_patients(patients)
+    patients = Shelver.unshelve_patients()
 
     # Determine sentence level info
     extract_sentence_level_info(patients)
-    Shelver.shelve_patients(patients)
-    # patients = Shelver.unshelve_patients()
 
     # Determine document level info
     DocFromSents.get_doc_level_info(patients)
@@ -43,6 +45,10 @@ def extract_sentence_level_info(patients):
     print("Classifying substance status...")
     Execution.classify_sentence_status(sentences_with_events)
 
+    # Extract Attributes
+    print("Extracting Attributes...")
+    AttributeExtractionExec.extract(sentences_with_events, stanford_ner_path=STANFORD_NER_PATH)
+    tmp = 0
 
 def evaluate_extraction(patients):
     # Sentence level
