@@ -14,12 +14,13 @@ from SystemUtilities import Shelver
 
 def main():
     # Load Data
-    patients = DataLoading.DataLoader.main(ENV)
+    #patients = DataLoading.DataLoader.main(ENV)
+
+    #Shelver.shelve_patients(patients)
+    patients = Shelver.unshelve_patients()
 
     # Determine sentence level info
     extract_sentence_level_info(patients)
-    Shelver.shelve_patients(patients)
-    # patients = Shelver.unshelve_patients()
 
     # Determine document level info
     DocFromSents.get_doc_level_info(patients)
