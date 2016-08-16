@@ -10,10 +10,10 @@ def get_doc_level_info(patients):
             find_doc_events(doc)
 
             # doc status
-            get_doc_level_status(patients)
+            get_doc_level_status(doc)
 
             # Tie attributes to substance references
-            EventFilling.link_attributes_to_substances(patients)
+            EventFilling.link_attributes_to_substances(doc)
 
 
 def find_doc_events(doc):
@@ -31,18 +31,16 @@ def substances_found_in_sents(doc):
     return substances_in_docs
 
 
-def get_doc_level_status(patients):
+def get_doc_level_status(doc):
     """ Get document level status from sentence level statuses """
 
-    for patient in patients:
-        for doc in patient.doc_list:
-            for doc_event in doc.predicted_events:
-                substance = doc_event.substance_type
+    for doc_event in doc.predicted_events:
+        substance = doc_event.substance_type
 
-                sentence_level_statuses = get_sent_level_statuses_for_doc(doc, substance)
-                doc_status = doc_level_status(sentence_level_statuses)
+        sentence_level_statuses = get_sent_level_statuses_for_doc(doc, substance)
+        doc_status = doc_level_status(sentence_level_statuses)
 
-                doc_event.status = doc_status
+        doc_event.status = doc_status
 
 
 def get_sent_level_statuses_for_doc(doc, substance):
