@@ -83,7 +83,7 @@ class Event:
     def __init__(self, substance):
         self.substance_type = substance
         self.status = ""
-        self.attributes = {}    # {attrib_name: Attribute object}
+        self.attributes = {}    # {attrib_name: [Attribute object]}
 
 
 class DocumentEvent(Event):
@@ -114,22 +114,24 @@ class AnnotatedAttribute:
 
 
 class DocumentAttribute(Attribute):
-    def __init__(self, attribute_type, span_start, span_end, text, all_values_for_field):
+    def __init__(self, attribute_type, span_start, span_end, text, all_attributes_for_field):
         Attribute.__init__(self, attribute_type, span_start, span_end, text)
+        self.all_attributes = all_attributes_for_field    # list of all Attribute objects found at the sentence level
         self.all_value_spans = []   # list of Span objects -- all values found for this field
 
         # find all values' spans
-        spans = [Span(attrib.span_start, attrib.span_end) for attrib in all_values_for_field]
+        spans = [Span(attrib.span_start, attrib.span_end) for attrib in all_attributes_for_field]
         self.all_value_spans = spans
 
 
 class PatientAttribute(Attribute):
-    def __init__(self, attribute_type, span_start, span_end, text, doc_id, all_values_for_field, all_doc_ids):
+    def __init__(self, attribute_type, span_start, span_end, text, doc_id, all_attributes_for_field, all_doc_ids):
         Attribute.__init__(self, attribute_type, span_start, span_end, text)
+        self.document = doc_id  # the document that the selected value came from
 
-        self.document = doc_id
+        self.all_attributes = all_attributes_for_field   # {doc_id: [Attributes]} -- all Attribute objects for each doc
         self.all_doc_value_spans = {}   # {doc_id: [Span]} -- all values found for this field for each doc
 
         # find all spans for the attribute for all docs
-        for attrib, doc_id in zip(all_values_for_field, all_doc_ids):
+        for attrib, doc_id in zip(all_attributes_for_field, all_doc_ids):
             self.all_doc_value_spans[doc_id] = attrib.all_value_spans
