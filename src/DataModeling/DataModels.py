@@ -21,6 +21,7 @@ class Document(Data):
         self.highlighted_spans = {}  # {substance : [gold HighlightedSpan]}
         self.text = text
         self.sent_list = []
+        self.all_attributes = {}
 
         self.keyword_hits = {}  # {substance_type : [KeywordHit objs]}
         self.keyword_hits_json = {}
