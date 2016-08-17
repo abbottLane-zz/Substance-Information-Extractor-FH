@@ -121,14 +121,26 @@ def output_misclassified_elements(elements, out_file):
 
 
 def calculate_precision_recall_f1(tp, fp, fn):
-    precision = None
-    recall = None
-    f1 = None
+    precision = 0
+    recall = 0
+    f1 = 0
 
-    if tp:
+    if tp != 0:
         precision = float(tp) / float(tp + fp)
         recall = float(tp) / float(tp + fn)
 
         f1 = 2*(precision * recall)/(precision+recall)
 
     return precision, recall, f1
+
+
+def evaluate_attributes(patients):
+    for attribute_type in ALL_ATTRIBS:
+        for patient in patients:
+            for doc in patient.doc_list:
+                evaluate_doc_attribute(attribute_type, doc)
+
+
+def evaluate_doc_attribute(attribute_type, doc):
+    """ For a specific attribute"""
+    pass

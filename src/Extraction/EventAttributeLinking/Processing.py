@@ -11,9 +11,11 @@ def features(doc):
     previous_sent = None
     for sent in doc.sent_list:
         for event in sent.predicted_events:
-            for attrib in event.attributes:
-                add_attribute_feats(sent, event.attributes[attrib], previous_sent, feature_sets)
-                attributes.append(attrib)
+            for attrib_type in event.attributes:
+                attribs = event.attributes[attrib_type]
+                for attrib in attribs:
+                    add_attribute_feats(sent, attrib, previous_sent, feature_sets)
+                    attributes.append(attrib)
         previous_sent = sent
 
     return feature_sets, attributes

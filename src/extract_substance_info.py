@@ -27,7 +27,8 @@ def main():
 
     # Determine patient level info
     PatientFromDocs.get_patient_level_info(patients)
-    #Shelver.shelve_full_patients(patients)
+
+    Shelver.shelve_full_patients(patients)
     # patients = Shelver.unshelve_full_patients()
 
     if ENV != RUNTIME_ENV.EXECUTE:
@@ -54,6 +55,7 @@ def evaluate_extraction(patients):
     Evaluation.evaluate_status_detection_and_classification(patients)
 
     # Extraction of each attribute
+    Evaluation.evaluate_attributes(patients)
 
     # Event-Attribute linking?
 
