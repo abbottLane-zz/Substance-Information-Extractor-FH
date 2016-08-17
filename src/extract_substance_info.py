@@ -4,7 +4,7 @@
 from SystemUtilities.Configuration import *
 from DataModeling.DataModels import *
 from Extraction.EventDetection import Execution as EventDetectExecution
-from Extraction.EventDetection import Evaluation as EventDetectEvaluation
+from Extraction import Evaluation
 from Extraction.AttributeExtraction import Execution as AttributeExtractionExec
 from Extraction import PatientFromDocs, DocFromSents
 from Extraction.StatusClassification import Execution
@@ -14,10 +14,10 @@ from SystemUtilities import Shelver
 
 def main():
     # Load Data
-    #patients = DataLoading.DataLoader.main(ENV)
+    patients = DataLoading.DataLoader.main(ENV)
 
-    #Shelver.shelve_patients(patients)
-    patients = Shelver.unshelve_patients()
+    Shelver.shelve_patients(patients)
+    # patients = Shelver.unshelve_patients()
 
     # Determine sentence level info
     extract_sentence_level_info(patients)
@@ -27,6 +27,7 @@ def main():
 
     # Determine patient level info
     PatientFromDocs.get_patient_level_info(patients)
+
     Shelver.shelve_full_patients(patients)
     # patients = Shelver.unshelve_full_patients()
 
@@ -50,45 +51,16 @@ def extract_sentence_level_info(patients):
     AttributeExtractionExec.extract(sentences_with_events, stanford_ner_path=STANFORD_NER_PATH)
     tmp = 0
 
+
 def evaluate_extraction(patients):
-    # Sentence level
-    evaluate_sent_level_info(patients)
-
-    # Evaluate document level status
-    evaluate_doc_level_info(patients)
-
-    # Evaluate patient level status
-
-    # Evaluate templates
-
-
-def evaluate_sent_level_info(patients):
-    # Status info detection
-
-    pass
-
-
-def evaluate_doc_level_info(patients):
-    # Event detection
-    EventDetectEvaluation.evaluate(patients)
-
-    # Status classification
+    # Event detection & Status classification
+    Evaluation.evaluate_status_detection_and_classification(patients)
 
     # Extraction of each attribute
 
-    # Event-Attribute linking
+    # Event-Attribute linking?
 
-    # Template
-    pass
-
-
-def evaluate_patient_level_info(patients):
-    # Status classification
-
-    # Each attribute
-
-    # Template
-    pass
+    # Template?
 
 
 if __name__ == '__main__':

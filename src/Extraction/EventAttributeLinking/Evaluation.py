@@ -1,5 +1,5 @@
 from DataModeling.DataModels import *
-from Extraction.GeneralEvaluation import *
+from Extraction.Evaluation import *
 from SystemUtilities.Configuration import *
 from Preprocessing.generate_notes import load_caisis_silver_annotations
 

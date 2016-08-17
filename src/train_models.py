@@ -9,15 +9,17 @@ from SystemUtilities.Configuration import ENV
 
 
 def main():
+    '''
     # Load Data
-    # patients = DataLoading.DataLoader.main(ENV)  # list of filled Patient objects
-    #
-    # # Event Detection
-    # EventDetectionTraining.train_event_detectors(patients)
-    #
-    # # Status classification
-    # StatusClassificationTraining.train_status_classifier(patients)
-    # Shelver.shelve_patients(patients)
+    patients = DataLoading.DataLoader.main(ENV)  # list of filled Patient objects
+
+    # Event Detection
+    EventDetectionTraining.train_event_detectors(patients)
+
+    # Status classification
+    StatusClassificationTraining.train_status_classifier(patients)
+    Shelver.shelve_patients(patients)
+    '''
     patients = Shelver.unshelve_patients()
 
     # Attribute Extraction

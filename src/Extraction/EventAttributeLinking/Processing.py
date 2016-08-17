@@ -12,7 +12,7 @@ def features(doc):
     for sent in doc.sent_list:
         for event in sent.predicted_events:
             for attrib in event.attributes:
-                add_attribute_feats(sent, attrib, previous_sent, feature_sets)
+                add_attribute_feats(sent, event.attributes[attrib], previous_sent, feature_sets)
                 attributes.append(attrib)
         previous_sent = sent
 
@@ -42,7 +42,7 @@ def add_sentence_feats_and_labels(sent, feature_sets, labels, previous_sent, doc
 
             # Add features and the label for each attribute object
             for attrib in attributes:
-                add_attribute_feats(sent, attrib, previous_sent, feature_sets)
+                add_attribute_feats(sent, attributes[attrib], previous_sent, feature_sets)
                 labels.append(gold_event.substance_type)
 
 

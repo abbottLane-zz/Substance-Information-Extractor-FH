@@ -1,10 +1,9 @@
 from DataModeling.DataModels import *
-from Extraction.Evaluation import *
 from SystemUtilities.Configuration import *
 from Processing import *
 
 
-def evaluate(patients):
+def evaluate_status_detection_and_classification(patients):
     """ Evaluate sentence and document level substance status info detection """
     fn_sents = {subst: [] for subst in SUBSTANCE_TYPES}   # {event type : [sentences]}
     fp_sents = {subst: [] for subst in SUBSTANCE_TYPES}   # {event type : [sentences]}
@@ -22,11 +21,11 @@ def evaluate(patients):
     for patient in patients:
         for doc in patient.doc_list:
             # Evaluate each document
-            tp_doc, fp_doc, fn_doc = evaluate_doc(doc, fn_docs, fp_docs, tp_doc, fp_doc, fn_doc)
+            tp_doc, fp_doc, fn_doc = evaluate_doc_event_detection(doc, fn_docs, fp_docs, tp_doc, fp_doc, fn_doc)
 
             # Evaluate each sentence
             for sent in doc.sent_list:
-                tp_sent, fp_sent, fn_sent = evaluate_sentence(sent, fn_sents, fp_sents, tp_sent, fp_sent, fn_sent)
+                tp_sent, fp_sent, fn_sent = evaluate_sentence_event_detection(sent, fn_sents, fp_sents, tp_sent, fp_sent, fn_sent)
 
     # Precision and recall
     precision_sent, recall_sent, f1_sent = calculate_precision_recall_f1(tp_sent, fp_sent, fn_sent)
@@ -37,26 +36,26 @@ def evaluate(patients):
                       precision_doc, recall_doc, f1_doc, fn_docs, fp_docs)
 
 
-def evaluate_sentence(sent, fn_sents, fp_sents, tp, fp, fn):
+def evaluate_sentence_event_detection(sent, fn_sents, fp_sents, tp, fp, fn):
     """@type sent: Sentence"""
     gold_substs = [g.substance_type for g in sent.gold_events]  # find_sent_gold_substs(sent, doc)
     predicted_substs = [p.substance_type for p in sent.predicted_events]
 
-    tp, fp, fn = compare_gold_and_predicted(gold_substs, predicted_substs, fn_sents, fp_sents, sent.text, tp, fp, fn)
+    tp, fp, fn = compare_gold_and_predicted_substances(gold_substs, predicted_substs, fn_sents, fp_sents, sent.text, tp, fp, fn)
     return tp, fp, fn
 
 
-def evaluate_doc(doc, fn_docs, fp_docs, tp_doc, fp_doc, fn_doc):
+def evaluate_doc_event_detection(doc, fn_docs, fp_docs, tp_doc, fp_doc, fn_doc):
     """@type doc: Document"""
     gold_substs = {event.substance_type for event in doc.gold_events if (event.substance_type and event.substance_type != UNKNOWN)}
     predicted_substs = {event.substance_type for event in doc.predicted_events}
 
-    tp, fp, fn = compare_gold_and_predicted(gold_substs, predicted_substs, fn_docs, fp_docs, doc.id,
-                                            tp_doc, fp_doc, fn_doc)
+    tp, fp, fn = compare_gold_and_predicted_substances(gold_substs, predicted_substs, fn_docs, fp_docs, doc.id,
+                                                       tp_doc, fp_doc, fn_doc)
     return tp, fp, fn
 
 
-def compare_gold_and_predicted(gold_substs, predicted_substs, fn_sents, fp_sents, text, tp, fp, fn):
+def compare_gold_and_predicted_substances(gold_substs, predicted_substs, fn_sents, fp_sents, text, tp, fp, fn):
     # Find true pos, false pos
     for classf in predicted_substs:
         if classf in gold_substs:
@@ -119,3 +118,17 @@ def output_misclassified_elements(elements, out_file):
         for sent in elements[event_type]:
             out_file.write(sent + "\n")
     out_file.write("\n")
+
+
+def calculate_precision_recall_f1(tp, fp, fn):
+    precision = None
+    recall = None
+    f1 = None
+
+    if tp:
+        precision = float(tp) / float(tp + fp)
+        recall = float(tp) / float(tp + fn)
+
+        f1 = 2*(precision * recall)/(precision+recall)
+
+    return precision, recall, f1
