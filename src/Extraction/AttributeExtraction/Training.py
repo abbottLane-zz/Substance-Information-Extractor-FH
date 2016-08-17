@@ -40,7 +40,7 @@ def create_train_file(training_sent_objs, train_file_name, type):
                 start = match.start()
                 end = match.end()
                 pointer = sent_offset + start
-                word = match.group(0).rstrip(",.:;")
+                word = match.group(0).rstrip(",.:;)")
                 if word not in {"SOCIAL", "HISTORY", "SUBSTANCE",
                                     "ABUSE"}:  # see tokenizer in utils, they must both match
                     train_file.write(word)

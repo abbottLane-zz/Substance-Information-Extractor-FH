@@ -108,5 +108,6 @@ entity_types = [
     "QuitDate",
     "QuitTimeAgo",
     "QuitAge",
+    "Type",
     "SecondhandAmount"
 ]

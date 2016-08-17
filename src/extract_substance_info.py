@@ -14,10 +14,10 @@ from SystemUtilities import Shelver
 
 def main():
     # Load Data
-    patients = DataLoading.DataLoader.main(ENV)
+    #patients = DataLoading.DataLoader.main(ENV)
 
-    Shelver.shelve_patients(patients)
-    # patients = Shelver.unshelve_patients()
+    #Shelver.shelve_patients(patients)
+    patients = Shelver.unshelve_patients()
 
     # Determine sentence level info
     extract_sentence_level_info(patients)
@@ -27,8 +27,7 @@ def main():
 
     # Determine patient level info
     PatientFromDocs.get_patient_level_info(patients)
-
-    Shelver.shelve_full_patients(patients)
+    #Shelver.shelve_full_patients(patients)
     # patients = Shelver.unshelve_full_patients()
 
     if ENV != RUNTIME_ENV.EXECUTE:
@@ -49,8 +48,6 @@ def extract_sentence_level_info(patients):
     # Extract Attributes
     print("Extracting Attributes...")
     AttributeExtractionExec.extract(sentences_with_events, stanford_ner_path=STANFORD_NER_PATH)
-    tmp = 0
-
 
 def evaluate_extraction(patients):
     # Event detection & Status classification

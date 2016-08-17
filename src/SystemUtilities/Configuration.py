@@ -3,7 +3,7 @@
 from SystemUtilities.Globals import *
 
 # User-specific configuration
-USER = spencer
+USER = will
 
 # Environment/run type
 ENV = RUNTIME_ENV.TRAIN
@@ -55,9 +55,9 @@ elif USER == will:
     TEST_SPLIT_DIR = r"C:\Users\wlane\Documents\Substance_IE_Data\notes_testing\\"
     NOTE_OUTPUT_GOLD_LABELS_DIR = r"C:\Users\wlane\Documents\Substance_IE_Data\output_annotations\\"
     MODEL_DIR = "C:\Users\wlane\Documents\Substance_IE_Data\\resources\Models\\"
-    ## GOLD annotation sources
+    # GOLD annotation sources
     gold_annotation_dir = r"C:\Users\wlane\Documents\Florian_smoking\smoking_status\SmokingStatusAnnotator\resources\gold\\"
-    ## Data sources
+    # Data sources
     data_repo_dir = r"C:\Users\wlane\Documents\Substance_IE_Data\output\\"
     dev_csv = "C:\Users\wlane\Documents\Substance_IE_Data\FLOR_filtered_tsv\\flor_dev.csv"
     test_csv = "C:\Users\wlane\Documents\Substance_IE_Data\FLOR_filtered_tsv\\flor_test.csv"
@@ -70,7 +70,7 @@ elif USER == will:
     # IAA
     IAA_DISAGREEMENT_LOG = r"C:\Users\wlane\Documents\Substance_IE_Data\disagreement_log.txt"
     IAA_OUT_FILE = r"C:\Users\wlane\Documents\Substance_IE_Data\IAA.txt"
-    #Stanford tools
+    # Stanford tools
     STANFORD_NER_PATH = r"C:\Users\wlane\Documents\Substance_IE_Data\stanford-ner-2015-12-09\\stanford-ner.jar"
     STANFORD_NER_LIB_ALL = r"C:\Users\wlane\Documents\Substance_IE_Data\stanford-ner-2015-12-09\lib\*"
     ATTRIB_EXTRACTION_DIR_HOME = r"C:\\Users\\wlane\\Documents\\Substance_IE_Data\\AttributeExtractionModels\\"

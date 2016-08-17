@@ -37,8 +37,10 @@ print len(sentences_d),'annotated sentences'
 # and a TobaccoStatus (closed class of labels) 
 annotations_d = {}   
 import re
+#clinic_note_files_directory
 for path, directory, files in os.walk(clinic_note_files_directory): # 'H:/Internships/Florian/smoking_status/SmokingStatusAnnotator/resources/gold/sentences/'
     for f in files:
+        print("Processing: " + f)
         text = open(path + f,'r').read()
         ## this doc id is assuming that there is only one file extension in the file name
         document_id = f.split('.')[0]

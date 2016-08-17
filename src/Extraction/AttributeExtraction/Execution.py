@@ -1,5 +1,7 @@
 import re
 from nltk import StanfordNERTagger
+
+from DataModeling.DataModels import Attribute
 from SystemUtilities import Globals
 from Extraction.AttributeExtraction.SentenceTokenizer import strip_sec_headers_tokenized_text
 from SystemUtilities.Configuration import ATTRIB_EXTRACTION_DIR_HOME, STANFORD_NER_PATH
@@ -32,6 +34,7 @@ def get_sentences_containing_info_type(sentences_with_info):
     return sentences_by_abuse_type
 
 
+
 def test_model_in_mem(stanford_ner_path, model_name, sent_obj, type, abuse_type):
     stanford_tagger = StanfordNERTagger(
         model_name,
@@ -62,5 +65,31 @@ def test_model_in_mem(stanford_ner_path, model_name, sent_obj, type, abuse_type)
     #print(classified_text)
     for event in sent_obj.predicted_events:
         if event.substance_type == abuse_type:
-            event.attributes[type] = final_class_and_span
+            attrib_list = get_attributes(final_class_and_span)
+            if len(attrib_list) > 0:
+                if type not in event.attributes:
+                    event.attributes[type] = list()
+                event.attributes[type] = attrib_list
     return sent_obj
+
+
+def get_attributes(crf_classification_tuple_list):
+    attribs = list()
+    i = 0
+    while i < len(crf_classification_tuple_list)-1:
+        crf_classification_tuple = crf_classification_tuple_list[i]
+        classL = crf_classification_tuple[1]
+        start = crf_classification_tuple[2]
+        if classL != "0": # beginning of a labeled span
+            full_begin_span = start
+            full_end_span = start
+            full_text = ""
+            while i < len(crf_classification_tuple_list)-1 and classL == crf_classification_tuple_list[i][1]:
+                crf_classification_tuple = crf_classification_tuple_list[i]
+                full_text += crf_classification_tuple[0] + " "
+                full_end_span = crf_classification_tuple[3]
+                i += 1
+            attrib = Attribute(classL, full_begin_span, full_end_span, full_text)
+            attribs.append(attrib)
+        i += 1
+    return attribs

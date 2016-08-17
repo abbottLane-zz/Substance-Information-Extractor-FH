@@ -13,7 +13,6 @@ from os.path import isfile, join
 import sys
 
 
-
 def main(environment):
     reload(sys)
     sys.setdefaultencoding('utf8')
@@ -23,13 +22,40 @@ def main(environment):
 
     if environment == Configuration.RUNTIME_ENV.TRAIN:
         split_set = load_split_info(environment)
+
+        # Temporary split of training data into test/train
+        #tmp_train_set, tmp_test_set = get_temporary_train_and_test_divisions(split_set) # Necessary because we only have labeled training data at the moment
+
         labkey_training_patients = load_labkey_patients(annotation_metadata, split_set)
         return labkey_training_patients
 
     elif environment == Configuration.RUNTIME_ENV.EXECUTE:
         split_set = load_split_info(Configuration.RUNTIME_ENV.TRAIN) # TODO: split should not be explicitly stated like this. It only is ATM b/c Labkey has no annotated testing data
+
+        # Temporary split of training data into test/train
+        #tmp_train_set, tmp_test_set = get_temporary_train_and_test_divisions(split_set) # Necessary because we only have labeled training data at the moment
+
         labkey_testing_patients = load_labkey_patients(annotation_metadata, split_set)
         return labkey_testing_patients
+
+def get_temporary_train_and_test_divisions(split_set):
+    sorted_list = sorted(list(split_set))
+    doc_count = len(sorted_list)
+    end_test_span = doc_count / 3 # the first 1/3 of the sorted data is the test_set
+    test_span = (0, end_test_span)
+
+    test_set = set()
+    train_set = set()
+
+    count = 0
+    for id in sorted_list:
+        if count >= test_span[0] and count <=test_span[1]:
+            test_set.add(id)
+        else:
+            train_set.add(id)
+        count += 1
+    return train_set, test_set
+
 
 def load_split_info(environment):
     lines = list()

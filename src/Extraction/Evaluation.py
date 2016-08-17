@@ -1,6 +1,6 @@
 from DataModeling.DataModels import *
 from SystemUtilities.Configuration import *
-from Processing import *
+from Extraction.EventDetection.Processing import *
 
 
 def evaluate_status_detection_and_classification(patients):
