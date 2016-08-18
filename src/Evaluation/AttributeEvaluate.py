@@ -43,7 +43,7 @@ def get_predicted_field_data(attribute_type, doc):
     value_span = {subst: None for subst in SUBSTANCE_TYPES}  # {subst: span}
     all_spans = {subst: [] for subst in SUBSTANCE_TYPES}     # {subst: [all_spans]}
 
-    for event in doc.predicated_events:
+    for event in doc.predicted_events:
         event_attribute_data(event, attribute_type, value, value_span, all_spans)
 
     return value, value_span, all_spans
@@ -55,8 +55,8 @@ def event_attribute_data(event, attribute_type, value, value_span, all_spans):
         attrib = event.attributes[attribute_type]
 
         value[substance] = attrib.text
-        value_span[substance] = Span(attrib.span_start, attrib.span_end)
-        all_spans[substance] = attrib.spans
+        # value_span[substance] = Span(attrib.span_start, attrib.span_end)
+        all_spans[substance] = attrib.all_value_spans
 
 
 def evaluate_value(value_eval_data, gold_values, pred_values):

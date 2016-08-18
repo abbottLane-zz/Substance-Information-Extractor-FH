@@ -110,7 +110,7 @@ class Attribute:
 class AnnotatedAttribute:
     def __init__(self, attribute_type, spans, text):
         self.type = attribute_type
-        self.spans = spans
+        self.all_value_spans = spans
         self.text = text
 
 

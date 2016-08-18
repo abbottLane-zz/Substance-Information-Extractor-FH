@@ -9,7 +9,6 @@ from SystemUtilities.Configuration import ENV
 
 
 def main():
-    '''
     # Load Data
     patients = DataLoading.DataLoader.main(ENV)  # list of filled Patient objects
 
@@ -18,9 +17,9 @@ def main():
 
     # Status classification
     StatusClassificationTraining.train_status_classifier(patients)
+
     Shelver.shelve_patients(patients)
-    '''
-    patients = Shelver.unshelve_patients()
+    # patients = Shelver.unshelve_patients()
 
     # Attribute Extraction
     AttributeExtractionTraining.train(patients)

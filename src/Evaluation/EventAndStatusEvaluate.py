@@ -44,7 +44,7 @@ def evaluate_sentence_event_detection(sent, sentence_eval_data):
 
 def evaluate_doc_event_detection(doc, doc_eval_data):
     gold_substs = {event.substance_type for event in doc.gold_events
-                   if (event.substance_type and event.substance_type != UNKNOWN)}
+                   if (event.status and event.status != UNKNOWN)}
     predicted_substs = {event.substance_type for event in doc.predicted_events}
 
     compare_gold_and_predicted_substances(gold_substs, predicted_substs, doc_eval_data, doc.id)

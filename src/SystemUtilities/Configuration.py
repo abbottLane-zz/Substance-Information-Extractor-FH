@@ -46,6 +46,7 @@ if USER == spencer:
     IAA_DISAGREEMENT_LOG = data_dir + "SystemOutput\IAA\disagreement_log.tsv"
     SPAN_DISAGREEMENT_LOG = data_dir + "SystemOutput\IAA\span_disagreement_log.tsv"
     IAA_OUT_FILE = data_dir + "SystemOutput\IAA\IAA.txt"
+    ADJUDICATION_DIR = data_dir + r"adjudication.xlsx"
     # Stanford Tools
     STANFORD_NER_PATH = r"C:\Users\sdmorris\StanfordNER\stanford-ner-2015-12-09\stanford-ner.jar"
     STANFORD_NER_LIB_ALL = r"C:\Users\sdmorris\StanfordNER\stanford-ner-2015-12-09\lib\*"

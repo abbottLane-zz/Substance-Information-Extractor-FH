@@ -44,7 +44,7 @@ def add_sentence_feats_and_labels(sent, feature_sets, labels, previous_sent, doc
 
             # Add features and the label for each attribute object
             for attrib in attributes:
-                add_attribute_feats(sent, attributes[attrib], previous_sent, feature_sets)
+                add_attribute_feats(sent, attrib, previous_sent, feature_sets)
                 labels.append(gold_event.substance_type)
 
 
@@ -52,7 +52,7 @@ def highlighted_attributes(annotated_attribute, doc):
     """ Create Attribute object for every highlighted span of field """
     attributes = []     # list of Attribute object
 
-    for span in annotated_attribute.spans:
+    for span in annotated_attribute.all_value_spans:
         text = doc.text[span.start:span.stop]
         attribute_object = Attribute(annotated_attribute.type, span.start, span.stop, text)
         attributes.append(attribute_object)

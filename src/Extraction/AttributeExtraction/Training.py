@@ -54,7 +54,7 @@ def create_train_file(training_sent_objs, train_file_name, type):
                             break
                         attr_dict = entity.attributes
                         for attr in attr_dict:
-                            for span in attr_dict[attr].spans:
+                            for span in attr_dict[attr].all_value_spans:
                                 attr_start = int(span.start)
                                 attr_end = int(span.stop)
                                 if attr_dict[attr].type == type and \
@@ -92,6 +92,7 @@ def create_prop_file(prop_file_name, train_file_name, features, model_name):
 
 def train_model(stanford_ner_path, prop_file_name, train_script_name):
     subprocess.call([train_script_name, stanford_ner_path, prop_file_name, STANFORD_NER_LIB_ALL], shell=True)
+
 
 def get_documents_from_patients(patients):
     sentences = list()

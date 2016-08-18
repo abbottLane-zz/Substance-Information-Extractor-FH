@@ -20,3 +20,4 @@ REPORT_JOB_ID = 'ReportId/JobRunId'
 JOB_ID = "JobRunId"
 
 IAA_JOB_IDS = {95, 96, 97}
+JOB_IDS = {96} #, 98, 99, 100, 101, 102, 104, 105, 106}    # TODO -- remove 96 when you get adjudicated batch 0, add 103
