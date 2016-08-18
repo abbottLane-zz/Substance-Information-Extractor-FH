@@ -1,15 +1,14 @@
 # extract and output substance information using the models trained in train_models.py
 # output evaluation on test data or output results on unlabeled data
 
-from SystemUtilities.Configuration import *
 from DataModeling.DataModels import *
-from Extraction.EventDetection import Execution as EventDetectExecution
-from Extraction import Evaluation
-from Extraction.AttributeExtraction import Execution as AttributeExtractionExec
+from Evaluation import EventAndStatusEvaluate, AttributeEvaluate
 from Extraction import PatientFromDocs, DocFromSents
+from Extraction.AttributeExtraction import Execution as AttributeExtractionExec
+from Extraction.EventDetection import Execution as EventDetectExecution
 from Extraction.StatusClassification import Execution
-import DataLoading.DataLoader
 from SystemUtilities import Shelver
+from SystemUtilities.Configuration import *
 
 
 def main():
@@ -50,12 +49,13 @@ def extract_sentence_level_info(patients):
     print("Extracting Attributes...")
     AttributeExtractionExec.extract(sentences_with_events, stanford_ner_path=STANFORD_NER_PATH)
 
+
 def evaluate_extraction(patients):
     # Event detection & Status classification
-    Evaluation.evaluate_status_detection_and_classification(patients)
+    EventAndStatusEvaluate.evaluate_status_detection_and_classification(patients)
 
     # Extraction of each attribute
-    Evaluation.evaluate_attributes(patients)
+    AttributeEvaluate.evaluate_attributes(patients)
 
     # Event-Attribute linking?
 

@@ -31,11 +31,13 @@ if USER == spencer:
     test_csv = "C:\Users\wlane\Documents\Substance_IE_Data\FLOR_filtered_tsv\\flor_test.csv"
     train_csv = "C:\Users\wlane\Documents\Substance_IE_Data\FLOR_filtered_tsv\\flor_train.csv"
     # Output files
-    CLASSF_EVAL_FILENAME = data_dir + r"SystemOutput\Evaluation\EventDetectionEval.txt"
     SUBSTANCE_IE_DATA_FOLDER = data_dir
     FLORIAN_FULL_DATA = florian_dir + r"sortedNotes\sortedNotes\combined\\"
     METADATA_OUT = data_dir + r"SystemOutput\Metadata"
     DOCS_NEEDING_ANNOTATION_DIR = data_dir + r"SystemOutput\DocsToAnnotate\\"
+    # Evaluation
+    SENT_EVENT_DETECT_EVAL_FILENAME = data_dir + r"SystemOutput\Evaluation\SentEventDetectionEval.txt"
+    DOC_EVENT_DETECT_EVAL_FILENAME = data_dir + r"SystemOutput\Evaluation\DocEventDetectionEval.txt"
     # IAA
     IAA_DISAGREEMENT_LOG = data_dir + "SystemOutput\IAA\disagreement_log.tsv"
     SPAN_DISAGREEMENT_LOG = data_dir + "SystemOutput\IAA\span_disagreement_log.tsv"
@@ -63,10 +65,12 @@ elif USER == will:
     test_csv = "C:\Users\wlane\Documents\Substance_IE_Data\FLOR_filtered_tsv\\flor_test.csv"
     train_csv = "C:\Users\wlane\Documents\Substance_IE_Data\FLOR_filtered_tsv\\flor_train.csv"
     # Output files
-    CLASSF_EVAL_FILENAME = r"C:\Users\wlane\Documents\Substance_IE_Data\Evaluation\EventDetectionEval.txt"
     SUBSTANCE_IE_DATA_FOLDER = r"C:\Users\wlane\Documents\Substance_IE_Data\\"
     FLORIAN_FULL_DATA = "C:\Users\wlane\Documents\Florian_smoking\smoking_status\\full_data_set\\"
     DOCS_NEEDING_ANNOTATION_DIR =  r"C:\Users\wlane\Documents\Substance_IE_Data\Docs_to_annotate\\"
+    # Evaluation
+    SENT_EVENT_DETECT_EVAL_FILENAME = r"C:\Users\wlane\Documents\Substance_IE_Data\Evaluation\SentEventDetectionEval.txt"
+    DOC_EVENT_DETECT_EVAL_FILENAME = r"C:\Users\wlane\Documents\Substance_IE_Data\Evaluation\DocEventDetectionEval.txt"
     # IAA
     IAA_DISAGREEMENT_LOG = r"C:\Users\wlane\Documents\Substance_IE_Data\disagreement_log.txt"
     IAA_OUT_FILE = r"C:\Users\wlane\Documents\Substance_IE_Data\IAA.txt"
@@ -94,7 +98,7 @@ elif USER == emily:
     test_csv = "C:\Users\esilgard\Documents\Substance_IE_Data\FLOR_filtered_tsv\\flor_test.csv"
     train_csv = "C:\Users\esilgard\Documents\Substance_IE_Data\FLOR_filtered_tsv\\flor_train.csv"
     # Output files
-    CLASSF_EVAL_FILENAME = r"C:\User_____eval folder here ______on\EventDetectionEval.txt"
+    SENT_EVENT_DETECT_EVAL_FILENAME = r"C:\User_____eval folder here ______on\EventDetectionEval.txt"
     SUBSTANCE_IE_DATA_FOLDER = r"C:\Users\esilgard\Documents\Substance_IE_Data\\"
     FLORIAN_FULL_DATA = "C:\Users\esilgard\Documents\Florian_smoking\smoking_status\\full_data_set\\"
     DOCS_NEEDING_ANNOTATION_DIR = r"C:\Users\esilgard\Documents\Substance_IE_Data\Docs_to_annotate\\"
