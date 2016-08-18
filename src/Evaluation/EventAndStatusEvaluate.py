@@ -4,8 +4,8 @@ from SystemUtilities.Configuration import SENT_EVENT_DETECT_EVAL_FILENAME, DOC_E
 
 def evaluate_status_detection_and_classification(patients):
     """ Evaluate sentence and document level substance status info detection """
-    sentence_eval_data = EvaluationData()
-    doc_eval_data = EvaluationData()
+    sentence_eval_data = {subst: EvaluationData() for subst in SUBSTANCE_TYPES}
+    doc_eval_data = {subst: EvaluationData() for subst in SUBSTANCE_TYPES}
 
     # Find tp, fp, fn
     for patient in patients:
@@ -18,12 +18,21 @@ def evaluate_status_detection_and_classification(patients):
                 evaluate_sentence_event_detection(sent, sentence_eval_data)
 
     # Precision and recall
-    sentence_eval_data.calculate_precision_recall_f1()
-    doc_eval_data.calculate_precision_recall_f1()
+    calculate_and_output_eval(sentence_eval_data, doc_eval_data)
 
-    # Output evaluation
-    sentence_eval_data.output(SENT_EVENT_DETECT_EVAL_FILENAME)
-    doc_eval_data.output(DOC_EVENT_DETECT_EVAL_FILENAME)
+
+def calculate_and_output_eval(sentence_eval_data, doc_eval_data):
+    for substance in SUBSTANCE_TYPES:
+        # Calculate precision and recall
+        sentence_eval_data[substance].calculate_precision_recall_f1()
+        doc_eval_data[substance].calculate_precision_recall_f1()
+
+        # Output evaluation
+        sentence_filename = substance + "_" + SENT_EVENT_DETECT_EVAL_FILENAME
+        doc_filename = substance + "_" + DOC_EVENT_DETECT_EVAL_FILENAME
+
+        sentence_eval_data[substance].output(sentence_filename)
+        doc_eval_data[substance].output(doc_filename)
 
 
 def evaluate_sentence_event_detection(sent, sentence_eval_data):
@@ -41,19 +50,20 @@ def evaluate_doc_event_detection(doc, doc_eval_data):
     compare_gold_and_predicted_substances(gold_substs, predicted_substs, doc_eval_data, doc.id)
 
 
-def compare_gold_and_predicted_substances(gold_substs, predicted_substs, eval_data, text):
+def compare_gold_and_predicted_substances(gold_substs, predicted_substs, eval_data_per_substance, text):
+    """ Record matches and mismatches for each substance """
     # Find true pos, false pos
     for classification in predicted_substs:
         if classification in gold_substs:
-            eval_data.tp += 1
+            eval_data_per_substance[classification].tp += 1
         else:
-            eval_data.fp += 1
-            eval_data.fp_sents[classification].append(text)
+            eval_data_per_substance[classification].fp += 1
+            eval_data_per_substance[classification].fp_sents[classification].append(text)
     # Find false neg
     for classification in gold_substs:
         if classification not in predicted_substs:
-            eval_data.fn += 1
-            eval_data.fn_sents[classification].append(text)
+            eval_data_per_substance[classification].fn += 1
+            eval_data_per_substance[classification].fn_sents[classification].append(text)
 
 
 def find_sent_gold_substs(sent, doc):
