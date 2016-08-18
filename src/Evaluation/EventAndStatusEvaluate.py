@@ -28,8 +28,8 @@ def calculate_and_output_eval(sentence_eval_data, doc_eval_data):
         doc_eval_data[substance].calculate_precision_recall_f1()
 
         # Output evaluation
-        sentence_filename = substance + "_" + SENT_EVENT_DETECT_EVAL_FILENAME
-        doc_filename = substance + "_" + DOC_EVENT_DETECT_EVAL_FILENAME
+        sentence_filename = SENT_EVENT_DETECT_EVAL_FILENAME + "_" + substance
+        doc_filename = DOC_EVENT_DETECT_EVAL_FILENAME + "_" + substance
 
         sentence_eval_data[substance].output(sentence_filename)
         doc_eval_data[substance].output(doc_filename)
@@ -58,12 +58,12 @@ def compare_gold_and_predicted_substances(gold_substs, predicted_substs, eval_da
             eval_data_per_substance[classification].tp += 1
         else:
             eval_data_per_substance[classification].fp += 1
-            eval_data_per_substance[classification].fp_sents[classification].append(text)
+            eval_data_per_substance[classification].fp_values[classification].append(text)
     # Find false neg
     for classification in gold_substs:
         if classification not in predicted_substs:
             eval_data_per_substance[classification].fn += 1
-            eval_data_per_substance[classification].fn_sents[classification].append(text)
+            eval_data_per_substance[classification].fn_values[classification].append(text)
 
 
 def find_sent_gold_substs(sent, doc):

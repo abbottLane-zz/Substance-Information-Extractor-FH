@@ -3,7 +3,7 @@
 from SystemUtilities.Globals import *
 
 # User-specific configuration
-USER = will
+USER = spencer
 
 # Environment/run type
 ENV = RUNTIME_ENV.TRAIN
@@ -36,8 +36,12 @@ if USER == spencer:
     METADATA_OUT = data_dir + r"SystemOutput\Metadata"
     DOCS_NEEDING_ANNOTATION_DIR = data_dir + r"SystemOutput\DocsToAnnotate\\"
     # Evaluation
-    SENT_EVENT_DETECT_EVAL_FILENAME = data_dir + r"SystemOutput\Evaluation\SentEventDetectionEval.txt"
-    DOC_EVENT_DETECT_EVAL_FILENAME = data_dir + r"SystemOutput\Evaluation\DocEventDetectionEval.txt"
+    SENT_EVENT_DETECT_EVAL_FILENAME = data_dir + r"SystemOutput\Evaluation\SentEventDetectionEval"
+    DOC_EVENT_DETECT_EVAL_FILENAME = data_dir + r"SystemOutput\Evaluation\DocEventDetectionEval"
+    ATTRIB_VALUE_EVAL_FILENAME = data_dir + r"SystemOutput\Evaluation\AttribValueEval"
+    ATTRIB_VALUE_SPAN_EVAL_FILENAME = data_dir + r"SystemOutput\Evaluation\AttribValueSpanEval"
+    ATTRIB_ALL_SPAN_EVAL_FILENAME = data_dir + r"SystemOutput\Evaluation\AttribAllSpanEval"
+    ATTRIB_ALL_SPAN_OVERLAP_EVAL_FILENAME = data_dir + r"SystemOutput\Evaluation\AttribAllSpanOverlapEval"
     # IAA
     IAA_DISAGREEMENT_LOG = data_dir + "SystemOutput\IAA\disagreement_log.tsv"
     SPAN_DISAGREEMENT_LOG = data_dir + "SystemOutput\IAA\span_disagreement_log.tsv"
@@ -69,8 +73,12 @@ elif USER == will:
     FLORIAN_FULL_DATA = "C:\Users\wlane\Documents\Florian_smoking\smoking_status\\full_data_set\\"
     DOCS_NEEDING_ANNOTATION_DIR =  r"C:\Users\wlane\Documents\Substance_IE_Data\Docs_to_annotate\\"
     # Evaluation
-    SENT_EVENT_DETECT_EVAL_FILENAME = r"C:\Users\wlane\Documents\Substance_IE_Data\Evaluation\SentEventDetectionEval.txt"
-    DOC_EVENT_DETECT_EVAL_FILENAME = r"C:\Users\wlane\Documents\Substance_IE_Data\Evaluation\DocEventDetectionEval.txt"
+    SENT_EVENT_DETECT_EVAL_FILENAME = r"C:\Users\wlane\Documents\Substance_IE_Data\Evaluation\SentEventDetectionEval"
+    DOC_EVENT_DETECT_EVAL_FILENAME = r"C:\Users\wlane\Documents\Substance_IE_Data\Evaluation\DocEventDetectionEval"
+    ATTRIB_VALUE_EVAL_FILENAME = data_dir + r"SystemOutput\Evaluation\AttribValueEval"
+    ATTRIB_VALUE_SPAN_EVAL_FILENAME = data_dir + r"SystemOutput\Evaluation\AttribValueSpanEval"
+    ATTRIB_ALL_SPAN_EVAL_FILENAME = data_dir + r"SystemOutput\Evaluation\AttribAllSpanEval"
+    ATTRIB_ALL_SPAN_OVERLAP_EVAL_FILENAME = data_dir + r"SystemOutput\Evaluation\AttribAllSpanOverlapEval"
     # IAA
     IAA_DISAGREEMENT_LOG = r"C:\Users\wlane\Documents\Substance_IE_Data\disagreement_log.txt"
     IAA_OUT_FILE = r"C:\Users\wlane\Documents\Substance_IE_Data\IAA.txt"
