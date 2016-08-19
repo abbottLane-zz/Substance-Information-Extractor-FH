@@ -87,15 +87,15 @@ def check_sent_highlight_overlap(substance_type, sent, highlighted_spans):
     sent_has_subst = False
 
     for gold_span in highlighted_spans[substance_type]:
-        sent_has_subst = check_sent_overlap(sent.span_in_doc_start, sent.span_in_doc_end,
-                                            gold_span.start, gold_span.end)
+        sent_has_subst = has_overlap(sent.span_in_doc_start, sent.span_in_doc_end,
+                                     gold_span.start, gold_span.end)
         if sent_has_subst:
             break
 
     return sent_has_subst
 
 
-def check_sent_overlap(first_start, first_end, second_start, second_end):
+def has_overlap(first_start, first_end, second_start, second_end):
     overlap = False
     # If first span is not completely before or after second span, there must be overlap
     if not (first_end <= second_start or first_start >= second_end):

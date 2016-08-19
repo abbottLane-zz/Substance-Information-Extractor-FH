@@ -36,12 +36,12 @@ if USER == spencer:
     METADATA_OUT = data_dir + r"SystemOutput\Metadata"
     DOCS_NEEDING_ANNOTATION_DIR = data_dir + r"SystemOutput\DocsToAnnotate\\"
     # Evaluation
-    SENT_EVENT_DETECT_EVAL_FILENAME = data_dir + r"SystemOutput\Evaluation\SentEventDetectionEval"
-    DOC_EVENT_DETECT_EVAL_FILENAME = data_dir + r"SystemOutput\Evaluation\DocEventDetectionEval"
-    ATTRIB_VALUE_EVAL_FILENAME = data_dir + r"SystemOutput\Evaluation\AttribValueEval"
-    ATTRIB_VALUE_SPAN_EVAL_FILENAME = data_dir + r"SystemOutput\Evaluation\AttribValueSpanEval"
-    ATTRIB_ALL_SPAN_EVAL_FILENAME = data_dir + r"SystemOutput\Evaluation\AttribAllSpanEval"
-    ATTRIB_ALL_SPAN_OVERLAP_EVAL_FILENAME = data_dir + r"SystemOutput\Evaluation\AttribAllSpanOverlapEval"
+    SENT_EVENT_DETECT_EVAL_FILENAME = data_dir + r"SystemOutput\Evaluation\EventDetection\SentEventDetectionEval"
+    DOC_EVENT_DETECT_EVAL_FILENAME = data_dir + r"SystemOutput\Evaluation\EventDetection\DocEventDetectionEval"
+    ATTRIB_VALUE_EVAL_FILENAME = data_dir + r"SystemOutput\Evaluation\AttributeValues\AttribValueEval"
+    ATTRIB_VALUE_SPAN_EVAL_FILENAME = data_dir + r"SystemOutput\Evaluation\AttributeValueSpans\AttribValueSpanEval"
+    ATTRIB_ALL_SPAN_EVAL_FILENAME = data_dir + r"SystemOutput\Evaluation\AttributeSpans\AttribAllSpanEval"
+    ATTRIB_ALL_SPAN_OVERLAP_EVAL_FILENAME = data_dir + r"SystemOutput\Evaluation\AttributeSpansOverlap\AttribAllSpanOverlapEval"
     # IAA
     IAA_DISAGREEMENT_LOG = data_dir + "SystemOutput\IAA\disagreement_log.tsv"
     SPAN_DISAGREEMENT_LOG = data_dir + "SystemOutput\IAA\span_disagreement_log.tsv"

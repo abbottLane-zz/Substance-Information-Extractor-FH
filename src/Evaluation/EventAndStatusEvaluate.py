@@ -71,7 +71,7 @@ def find_sent_gold_substs(sent, doc):
     gold_substs = set()
     for substance in doc.highlighted_spans:
         for gold_span in doc.highlighted_spans[substance]:
-            overlap = check_sent_overlap(gold_span.start, gold_span.stop, sent.span_in_doc_start, sent.span_in_doc_end)
+            overlap = has_overlap(gold_span.start, gold_span.stop, sent.span_in_doc_start, sent.span_in_doc_end)
             if overlap:
                 gold_substs.add(substance)
     return gold_substs
