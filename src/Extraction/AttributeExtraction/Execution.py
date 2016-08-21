@@ -8,18 +8,16 @@ from SystemUtilities.Configuration import ATTRIB_EXTRACTION_DIR_HOME, STANFORD_N
 from SystemUtilities.Globals import entity_types
 
 
-def extract(sentences_with_info, model_path=ATTRIB_EXTRACTION_DIR_HOME,
+def extract(patients, model_path=ATTRIB_EXTRACTION_DIR_HOME,
          stanford_ner_path=STANFORD_NER_PATH):
 
-    # Divide sentence objects up by predicted abuse type
-    sent_objs = get_sentences_containing_info_type(sentences_with_info)
+    # Extract all sentences with subs info + the sentence after
+    all_sentences = get_sentences_with_info_plus_sentence_after(patients)
 
     for type in entity_types: # {Amount, Duration, QuiteDate, TimeAgo, QuitAge, SecondhandAmount}
-        for abuse_type in Globals.ML_CLASSIFIER_SUBSTANCES:
-            curr_sentences = sent_objs[abuse_type]
-            for sentobj in curr_sentences:
-                model_name = model_path + "Models/" + "model-" + type + ".ser.gz"
-                sentobj = test_model_in_mem(stanford_ner_path, model_name, sentobj, type, abuse_type)
+        for sentobj in all_sentences:
+            model_name = model_path + "Models/" + "model-" + type + ".ser.gz"
+            sent_obj= test_model_in_mem(stanford_ner_path, model_name, sentobj, type)
     print("Finished CRF classification")
 
 def get_sentences_containing_info_type(sentences_with_info):
@@ -35,7 +33,7 @@ def get_sentences_containing_info_type(sentences_with_info):
 
 
 
-def test_model_in_mem(stanford_ner_path, model_name, sent_obj, type, abuse_type):
+def test_model_in_mem(stanford_ner_path, model_name, sent_obj, type):
     stanford_tagger = StanfordNERTagger(
         model_name,
         stanford_ner_path,
@@ -50,7 +48,7 @@ def test_model_in_mem(stanford_ner_path, model_name, sent_obj, type, abuse_type)
         start = match.start()
         end = match.end()
         word = match.group(0)
-        tokenized_text.append(word.rstrip(",.;:"))
+        tokenized_text.append(word.rstrip(",.;:)"))
         spans.append((start,end))
     tokenized_text = strip_sec_headers_tokenized_text(tokenized_text)
     classified_text = stanford_tagger.tag(tokenized_text)
@@ -62,14 +60,8 @@ def test_model_in_mem(stanford_ner_path, model_name, sent_obj, type, abuse_type)
         combined = (classified_text[idx][0],classified_text[idx][1],spans[idx+len_diff][0],spans[idx+len_diff][1])
         final_class_and_span.append(combined)
 
-    #print(classified_text)
-    for event in sent_obj.predicted_events:
-        if event.substance_type == abuse_type:
-            attrib_list = get_attributes(final_class_and_span)
-            if len(attrib_list) > 0:
-                if type not in event.attributes:
-                    event.attributes[type] = list()
-                event.attributes[type] = attrib_list
+    # print(classified_text)
+    sent_obj.sentence_attribs.extend(get_attributes(final_class_and_span))
     return sent_obj
 
 
@@ -93,3 +85,17 @@ def get_attributes(crf_classification_tuple_list):
             attribs.append(attrib)
         i += 1
     return attribs
+
+def get_sentences_with_info_plus_sentence_after(patients):
+    all_sents = list()
+    for patient in patients:
+        for document in patient.doc_list:
+            grab_next = False
+            for sentence in document.sent_list:
+                if len(sentence.predicted_events) > 0 or grab_next:
+                    if grab_next:
+                        grab_next = False
+                    if len(sentence.predicted_events) > 0:
+                        grab_next = True
+                    all_sents.append(sentence)
+    return all_sents

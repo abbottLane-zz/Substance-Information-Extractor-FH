@@ -35,7 +35,7 @@ class Sentence(Data):
         self.text = text
         self.span_in_doc_start = span_in_doc_start
         self.span_in_doc_end = span_in_doc_end
-        self.tok_sent_with_crf_predicted_attribs = dict()
+        self.sentence_attribs = list()
 
         self.keyword_hits = {}  # {substance_type : [KeywordHit objs]}
         for substance in SUBSTANCE_TYPES:
