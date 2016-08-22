@@ -9,6 +9,9 @@ from SystemUtilities.Configuration import ENV
 
 
 def main():
+    # Set ENV variable to TRAIN
+    ENV = DataLoading.DataLoader.RUNTIME_ENV.TRAIN
+
     # Load Data
     patients = DataLoading.DataLoader.main(ENV)  # list of filled Patient objects
 

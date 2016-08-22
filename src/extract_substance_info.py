@@ -12,6 +12,8 @@ from SystemUtilities.Configuration import *
 
 
 def main():
+    # Set runtime ENV
+    ENV = RUNTIME_ENV.EXECUTE
 
     # Load Data
     patients = DataLoader.main(ENV)
