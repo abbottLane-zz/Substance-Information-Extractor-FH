@@ -20,7 +20,7 @@ def main(environment):
     print "Loading training data annotations from labkey server ..."
     annotation_metadata = ServerQuery.get_annotations_from_server()  # testing: stub data only
 
-    if environment == Configuration.RUNTIME_ENV.TRAIN:
+    if environment == "Train":
         split_set = load_split_info(environment)
 
         labkey_training_patients = load_labkey_patients(annotation_metadata, split_set)
@@ -30,7 +30,7 @@ def main(environment):
 
         return tmp_train_set
 
-    elif environment == Configuration.RUNTIME_ENV.EXECUTE:
+    elif environment == "Test":
         split_set = load_split_info(Configuration.RUNTIME_ENV.TRAIN) # TODO: split should not be explicitly stated like this. It only is ATM b/c Labkey has no annotated testing data
 
         labkey_testing_patients = load_labkey_patients(annotation_metadata, split_set)
@@ -61,10 +61,10 @@ def get_temporary_train_and_test_divisions(patients):
 
 def load_split_info(environment):
     lines = list()
-    if environment == Configuration.RUNTIME_ENV.EXECUTE:
+    if environment == "Test":
         with open(Configuration.data_dir + "notes_dev_def.txt", "rb") as file:
             lines = file.read().splitlines()
-    elif environment == Configuration.RUNTIME_ENV.TRAIN:
+    elif environment == "Train":
         with open(Configuration.data_dir + "notes_train_def.txt", "rb") as file:
             lines = file.read().splitlines()
     return set(lines)

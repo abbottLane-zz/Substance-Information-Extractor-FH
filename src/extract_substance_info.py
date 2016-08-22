@@ -12,11 +12,11 @@ from SystemUtilities.Configuration import *
 
 
 def main():
-    # Set runtime ENV
-    ENV = RUNTIME_ENV.EXECUTE
+    # Set which division of data to use
+    DATA_SPLIT = "Test"
 
     # Load Data
-    patients = DataLoader.main(ENV)
+    patients = DataLoader.main(DATA_SPLIT)
     tmp =0
     # Shelver.shelve_patients(patients)
     # patients = Shelver.unshelve_patients()

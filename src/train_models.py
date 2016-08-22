@@ -9,11 +9,11 @@ from SystemUtilities.Configuration import ENV
 
 
 def main():
-    # Set ENV variable to TRAIN
-    ENV = DataLoading.DataLoader.RUNTIME_ENV.TRAIN
+    # Set which division of data to use
+    DATA_SPLIT = "Train"
 
     # Load Data
-    patients = DataLoading.DataLoader.main(ENV)  # list of filled Patient objects
+    patients = DataLoading.DataLoader.main(DATA_SPLIT)  # list of filled Patient objects
 
     # Event Detection
     EventDetectionTraining.train_event_detectors(patients)
