@@ -1,21 +1,19 @@
 # extract and output substance information using the models trained in train_models.py
 # output evaluation on test data or output results on unlabeled data
-
+from DataLoading import DataLoader as DataLoader
 from DataModeling.DataModels import *
 from Evaluation import EventAndStatusEvaluate, AttributeEvaluate
 from Extraction import PatientFromDocs, DocFromSents
 from Extraction.AttributeExtraction import Execution as AttributeExtractionExec
 from Extraction.EventDetection import Execution as EventDetectExecution
 from Extraction.StatusClassification import Execution
-import DataLoading.DataLoader
 from SystemUtilities import Shelver
 from SystemUtilities.Configuration import *
 
 
 def main():
-    '''
     # Load Data
-    patients = DataLoading.DataLoader.main(ENV)
+    patients = DataLoader.main(ENV)
 
     Shelver.shelve_patients(patients)
     # patients = Shelver.unshelve_patients()
@@ -30,8 +28,7 @@ def main():
     PatientFromDocs.get_patient_level_info(patients)
 
     Shelver.shelve_full_patients(patients)
-    '''
-    patients = Shelver.unshelve_full_patients()
+    # patients = Shelver.unshelve_full_patients()
 
     if ENV != RUNTIME_ENV.EXECUTE:
         evaluate_extraction(patients)
@@ -46,11 +43,11 @@ def extract_sentence_level_info(patients):
 
     # Classify substance status
     print("Classifying substance status...")
-    # Execution.classify_sentence_status(sentences_with_events)
+    Execution.classify_sentence_status(sentences_with_events)
 
     # Extract Attributes
     print("Extracting Attributes...")
-    # AttributeExtractionExec.extract(sentences_with_events, stanford_ner_path=STANFORD_NER_PATH)
+    AttributeExtractionExec.extract(patients, stanford_ner_path=STANFORD_NER_PATH)
 
 
 def evaluate_extraction(patients):
