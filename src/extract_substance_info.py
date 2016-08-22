@@ -16,8 +16,8 @@ def main():
     # Load Data
     patients = DataLoader.main(ENV)
     tmp =0
-    #Shelver.shelve_patients(patients)
-    #patients = Shelver.unshelve_patients()
+    # Shelver.shelve_patients(patients)
+    # patients = Shelver.unshelve_patients()
 
     # Determine sentence level info
     extract_sentence_level_info(patients)
