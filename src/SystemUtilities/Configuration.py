@@ -30,6 +30,7 @@ if USER == spencer:
     dev_csv = data_dir + r"FLOR_filtered_tsv\flor_dev.csv"
     test_csv = "C:\Users\wlane\Documents\Substance_IE_Data\FLOR_filtered_tsv\\flor_test.csv"
     train_csv = "C:\Users\wlane\Documents\Substance_IE_Data\FLOR_filtered_tsv\\flor_train.csv"
+    ADJUDICATED_BATCH_0 = data_dir + r"SystemOutput\adj_batch_0.p"
     # Output files
     SUBSTANCE_IE_DATA_FOLDER = data_dir
     FLORIAN_FULL_DATA = florian_dir + r"sortedNotes\sortedNotes\combined\\"

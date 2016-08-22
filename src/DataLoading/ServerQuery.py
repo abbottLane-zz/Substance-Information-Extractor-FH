@@ -219,7 +219,7 @@ def find_events_per_report(field_results_per_annotator, offset_results_per_annot
 
 def filter_fields(all_fields):
     # by job run ID
-    right_job_id_fields = [f for f in all_fields[ROWS] if f[REPORT_JOB_ID] in IAA_JOB_IDS]
+    right_job_id_fields = [f for f in all_fields[ROWS] if f[REPORT_JOB_ID] in JOB_IDS]
 
     # by SocialHistory table
     soc_history_fields = [f for f in right_job_id_fields if (f[u'TargetTable'] == SOC_HISTORIES)]

@@ -58,12 +58,12 @@ def compare_gold_and_predicted_substances(gold_substs, predicted_substs, eval_da
             eval_data_per_substance[classification].tp += 1
         else:
             eval_data_per_substance[classification].fp += 1
-            eval_data_per_substance[classification].fp_values[classification].append(text)
+            eval_data_per_substance[classification].fp_values.append(text)
     # Find false neg
     for classification in gold_substs:
         if classification not in predicted_substs:
             eval_data_per_substance[classification].fn += 1
-            eval_data_per_substance[classification].fn_values[classification].append(text)
+            eval_data_per_substance[classification].fn_values.append(text)
 
 
 def find_sent_gold_substs(sent, doc):

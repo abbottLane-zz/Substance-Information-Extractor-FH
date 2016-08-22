@@ -13,6 +13,7 @@ from SystemUtilities.Configuration import *
 
 
 def main():
+    '''
     # Load Data
     patients = DataLoading.DataLoader.main(ENV)
 
@@ -29,7 +30,8 @@ def main():
     PatientFromDocs.get_patient_level_info(patients)
 
     Shelver.shelve_full_patients(patients)
-    # patients = Shelver.unshelve_full_patients()
+    '''
+    patients = Shelver.unshelve_full_patients()
 
     if ENV != RUNTIME_ENV.EXECUTE:
         evaluate_extraction(patients)

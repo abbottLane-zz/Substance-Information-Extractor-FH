@@ -131,11 +131,11 @@ def evaluate_all_spans(all_span_eval_data, gold_all_spans, pred_all_spans, doc):
 
 def find_all_span_eval_data(all_span_eval_data, substance, gold_all_spans, pred_all_spans, doc):
     # Find true pos, false pos
-    for pred_span in pred_all_spans:
+    for pred_span in pred_all_spans[substance]:
         match_found = False
 
         # Check each predicted span for an equivalent in the gold
-        for gold_span in gold_all_spans:
+        for gold_span in gold_all_spans[substance]:
             if pred_span.start == gold_span.start and pred_span.end == gold_span.end:
                 all_span_eval_data[substance].tp += 1
                 match_found = True
@@ -146,11 +146,11 @@ def find_all_span_eval_data(all_span_eval_data, substance, gold_all_spans, pred_
             all_span_eval_data[substance].fp += 1
             all_span_eval_data[substance].fp_values.append(doc.id + " " + doc.text[pred_span.start:pred_span.end])
     # Find false neg
-    for gold_span in gold_all_spans:
+    for gold_span in gold_all_spans[substance]:
         match_found = False
 
         # Check each gold span for an equivalent in the predicted
-        for pred_span in pred_all_spans:
+        for pred_span in pred_all_spans[substance]:
             if pred_span.start == gold_span.start and pred_span.end == gold_span.end:
                 match_found = True
                 break
@@ -158,7 +158,7 @@ def find_all_span_eval_data(all_span_eval_data, substance, gold_all_spans, pred_
         # If none found, it's an FN
         if not match_found:
             all_span_eval_data[substance].fn += 1
-            all_span_eval_data[substance].fn_values.append(doc.id + " " + doc.text[pred_span.start:pred_span.end])
+            all_span_eval_data[substance].fn_values.append(doc.id + " " + doc.text[gold_span.start:gold_span.stop])
 
 
 def evaluate_all_spans_overlap(all_span_overlap_eval_data, gold_all_spans, pred_all_spans, doc):

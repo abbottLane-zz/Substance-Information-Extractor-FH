@@ -6,8 +6,8 @@ class EvaluationData:
         self.tp = 0
         self.fn = 0
         self.fp = 0
-        self.fn_values = {subst: [] for subst in SUBSTANCE_TYPES}  # {event type : [sentences]}
-        self.fp_values = {subst: [] for subst in SUBSTANCE_TYPES}  # {event type : [sentences]}
+        self.fn_values = []
+        self.fp_values = []
 
         self.precision = 0
         self.recall = 0
@@ -35,8 +35,6 @@ class EvaluationData:
 
 def output_misclassified_elements(elements, out_file):
     """ Output FN or FP elements for error analysis and debugging """
-    for event_type in elements:
-        out_file.write("= " + event_type + " =\n")
-        for element in elements[event_type]:
-            out_file.write("++ " + element + "\n")
+    for element in elements:
+        out_file.write("++ " + element + "\n")
     out_file.write("\n")
