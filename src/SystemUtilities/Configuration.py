@@ -6,7 +6,7 @@ from SystemUtilities.Globals import *
 USER = will
 
 # Environment/run type
-ENV = RUNTIME_ENV.TRAIN
+ENV = RUNTIME_ENV.EXECUTE
 
 # User-specific paths
 gold_annotation_dir = ""
