@@ -1,7 +1,40 @@
 import re
 import string
 from SystemUtilities.Globals import *
+import json
 
+
+def load_flor_patients():
+    flors_sent_level_annotations_dir = r"C:\Users\wlane\Documents\Substance_IE_Data\resources\Florians_sentence_level_annotations\sentence_level_annotations.json"
+    with open(flors_sent_level_annotations_dir) as data_file:
+        data = json.load(data_file)
+    return data
+
+
+def flor_sentence_features_and_labels():
+    doc_data = load_flor_patients()
+
+    sent_feat_dicts = []  # List of sentence feature dictionaries
+    labels_per_subst = {}  # Substance type : list of labels for each sentence (HAS/DOESN'T HAVE)
+
+    for substance_type in SUBSTANCE_TYPES:
+        labels_per_subst[substance_type] = []
+
+    for doc in doc_data:
+        for sent in doc_data[doc]:
+            # Features per sentence
+            sent_features = flor_get_features(sent["Sentence"].encode('utf-8'))
+            sent_feat_dicts.append(sent_features)
+
+            # Labels per sentences
+            for substance_type in SUBSTANCE_TYPES:
+                has_event = check_has_tob_event_flor(sent)
+                if has_event and substance_type == "Tobacco": # Because Florian's data only labeled for Tobacco
+                    labels_per_subst[substance_type].append(HAS_SUBSTANCE)
+                else:
+                    labels_per_subst[substance_type].append(NO_SUBSTANCE)
+
+    return sent_feat_dicts, labels_per_subst
 
 def sentence_features_and_labels(patients):
     """ Used for labelled data """
@@ -12,6 +45,7 @@ def sentence_features_and_labels(patients):
         labels_per_subst[substance_type] = []
 
     # grab sentence features and labels
+    count=0
     for patient in patients:
         for doc in patient.doc_list:
             for sent in doc.sent_list:
@@ -24,15 +58,22 @@ def sentence_features_and_labels(patients):
                     has_event = check_has_event_by_gold(substance_type, sent)
                     if has_event:
                         labels_per_subst[substance_type].append(HAS_SUBSTANCE)
+                        count+=1
                     else:
                         labels_per_subst[substance_type].append(NO_SUBSTANCE)
-
+    print ("Training on number of sentences with subs abuse info: " + str(count))
     return sent_feat_dicts, labels_per_subst
 
+def flor_get_features(sent_text):
+    feats = {}
+    # Unigrams
+    grams = tokenize(sent_text)
+    for gram in grams:
+        feats[gram] = True
+    return feats
 
 def get_features(sent_obj):
     feats = {}
-
     # Unigrams
     grams = tokenize(sent_obj.text)
     for gram in grams:
@@ -71,6 +112,10 @@ def tokenize(sent_text):
 
     return processed_grams
 
+def check_has_tob_event_flor(sent):
+    if sent["TobaccoStatus"] != "unknown":
+        return True
+    return False
 
 def check_has_event_by_gold(substance_type, sent):
     """ Checks whether the sentence has an Event obj of the relevant subsType based on gold labels """

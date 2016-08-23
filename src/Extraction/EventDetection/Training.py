@@ -11,6 +11,13 @@ def train_event_detectors(patients):
     # Retrieve features and labels per every sentence
     sent_feat_dicts, labels_per_subst = sentence_features_and_labels(patients)
 
+    # Get Florian's data to reinforce training
+    flor_sent_feat_dicts, flor_labels_per_subst = flor_sentence_features_and_labels()
+    sent_feat_dicts.extend(flor_sent_feat_dicts)
+    labels_per_subst["Tobacco"].extend(flor_labels_per_subst["Tobacco"])
+    labels_per_subst["Alcohol"].extend(flor_labels_per_subst["Alcohol"])
+    #labels_per_subst["Secondhand"].extend(flor_labels_per_subst["Secondhand"])
+
     for substance_type in ML_CLASSIFIER_SUBSTANCES:
         # Train classifier
         classifier, feature_map = Classification.train_classifier(sent_feat_dicts, labels_per_subst[substance_type])
