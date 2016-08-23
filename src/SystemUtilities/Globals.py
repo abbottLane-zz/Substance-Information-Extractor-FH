@@ -22,7 +22,7 @@ DRUG = "Drug"
 TOBACCO = "Tobacco"
 SECONDHAND = "Secondhand"
 SUBSTANCE_TYPES = [ALCOHOL, TOBACCO, SECONDHAND]
-ML_CLASSIFIER_SUBSTANCES = [TOBACCO, ALCOHOL, SECONDHAND]  # Substances using ML classification for event detection
+ML_CLASSIFIER_SUBSTANCES = [TOBACCO, ALCOHOL]  # Substances using ML classification for event detection
 KEYWORD_SUBSTANCES = [TOBACCO, ALCOHOL]
 
 # Classification Labels

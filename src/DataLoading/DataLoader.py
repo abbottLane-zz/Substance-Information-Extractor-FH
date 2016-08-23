@@ -31,7 +31,7 @@ def main(environment):
         return tmp_train_set
 
     elif environment == "Test":
-        split_set = load_split_info(Configuration.RUNTIME_ENV.TRAIN) # TODO: split should not be explicitly stated like this. It only is ATM b/c Labkey has no annotated testing data
+        split_set = load_split_info("Train") # TODO: split should not be explicitly stated like this. It only is ATM b/c Labkey has no annotated testing data
 
         labkey_testing_patients = load_labkey_patients(annotation_metadata, split_set)
 

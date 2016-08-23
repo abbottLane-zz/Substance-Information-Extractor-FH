@@ -17,9 +17,8 @@ def main():
 
     # Load Data
     patients = DataLoader.main(DATA_SPLIT)
-    tmp =0
-    # Shelver.shelve_patients(patients)
-    # patients = Shelver.unshelve_patients()
+    Shelver.shelve_patients(patients)
+    patients = Shelver.unshelve_patients()
 
     # Determine sentence level info
     extract_sentence_level_info(patients)
@@ -31,7 +30,6 @@ def main():
     PatientFromDocs.get_patient_level_info(patients)
 
     Shelver.shelve_full_patients(patients)
-
     patients = Shelver.unshelve_full_patients()
 
     if ENV != RUNTIME_ENV.EXECUTE:
