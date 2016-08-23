@@ -15,7 +15,7 @@ def main():
     # Load Data
     patients = DataLoading.DataLoader.main(DATA_SPLIT)  # list of filled Patient objects
 
-    Shelver.shelve_patients(patients)
+    # Shelver.shelve_patients(patients)
     # patients = Shelver.unshelve_patients()
 
     # Event Detection

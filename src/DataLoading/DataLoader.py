@@ -17,7 +17,7 @@ def main(environment):
     reload(sys)
     sys.setdefaultencoding('utf8')
 
-    print "Loading training data annotations from labkey server ..."
+    print "Loading data annotations from labkey server ..."
     annotation_metadata = ServerQuery.get_annotations_from_server()  # testing: stub data only
 
     if environment == "Train":
