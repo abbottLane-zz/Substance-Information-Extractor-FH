@@ -7,6 +7,7 @@ from Extraction import PatientFromDocs, DocFromSents
 from Extraction.AttributeExtraction import Execution as AttributeExtractionExec
 from Extraction.EventDetection import Execution as EventDetectExecution
 from Extraction.StatusClassification import Execution
+from Extraction.EventAttributeLinking import Execution as EventFilling
 from SystemUtilities import Shelver
 from SystemUtilities.Configuration import *
 
@@ -15,11 +16,13 @@ def main():
     # Set runtime ENV
     ENV = RUNTIME_ENV.EXECUTE
 
+    '''
     # Load Data
     patients = DataLoader.main(ENV)
 
     Shelver.shelve_patients(patients)
-    # patients = Shelver.unshelve_patients()
+    '''
+    patients = Shelver.unshelve_patients()
 
     # Determine sentence level info
     extract_sentence_level_info(patients)
@@ -33,7 +36,7 @@ def main():
     Shelver.shelve_full_patients(patients)
     # patients = Shelver.unshelve_full_patients()
 
-    if ENV != RUNTIME_ENV.EXECUTE:
+    if ENV == RUNTIME_ENV.EXECUTE:
         evaluate_extraction(patients)
 
     return patients
@@ -51,6 +54,10 @@ def extract_sentence_level_info(patients):
     # Extract Attributes
     print("Extracting Attributes...")
     AttributeExtractionExec.extract(patients, stanford_ner_path=STANFORD_NER_PATH)
+
+    # Link attributes to events:
+    print("Linking attributes to substance references...")
+    EventFilling.link_attributes_to_substances(patients)
 
 
 def evaluate_extraction(patients):

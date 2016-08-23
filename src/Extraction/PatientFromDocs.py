@@ -100,7 +100,7 @@ def get_attributes_for_all_docs(patient, substance):
             if doc_event.substance_type == substance:
                 for attrib in doc_event.attributes:
                     all_doc_attribs[attrib].append(doc_event.attributes[attrib])
-                    doc_ids[attrib].append(doc.id_num)
+                    doc_ids[attrib].append(doc.id)
 
     return all_doc_attribs, doc_ids
 
@@ -116,7 +116,7 @@ def create_patient_attributes(all_doc_attribs, all_doc_ids, patient_event):
 
             # Create the patient attribute
             patient_event.attributes[field] = PatientAttribute(field, selected_attrib.span_start,
-                                                               selected_attrib.span_stop, selected_attrib.text, doc_id,
+                                                               selected_attrib.span_end, selected_attrib.text, doc_id,
                                                                doc_attribs, doc_ids)
 
 

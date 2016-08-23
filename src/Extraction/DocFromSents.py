@@ -15,8 +15,8 @@ def get_doc_level_info(patients):
             # roll sentence-level events to doc level
             sentence_events_to_doc_level(doc)
 
-            # Tie attributes to substance references
-            EventFilling.link_attributes_to_substances(doc)
+            # attributes
+            EventFilling.attributes_to_doc_level(doc)
 
 
 def find_doc_events(doc):
@@ -69,6 +69,7 @@ def doc_level_status(sentence_level_statuses):
 
     return doc_status
 
+
 def sentence_events_to_doc_level(doc):
     all_attributes_for_field = {}
     for sentence in doc.sent_list:
@@ -88,7 +89,4 @@ def sentence_events_to_doc_level(doc):
         doc_attrib = DocumentAttribute(official_attrib_type, offcial_attrib_start, official_attrib_end, official_attrib_text, attrib_list)
 
         doc.all_attributes[attrib_field_key] = doc_attrib
-
-
-
 

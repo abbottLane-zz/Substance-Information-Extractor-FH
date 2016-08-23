@@ -12,10 +12,15 @@ def evaluate_attributes(patients):
         all_span_eval_data = {subst: EvaluationData() for subst in SUBSTANCE_TYPES}
         all_span_overlap_eval_data = {subst: EvaluationData() for subst in SUBSTANCE_TYPES}
 
+        # Find performance of attribute in each document
         for patient in patients:
             for doc in patient.doc_list:
                 evaluate_doc_attribute(attribute_type, doc, value_eval_data, value_span_eval_data,
                                        all_span_eval_data, all_span_overlap_eval_data)
+
+        # Output total performance
+        evaluate_total_performance(value_eval_data, value_span_eval_data, all_span_eval_data,
+                                   all_span_overlap_eval_data)
 
 
 def evaluate_doc_attribute(attribute_type, doc, value_eval_data, value_span_eval_data, all_span_eval_data,
@@ -24,10 +29,10 @@ def evaluate_doc_attribute(attribute_type, doc, value_eval_data, value_span_eval
     gold_values, gold_value_spans, gold_all_spans = get_gold_field_data(attribute_type, doc)
     pred_values, pred_value_spans, pred_all_spans = get_predicted_field_data(attribute_type, doc)
 
-    evaluate_value(value_eval_data, gold_values, pred_values, doc)
-    evaluate_value_span(value_span_eval_data, gold_value_spans, pred_value_spans, doc)
-    evaluate_all_spans(all_span_eval_data, gold_all_spans, pred_all_spans, doc)
-    evaluate_all_spans_overlap(all_span_overlap_eval_data, gold_all_spans, pred_all_spans, doc)
+    collect_doc_value_info(value_eval_data, gold_values, pred_values, doc)
+    collect_doc_value_span_info(value_span_eval_data, gold_value_spans, pred_value_spans, doc)
+    collect_doc_all_spans_info(all_span_eval_data, gold_all_spans, pred_all_spans, doc)
+    collect_doc_all_spans_overlap_info(all_span_overlap_eval_data, gold_all_spans, pred_all_spans, doc)
 
 
 def get_gold_field_data(attribute_type, doc):
@@ -64,13 +69,14 @@ def event_attribute_data(event, attribute_type, value, value_span, all_spans):
         all_spans[substance] = attrib.all_value_spans
 
 
-def evaluate_value(value_eval_data, gold_values, pred_values, doc):
+def collect_doc_value_info(value_eval_data, gold_values, pred_values, doc):
     """ Evaluate the selected value for field info """
     # Find performance for each substance
     for substance in value_eval_data:
         # Find TP, FN, FP
         find_value_eval_data(value_eval_data, substance, gold_values, pred_values, doc)
 
+        '''
         # Precision, recall
         value_eval_data[substance].calculate_precision_recall_f1()
 
@@ -79,6 +85,7 @@ def evaluate_value(value_eval_data, gold_values, pred_values, doc):
 
     # Total across substances
     find_total_field_performance(value_eval_data, ATTRIB_VALUE_EVAL_FILENAME)
+    '''
 
 
 def find_value_eval_data(value_eval_data, substance, gold_values, pred_values, doc):
@@ -96,7 +103,7 @@ def find_value_eval_data(value_eval_data, substance, gold_values, pred_values, d
             value_eval_data[substance].fn_values.append(doc.id + " " + gold_values[substance])
 
 
-def evaluate_value_span(value_span_eval_data, gold_value_spans, pred_value_spans, doc):
+def collect_doc_value_span_info(value_span_eval_data, gold_value_spans, pred_value_spans, doc):
     """ Evaluate the selected value for field info, using its text span """
     '''
     for substance in value_span_eval_data:
@@ -112,13 +119,14 @@ def evaluate_value_span(value_span_eval_data, gold_value_spans, pred_value_spans
     pass
 
 
-def evaluate_all_spans(all_span_eval_data, gold_all_spans, pred_all_spans, doc):
+def collect_doc_all_spans_info(all_span_eval_data, gold_all_spans, pred_all_spans, doc):
     """ Evaluate the detection of all instances of field info, using exact matches of text spans """
     # Find performance for each substance
     for substance in all_span_eval_data:
         # Find TP, FN, FP
         find_all_span_eval_data(all_span_eval_data, substance, gold_all_spans, pred_all_spans, doc)
 
+        '''
         # Precision, recall
         all_span_eval_data[substance].calculate_precision_recall_f1()
 
@@ -127,6 +135,7 @@ def evaluate_all_spans(all_span_eval_data, gold_all_spans, pred_all_spans, doc):
 
     # Total across substances
     find_total_field_performance(all_span_eval_data, ATTRIB_ALL_SPAN_EVAL_FILENAME)
+    '''
 
 
 def find_all_span_eval_data(all_span_eval_data, substance, gold_all_spans, pred_all_spans, doc):
@@ -136,7 +145,7 @@ def find_all_span_eval_data(all_span_eval_data, substance, gold_all_spans, pred_
 
         # Check each predicted span for an equivalent in the gold
         for gold_span in gold_all_spans[substance]:
-            if pred_span.start == gold_span.start and pred_span.end == gold_span.end:
+            if pred_span.start == gold_span.start and pred_span.stop == gold_span.stop:
                 all_span_eval_data[substance].tp += 1
                 match_found = True
                 break
@@ -144,14 +153,14 @@ def find_all_span_eval_data(all_span_eval_data, substance, gold_all_spans, pred_
         # If none found, it's an FP
         if not match_found:
             all_span_eval_data[substance].fp += 1
-            all_span_eval_data[substance].fp_values.append(doc.id + " " + doc.text[pred_span.start:pred_span.end])
+            all_span_eval_data[substance].fp_values.append(doc.id + " " + doc.text[pred_span.start:pred_span.stop])
     # Find false neg
     for gold_span in gold_all_spans[substance]:
         match_found = False
 
         # Check each gold span for an equivalent in the predicted
         for pred_span in pred_all_spans[substance]:
-            if pred_span.start == gold_span.start and pred_span.end == gold_span.end:
+            if pred_span.start == gold_span.start and pred_span.stop == gold_span.stop:
                 match_found = True
                 break
 
@@ -161,13 +170,14 @@ def find_all_span_eval_data(all_span_eval_data, substance, gold_all_spans, pred_
             all_span_eval_data[substance].fn_values.append(doc.id + " " + doc.text[gold_span.start:gold_span.stop])
 
 
-def evaluate_all_spans_overlap(all_span_overlap_eval_data, gold_all_spans, pred_all_spans, doc):
+def collect_doc_all_spans_overlap_info(all_span_overlap_eval_data, gold_all_spans, pred_all_spans, doc):
     """ Evaluate the detection of all instances of field info, using matches based on overlap of text spans"""
     # Find performance for each substance
     for substance in all_span_overlap_eval_data:
         # Find TP, FN, FP
         find_all_span_eval_data(all_span_overlap_eval_data, substance, gold_all_spans, pred_all_spans, doc)
 
+        '''
         # Precision, recall
         all_span_overlap_eval_data[substance].calculate_precision_recall_f1()
 
@@ -176,6 +186,7 @@ def evaluate_all_spans_overlap(all_span_overlap_eval_data, gold_all_spans, pred_
 
     # Total across substances
     find_total_field_performance(all_span_overlap_eval_data, ATTRIB_ALL_SPAN_OVERLAP_EVAL_FILENAME)
+    '''
 
 
 def find_all_span_overlap_eval_data(all_span_eval_data, substance, gold_all_spans, pred_all_spans, doc):
@@ -226,3 +237,24 @@ def find_total_field_performance(eval_data_per_substance, output_file):
     # find and output precision, recall
     total_eval_data.calculate_precision_recall_f1()
     total_eval_data.output(output_file + "_total")
+
+
+def evaluate_total_performance(value_eval_data, value_span_eval_data, all_span_eval_data, all_span_overlap_eval_data):
+    for substance in SUBSTANCE_TYPES:
+        # Precision, recall
+        value_eval_data[substance].calculate_precision_recall_f1()
+        # value_span_eval_data[substance].calculate_precision_recall_f1()
+        all_span_eval_data[substance].calculate_precision_recall_f1()
+        all_span_overlap_eval_data[substance].calculate_precision_recall_f1()
+
+        # Output eval
+        value_eval_data[substance].output(ATTRIB_VALUE_EVAL_FILENAME + "_" + substance)
+        # value_span_eval_data[substance].output(ATTRIB_VALUE_SPAN_EVAL_FILENAME + "_" + substance)
+        all_span_eval_data[substance].output(ATTRIB_ALL_SPAN_EVAL_FILENAME + "_" + substance)
+        all_span_overlap_eval_data[substance].output(ATTRIB_ALL_SPAN_OVERLAP_EVAL_FILENAME + "_" + substance)
+
+    # Total across substances
+    find_total_field_performance(value_eval_data, ATTRIB_VALUE_EVAL_FILENAME)
+    # find_total_field_performance(value_span_eval_data, ATTRIB_VALUE_SPAN_EVAL_FILENAME)
+    find_total_field_performance(all_span_eval_data, ATTRIB_ALL_SPAN_EVAL_FILENAME)
+    find_total_field_performance(all_span_overlap_eval_data, ATTRIB_ALL_SPAN_OVERLAP_EVAL_FILENAME)

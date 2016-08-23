@@ -1,22 +1,17 @@
 from SystemUtilities.Parameter_Configuration import SURR_WORDS_WINDOW
 from Globals import *
-from DataModeling.DataModels import Attribute
+from DataModeling.DataModels import Attribute, Sentence
 
 
-def features(doc):
-    """ Features for data without annotations """
+def features(sent, previous_sent):
+    """ Features for data without annotations
+    @type sent: Sentence"""
     feature_sets = []
     attributes = []
 
-    previous_sent = None
-    for sent in doc.sent_list:
-        for event in sent.predicted_events:
-            for attrib_type in event.attributes:
-                attribs = event.attributes[attrib_type]
-                for attrib in attribs:
-                    add_attribute_feats(sent, attrib, previous_sent, feature_sets)
-                    attributes.append(attrib)
-        previous_sent = sent
+    for attrib in sent.sentence_attribs:
+        add_attribute_feats(sent, attrib, previous_sent, feature_sets)
+        attributes.append(attrib)
 
     return feature_sets, attributes
 

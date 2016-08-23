@@ -36,6 +36,7 @@ class Sentence(Data):
         self.span_in_doc_start = span_in_doc_start
         self.span_in_doc_end = span_in_doc_end
         self.sentence_attribs = list()
+        self.attributes_per_substance = {subst for subst in SUBSTANCE_TYPES}  # {substance: {attribute_name: [Attributes]}}
 
         self.keyword_hits = {}  # {substance_type : [KeywordHit objs]}
         for substance in SUBSTANCE_TYPES:
