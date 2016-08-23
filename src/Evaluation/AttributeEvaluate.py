@@ -19,7 +19,7 @@ def evaluate_attributes(patients):
                                        all_span_eval_data, all_span_overlap_eval_data)
 
         # Output total performance
-        evaluate_total_performance(value_eval_data, value_span_eval_data, all_span_eval_data,
+        evaluate_total_performance(attribute_type, value_eval_data, value_span_eval_data, all_span_eval_data,
                                    all_span_overlap_eval_data)
 
 
@@ -239,7 +239,7 @@ def find_total_field_performance(eval_data_per_substance, output_file):
     total_eval_data.output(output_file + "_total")
 
 
-def evaluate_total_performance(value_eval_data, value_span_eval_data, all_span_eval_data, all_span_overlap_eval_data):
+def evaluate_total_performance(attribute_type, value_eval_data, value_span_eval_data, all_span_eval_data, all_span_overlap_eval_data):
     for substance in SUBSTANCE_TYPES:
         # Precision, recall
         value_eval_data[substance].calculate_precision_recall_f1()
@@ -248,10 +248,10 @@ def evaluate_total_performance(value_eval_data, value_span_eval_data, all_span_e
         all_span_overlap_eval_data[substance].calculate_precision_recall_f1()
 
         # Output eval
-        value_eval_data[substance].output(ATTRIB_VALUE_EVAL_FILENAME + "_" + substance)
-        # value_span_eval_data[substance].output(ATTRIB_VALUE_SPAN_EVAL_FILENAME + "_" + substance)
-        all_span_eval_data[substance].output(ATTRIB_ALL_SPAN_EVAL_FILENAME + "_" + substance)
-        all_span_overlap_eval_data[substance].output(ATTRIB_ALL_SPAN_OVERLAP_EVAL_FILENAME + "_" + substance)
+        value_eval_data[substance].output(ATTRIB_VALUE_EVAL_FILENAME + "_" + substance + "_" + attribute_type)
+        # value_span_eval_data[substance].output(ATTRIB_VALUE_SPAN_EVAL_FILENAME + "_" + substance + "_" + attribute_type)
+        all_span_eval_data[substance].output(ATTRIB_ALL_SPAN_EVAL_FILENAME + "_" + substance + "_" + attribute_type)
+        all_span_overlap_eval_data[substance].output(ATTRIB_ALL_SPAN_OVERLAP_EVAL_FILENAME + "_" + substance + "_" + attribute_type)
 
     # Total across substances
     find_total_field_performance(value_eval_data, ATTRIB_VALUE_EVAL_FILENAME)

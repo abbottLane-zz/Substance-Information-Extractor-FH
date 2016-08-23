@@ -3,10 +3,12 @@ will = "will"
 spencer = "spencer"
 emily = "emily"
 
+
 # Runtime environments
 class RUNTIME_ENV:
     TRAIN = "train"
     EXECUTE = "execute"
+    TEST = "test"
 
 
 # Data Loading
