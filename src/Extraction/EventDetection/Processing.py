@@ -1,12 +1,12 @@
 import re
 import string
 from SystemUtilities.Globals import *
-from SystemUtilities.Configuration import flor_sentence_level_annotations_dir
+from SystemUtilities.Configuration import flors_sent_level_annotations_dir
 import json
 
 
 def load_flor_patients():
-    with open(flor_sentence_level_annotations_dir) as data_file:
+    with open(flors_sent_level_annotations_dir) as data_file:
         data = json.load(data_file)
     return data
 
