@@ -31,6 +31,7 @@ if USER == spencer:
     test_csv = "C:\Users\wlane\Documents\Substance_IE_Data\FLOR_filtered_tsv\\flor_test.csv"
     train_csv = "C:\Users\wlane\Documents\Substance_IE_Data\FLOR_filtered_tsv\\flor_train.csv"
     ADJUDICATED_BATCH_0 = data_dir + r"SystemOutput\adj_batch_0.p"
+    flors_sent_level_annotations_dir = data_dir + r"sentence_level_annotations.json"
     # Output files
     SUBSTANCE_IE_DATA_FOLDER = data_dir
     FLORIAN_FULL_DATA = florian_dir + r"sortedNotes\sortedNotes\combined\\"
@@ -70,6 +71,7 @@ elif USER == will:
     dev_csv = "C:\Users\wlane\Documents\Substance_IE_Data\FLOR_filtered_tsv\\flor_dev.csv"
     test_csv = "C:\Users\wlane\Documents\Substance_IE_Data\FLOR_filtered_tsv\\flor_test.csv"
     train_csv = "C:\Users\wlane\Documents\Substance_IE_Data\FLOR_filtered_tsv\\flor_train.csv"
+    flors_sent_level_annotations_dir = r"C:\Users\wlane\Documents\Substance_IE_Data\resources\Florians_sentence_level_annotations\sentence_level_annotations.json"
     # Output files
     SUBSTANCE_IE_DATA_FOLDER = r"C:\Users\wlane\Documents\Substance_IE_Data\\"
     FLORIAN_FULL_DATA = "C:\Users\wlane\Documents\Florian_smoking\smoking_status\\full_data_set\\"
