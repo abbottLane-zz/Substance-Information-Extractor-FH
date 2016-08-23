@@ -13,16 +13,14 @@ from SystemUtilities.Configuration import *
 
 
 def main():
-    # Set runtime ENV
-    ENV = RUNTIME_ENV.EXECUTE
+    # Set which division of data to use
+    DATA_SPLIT = "Test"
 
-    '''
     # Load Data
-    patients = DataLoader.main(ENV)
+    patients = DataLoader.main(DATA_SPLIT)
 
     Shelver.shelve_patients(patients)
-    '''
-    patients = Shelver.unshelve_patients()
+    # patients = Shelver.unshelve_patients()
 
     # Determine sentence level info
     extract_sentence_level_info(patients)
@@ -36,7 +34,7 @@ def main():
     Shelver.shelve_full_patients(patients)
     # patients = Shelver.unshelve_full_patients()
 
-    if ENV == RUNTIME_ENV.EXECUTE:
+    if ENV != RUNTIME_ENV.EXECUTE:
         evaluate_extraction(patients)
 
     return patients
