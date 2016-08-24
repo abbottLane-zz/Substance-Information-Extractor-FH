@@ -38,18 +38,40 @@ def find_attributes_per_substance(classifier, feature_map, sent, previous_sent):
 
     # Get classifications
     for attrib, features in zip(attributes, attrib_feature_sets):
-        classifications = Classification.classify_instance(classifier, feature_map, features)
 
-        # Assign attribute to substance identified
-        classified_substance = classifications[0]
-        if classified_substance in SUBSTANCE_TYPES:
+        # If there is only one substance for the type of attribute, just assign to that substance
+        if attrib.type in KNOWN_SUBSTANCE_ATTRIBS:
+            add_attrib_with_known_substance(attribs_found_per_substance, attrib)
 
-            if attrib.type not in attribs_found_per_substance[classified_substance]:
-                attribs_found_per_substance[classified_substance][attrib.type] = []
-
-            attribs_found_per_substance[classified_substance][attrib.type].append(attrib)
+        # Else, use machine learning classifier
+        else:
+            add_attrib_using_classifier(classifier, feature_map, features, attribs_found_per_substance, attrib)
 
     return attribs_found_per_substance
+
+
+def add_attrib_with_known_substance(attribs_found_per_substance, attrib):
+    """ For an attribute that can only be one substance, simply assign to that substance """
+    substance = KNOWN_SUBSTANCE_ATTRIBS[attrib.type]
+
+    if attrib.type not in attribs_found_per_substance[substance]:
+        attribs_found_per_substance[substance][attrib.type] = []
+
+    attribs_found_per_substance[substance][attrib.type].append(attrib)
+
+
+def add_attrib_using_classifier(classifier, feature_map, features, attribs_found_per_substance, attrib):
+    """ For an attribute that can be different substances, using ML classifier """
+    classifications = Classification.classify_instance(classifier, feature_map, features)
+
+    # Assign attribute to substance identified
+    classified_substance = classifications[0]
+    if classified_substance in SUBSTANCE_TYPES:
+
+        if attrib.type not in attribs_found_per_substance[classified_substance]:
+            attribs_found_per_substance[classified_substance][attrib.type] = []
+
+        attribs_found_per_substance[classified_substance][attrib.type].append(attrib)
 
 
 def put_attributes_in_sent_events(sent, attribs_per_substance):

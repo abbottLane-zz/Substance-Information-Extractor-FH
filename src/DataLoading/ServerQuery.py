@@ -42,6 +42,7 @@ def field_query_results(all_fields):
 
     filtered_fields = filter_fields(all_fields)
 
+    # Find fields per annotator
     for field in filtered_fields:
         annotator = field[CREATED_BY]
         if annotator not in field_results_per_annotator:
@@ -175,9 +176,9 @@ def add_field_to_event(field, substance, event):
 
 def match_reports_to_patients(events_per_report, all_reports):
     doc_events_per_patient = {annotator: {} for annotator in events_per_report}  # {annotator: {mrn: {doc: [Event]}}}
-    iaa_reports = [r for r in all_reports[ROWS] if r[JOB_ID] in JOB_IDS]
+    reports = [r for r in all_reports[ROWS] if r[JOB_ID] in JOB_IDS]
 
-    for report in iaa_reports:
+    for report in reports:
         add_events_to_patient(report, report[REPORT_ID], events_per_report, doc_events_per_patient)
 
     return doc_events_per_patient
