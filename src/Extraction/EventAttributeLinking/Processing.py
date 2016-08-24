@@ -1,4 +1,5 @@
 from SystemUtilities.Parameter_Configuration import SURR_WORDS_WINDOW
+from SystemUtilities.Globals import KNOWN_SUBSTANCE_ATTRIBS
 from Globals import *
 from DataModeling.DataModels import Attribute, Sentence
 
@@ -34,13 +35,14 @@ def features_and_labels(patients):
 def add_sentence_feats_and_labels(sent, feature_sets, labels, previous_sent, doc):
     for gold_event in sent.gold_events:
         for attrib_type in gold_event.attributes:
-            # create an attrib object for every region highlighted by annotator for the field
-            attributes = highlighted_attributes(gold_event.attributes[attrib_type], doc)
+            if attrib_type not in KNOWN_SUBSTANCE_ATTRIBS:
+                # create an attrib object for every region highlighted by annotator for the field
+                attributes = highlighted_attributes(gold_event.attributes[attrib_type], doc)
 
-            # Add features and the label for each attribute object
-            for attrib in attributes:
-                add_attribute_feats(sent, attrib, previous_sent, feature_sets)
-                labels.append(gold_event.substance_type)
+                # Add features and the label for each attribute object
+                for attrib in attributes:
+                    add_attribute_feats(sent, attrib, previous_sent, feature_sets)
+                    labels.append(gold_event.substance_type)
 
 
 def highlighted_attributes(annotated_attribute, doc):

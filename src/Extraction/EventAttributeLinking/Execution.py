@@ -39,8 +39,11 @@ def find_attributes_per_substance(classifier, feature_map, sent, previous_sent):
     # Get classifications
     for attrib, features in zip(attributes, attrib_feature_sets):
 
+        # If there is only one substance for the type of attribute, just assign to that substance
         if attrib.type in KNOWN_SUBSTANCE_ATTRIBS:
             add_attrib_with_known_substance(attribs_found_per_substance, attrib)
+
+        # Else, use machine learning classifier
         else:
             add_attrib_using_classifier(classifier, feature_map, features, attribs_found_per_substance, attrib)
 
