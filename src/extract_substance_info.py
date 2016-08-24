@@ -13,27 +13,27 @@ from SystemUtilities.Configuration import *
 
 
 def main():
-    '''
-    # Set which division of data to use
-    DATA_SPLIT = "Test"
 
-    # Load Data
-    patients = DataLoader.main(DATA_SPLIT)
+    # # Set which division of data to use
+    # DATA_SPLIT = "Test"
+    #
+    # # Load Data
+    # patients = DataLoader.main(DATA_SPLIT)
+    #
+    # Shelver.shelve_patients(patients)
+    # # patients = Shelver.unshelve_patients()
+    #
+    # # Determine sentence level info
+    # extract_sentence_level_info(patients)
+    #
+    # # Determine document level info
+    # DocFromSents.get_doc_level_info(patients)
+    #
+    # # Determine patient level info
+    # PatientFromDocs.get_patient_level_info(patients)
+    #
+    # Shelver.shelve_full_patients(patients)
 
-    Shelver.shelve_patients(patients)
-    # patients = Shelver.unshelve_patients()
-
-    # Determine sentence level info
-    extract_sentence_level_info(patients)
-
-    # Determine document level info
-    DocFromSents.get_doc_level_info(patients)
-
-    # Determine patient level info
-    PatientFromDocs.get_patient_level_info(patients)
-
-    Shelver.shelve_full_patients(patients)
-    '''
     patients = Shelver.unshelve_full_patients()
 
     if ENV == RUNTIME_ENV.TEST:
@@ -61,8 +61,11 @@ def extract_sentence_level_info(patients):
 
 
 def evaluate_extraction(patients):
-    # Event detection & Status classification
-    EventAndStatusEvaluate.evaluate_status_detection_and_classification(patients)
+    # Event detection
+    EventAndStatusEvaluate.evaluate_event_detection(patients)
+
+    # Status classification
+    EventAndStatusEvaluate.evaluate_status_classification(patients)
 
     # Extraction of each attribute
     AttributeEvaluate.evaluate_attributes(patients)

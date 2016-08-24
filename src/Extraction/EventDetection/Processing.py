@@ -46,9 +46,11 @@ def sentence_features_and_labels(patients):
 
     # grab sentence features and labels
     count=0
+    sent_count=0
     for patient in patients:
         for doc in patient.doc_list:
             for sent in doc.sent_list:
+                sent_count += 1
                 # Features per sentence
                 sent_features = get_features(sent)
                 sent_feat_dicts.append(sent_features)
@@ -62,6 +64,7 @@ def sentence_features_and_labels(patients):
                     else:
                         labels_per_subst[substance_type].append(NO_SUBSTANCE)
     print ("Training on number of sentences with subs abuse info: " + str(count))
+    print ("Out of " + str(sent_count) + " total sentences")
     return sent_feat_dicts, labels_per_subst
 
 def flor_get_features(sent_text):
