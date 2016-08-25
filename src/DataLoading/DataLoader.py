@@ -94,10 +94,74 @@ def get_doc_sentences(doc):
 
 
 def split_doc_text(text):
-    text= re.sub("\r", "",text) # Carriage Returns are EVIL !!!!!
+    text = re.sub("\r", "", text)  # Carriage Returns are EVIL !!!!!
     sentences = PunktSentenceTokenizer().sentences_from_text(text.encode("utf8"))
     spans = list(PunktSentenceTokenizer().span_tokenize(text.encode("utf8")))
+    sentences, spans = split_by_double_newline(sentences, spans)
     return sentences, spans
+
+
+def split_by_double_newline(sentences, spans):
+    """ Take the sentences split by NLTK and further split them by double newline chars """
+    split_sents = []
+    split_spans = []
+
+    for sent, span in zip(sentences, spans):
+        doc_begin_index = span[0]
+        nltk_sent_begin_index = 0
+        chars = list(sent)
+
+        # Find any splits in the sentences
+        last_char = ""
+        for nltk_sent_index, char in enumerate(chars):
+            # Check for double newline
+            doc_begin_index, nltk_sent_begin_index = check_for_double_newline(char, last_char, doc_begin_index,
+                                                                              nltk_sent_index, nltk_sent_begin_index,
+                                                                              chars, split_sents, split_spans)
+            last_char = char
+
+        # Add the last sent in the chunk
+        doc_end_index = span[1]
+        nltk_sent_index = len(chars)
+
+        add_current_sent_and_span(doc_begin_index, doc_end_index, nltk_sent_begin_index, nltk_sent_index, chars,
+                                  split_sents, split_spans)
+
+    return split_sents, split_spans
+
+
+def check_for_double_newline(char, last_char, doc_begin_index, nltk_sent_index, nltk_sent_begin_index, chars,
+                             split_sents, split_spans):
+
+    if char == '\n' and last_char == '\n':
+        doc_end_index = doc_begin_index + nltk_sent_index - nltk_sent_begin_index
+        add_current_sent_and_span(doc_begin_index, doc_end_index, nltk_sent_begin_index, nltk_sent_index, chars,
+                                  split_sents, split_spans)
+
+        nltk_sent_begin_index = nltk_sent_index + 1
+        doc_begin_index = doc_end_index + 1
+
+    return doc_begin_index, nltk_sent_begin_index
+
+
+def add_current_sent_and_span(doc_begin_index, doc_end_index, nltk_sent_begin_index, nltk_sent_end_index,
+                              chars, split_sents, split_spans):
+
+    span = (doc_begin_index, doc_end_index)
+    sent = "".join(chars[nltk_sent_begin_index:nltk_sent_end_index + 1])
+
+    if sent:
+        split_sents.append(sent)
+        split_spans.append(span)
+
+    # This is a dumb thing to handle the case that the doc ends with a double newline
+    else:
+        # Increment the end of the final span
+        end_span_begin, end_span_end = split_spans[-1]
+        del split_spans[-1]
+
+        end_span_end += 1
+        split_spans.append((end_span_begin, end_span_end))
 
 
 def assign_goldLabels_to_sents(sents, doc):
