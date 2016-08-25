@@ -3,7 +3,7 @@
 from SystemUtilities.Globals import *
 
 # User-specific configuration
-USER = spencer
+USER = will
 
 # Environment/run type
 ENV = RUNTIME_ENV.TEST
@@ -79,10 +79,10 @@ elif USER == will:
     # Evaluation
     SENT_EVENT_DETECT_EVAL_FILENAME = r"C:\Users\wlane\Documents\Substance_IE_Data\Evaluation\SentEventDetectionEval"
     DOC_EVENT_DETECT_EVAL_FILENAME = r"C:\Users\wlane\Documents\Substance_IE_Data\Evaluation\DocEventDetectionEval"
-    ATTRIB_VALUE_EVAL_FILENAME = data_dir + r"SystemOutput\Evaluation\AttribValueEval"
-    ATTRIB_VALUE_SPAN_EVAL_FILENAME = data_dir + r"SystemOutput\Evaluation\AttribValueSpanEval"
-    ATTRIB_ALL_SPAN_EVAL_FILENAME = data_dir + r"SystemOutput\Evaluation\AttribAllSpanEval"
-    ATTRIB_ALL_SPAN_OVERLAP_EVAL_FILENAME = data_dir + r"SystemOutput\Evaluation\AttribAllSpanOverlapEval"
+    ATTRIB_VALUE_EVAL_FILENAME = data_dir + r"Evaluation\AttribValueEval"
+    ATTRIB_VALUE_SPAN_EVAL_FILENAME = data_dir + r"Evaluation\AttribValueSpanEval"
+    ATTRIB_ALL_SPAN_EVAL_FILENAME = data_dir + r"Evaluation\AttribAllSpanEval"
+    ATTRIB_ALL_SPAN_OVERLAP_EVAL_FILENAME = data_dir + r"Evaluation\AttribAllSpanOverlapEval"
     # IAA
     IAA_DISAGREEMENT_LOG = r"C:\Users\wlane\Documents\Substance_IE_Data\disagreement_log.txt"
     IAA_OUT_FILE = r"C:\Users\wlane\Documents\Substance_IE_Data\IAA.txt"

@@ -2,7 +2,21 @@ from Evaluate import *
 from SystemUtilities.Configuration import SENT_EVENT_DETECT_EVAL_FILENAME, DOC_EVENT_DETECT_EVAL_FILENAME
 
 
-def evaluate_status_detection_and_classification(patients):
+def evaluate_status_classification(patients):
+    """ Evaluate sentence and document level status"""
+    sentence_eval_data = {subst: EvaluationData() for subst in SUBSTANCE_TYPES}
+    doc_eval_data = {subst: EvaluationData() for subst in SUBSTANCE_TYPES}
+    # Find tp, fp, fn
+    for patient in patients:
+        for doc in patient.doc_list:
+            # Evaluate each document
+            evaluate_doc_status_classification(doc, doc_eval_data)
+
+            # Evaluate each sentence
+            for sent in doc.sent_list:
+                evaluate_sentence_status_classification(sent, sentence_eval_data)
+
+def evaluate_event_detection(patients):
     """ Evaluate sentence and document level substance status info detection """
     sentence_eval_data = {subst: EvaluationData() for subst in SUBSTANCE_TYPES}
     doc_eval_data = {subst: EvaluationData() for subst in SUBSTANCE_TYPES}
@@ -35,6 +49,10 @@ def calculate_and_output_eval(sentence_eval_data, doc_eval_data):
         doc_eval_data[substance].output(doc_filename)
 
 
+def evaluate_sentence_status_classification(sent, sentence_eval_data):
+    pass
+
+
 def evaluate_sentence_event_detection(sent, sentence_eval_data):
     gold_substs = [g.substance_type for g in sent.gold_events]  # find_sent_gold_substs(sent, doc)
     predicted_substs = [p.substance_type for p in sent.predicted_events]
@@ -42,13 +60,23 @@ def evaluate_sentence_event_detection(sent, sentence_eval_data):
     compare_gold_and_predicted_substances(gold_substs, predicted_substs, sentence_eval_data, sent.text)
 
 
+def evaluate_doc_status_classification(doc, doc_eval_data):
+    gold_substs = {event.substance_type for event in doc.gold_events
+                   if (event.status and event.status != UNKNOWN)}
+    predicted_substs = {event.substance_type for event in doc.predicted_events}
+    pass
+
+
 def evaluate_doc_event_detection(doc, doc_eval_data):
     gold_substs = {event.substance_type for event in doc.gold_events
                    if (event.status and event.status != UNKNOWN)}
     predicted_substs = {event.substance_type for event in doc.predicted_events}
 
-    compare_gold_and_predicted_substances(gold_substs, predicted_substs, doc_eval_data, doc.id)
+    compare_gold_and_predicted_status(gold_substs, predicted_substs, doc_eval_data, doc.id)
 
+def compare_gold_and_predicted_status(gold_substs, predicted_substs, eval_data_per_substance, text):
+
+    pass
 
 def compare_gold_and_predicted_substances(gold_substs, predicted_substs, eval_data_per_substance, text):
     """ Record matches and mismatches for each substance """

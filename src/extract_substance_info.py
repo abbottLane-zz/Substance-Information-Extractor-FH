@@ -13,6 +13,7 @@ from SystemUtilities.Configuration import *
 
 
 def main():
+    '''
     # Set which division of data to use
     DATA_SPLIT = "Test"
 
@@ -32,7 +33,8 @@ def main():
     PatientFromDocs.get_patient_level_info(patients)
 
     Shelver.shelve_full_patients(patients)
-    # patients = Shelver.unshelve_full_patients()
+    '''
+    patients = Shelver.unshelve_full_patients()
 
     if ENV == RUNTIME_ENV.TEST:
         evaluate_extraction(patients)
@@ -59,8 +61,11 @@ def extract_sentence_level_info(patients):
 
 
 def evaluate_extraction(patients):
-    # Event detection & Status classification
-    EventAndStatusEvaluate.evaluate_status_detection_and_classification(patients)
+    # Event detection
+    EventAndStatusEvaluate.evaluate_event_detection(patients)
+
+    # Status classification
+    EventAndStatusEvaluate.evaluate_status_classification(patients)
 
     # Extraction of each attribute
     AttributeEvaluate.evaluate_attributes(patients)
