@@ -36,5 +36,5 @@ class EvaluationData:
 def output_misclassified_elements(elements, out_file):
     """ Output FN or FP elements for error analysis and debugging """
     for element in elements:
-        out_file.write("++ " + element + "\n")
+        out_file.write("++ " + element.encode("utf8") + "\n")
     out_file.write("\n")

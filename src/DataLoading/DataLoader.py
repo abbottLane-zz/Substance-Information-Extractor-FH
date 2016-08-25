@@ -43,7 +43,7 @@ def main(environment):
 def get_temporary_train_and_test_divisions(patients):
     sorted_list = sorted(patients)
     doc_count = len(sorted_list)
-    end_test_span = doc_count / 3 # the first 1/3 of the sorted data is the test_set
+    end_test_span = doc_count / 4 # the first 1/4 of the sorted data is the test_set
     test_span = (0, end_test_span)
 
     test_set = set()

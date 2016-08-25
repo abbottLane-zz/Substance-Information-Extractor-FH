@@ -48,7 +48,7 @@ def test_model_in_mem(stanford_ner_path, model_name, sent_obj, type):
         start = match.start()
         end = match.end()
         word = match.group(0)
-        tokenized_text.append(word.rstrip(",.;:)"))
+        tokenized_text.append(word.rstrip(",.;:)("))
         spans.append((start,end))
     tokenized_text = strip_sec_headers_tokenized_text(tokenized_text)
     classified_text = stanford_tagger.tag(tokenized_text)

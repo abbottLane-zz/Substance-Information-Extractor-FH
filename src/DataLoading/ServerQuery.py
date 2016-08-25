@@ -159,8 +159,9 @@ def create_events():
 def fill_events(fields_per_report, report_id, substances_of_fields, events_per_report):
     fields = fields_per_report[report_id]
     for field in fields:
-        substance = substances_of_fields[field.name]
-        add_field_to_event(field, substance, events_per_report[report_id][substance])
+        if field.name in substances_of_fields:
+            substance = substances_of_fields[field.name]
+            add_field_to_event(field, substance, events_per_report[report_id][substance])
 
 
 def add_field_to_event(field, substance, event):
