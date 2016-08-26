@@ -13,7 +13,7 @@ class FieldIAAInfo:
 
 
 def calculate_iaa(annotations, num_of_annotators):
-    """Use Fleiss Kappa for several annotator interrater agreement"""
+    """ Use Fleiss Kappa for several annotator interrater agreement """
     value_infos, highlight_infos = field_iaa_info(annotations)
 
     # kappa for each individual field

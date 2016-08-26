@@ -40,6 +40,8 @@ if USER == spencer:
     # Evaluation
     SENT_EVENT_DETECT_EVAL_FILENAME = data_dir + r"SystemOutput\Evaluation\EventDetection\SentEventDetectionEval"
     DOC_EVENT_DETECT_EVAL_FILENAME = data_dir + r"SystemOutput\Evaluation\EventDetection\DocEventDetectionEval"
+    SENT_STATUS_CLASSF_EVAL_FILENAME = data_dir + r"SystemOutput\Evaluation\SentStatusClassificationEval"
+    DOC_STATUS_CLASSF_EVAL_FILENAME = data_dir + r"SystemOutput\Evaluation\DocStatusClassificationEval"
     ATTRIB_VALUE_EVAL_FILENAME = data_dir + r"SystemOutput\Evaluation\AttributeValues\AttribValueEval"
     ATTRIB_VALUE_SPAN_EVAL_FILENAME = data_dir + r"SystemOutput\Evaluation\AttributeValueSpans\AttribValueSpanEval"
     ATTRIB_ALL_SPAN_EVAL_FILENAME = data_dir + r"SystemOutput\Evaluation\AttributeSpans\AttribAllSpanEval"
@@ -88,6 +90,8 @@ elif USER == will:
     # IAA
     IAA_DISAGREEMENT_LOG = r"C:\Users\wlane\Documents\Substance_IE_Data\disagreement_log.txt"
     IAA_OUT_FILE = r"C:\Users\wlane\Documents\Substance_IE_Data\IAA.txt"
+    IAA_OUT_FILE = data_dir + "_____WILLLS SOMETHKING ______________"
+    ADJUDICATION_DIR = data_dir + r"_____WWILLLLS SOMETHIGN______________"
     # Stanford tools
     STANFORD_NER_PATH = r"C:\Users\wlane\Documents\Substance_IE_Data\stanford-ner-2015-12-09\\stanford-ner.jar"
     STANFORD_NER_LIB_ALL = r"C:\Users\wlane\Documents\Substance_IE_Data\stanford-ner-2015-12-09\lib\*"

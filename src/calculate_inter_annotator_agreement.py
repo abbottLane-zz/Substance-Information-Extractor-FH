@@ -5,11 +5,7 @@ def main():
     # Get filled fields from LabKey
     annotations = ServerQuery.get_annotations_from_server()
 
-    # TODO -- filter for batch 0 job ids
-    '''
-    # by job run ID
-    right_job_id_fields = [f for f in all_fields[ROWS] if f[REPORT_JOB_ID] in IAA_JOB_IDS]
-    '''
+    print("Make sure DataLoadingGlobals.JOB_IDS has the interannotated batches for IAA")
 
     # Reformat data structure for IAA
     iaa_annotations, num_of_annotators = restructure_annotations_for_iaa(annotations)
@@ -19,6 +15,7 @@ def main():
 
 
 def restructure_annotations_for_iaa(annotations):
+    """ Reformat results from server query to match what IAA calculation is expecting"""
     iaa_annotations = {}
     num_of_annotators = len(annotations.keys())
 

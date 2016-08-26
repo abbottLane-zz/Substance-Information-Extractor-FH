@@ -111,7 +111,7 @@ def create_patient_attributes(all_doc_attribs, all_doc_ids, patient_event):
         doc_ids = all_doc_ids[field]
 
         if doc_attribs:
-            # Choose the value for the paitent level field
+            # Choose the value for the patient level field
             selected_attrib, doc_id = select_patient_field_value(doc_attribs, doc_ids)
 
             # Create the patient attribute
@@ -121,6 +121,7 @@ def create_patient_attributes(all_doc_attribs, all_doc_ids, patient_event):
 
 
 def select_patient_field_value(doc_attribs, doc_ids):
+    # TEMPORARY -- grab first attribute seen for field
     selected_attrib = doc_attribs[0]
     doc_id = doc_ids[0]
     for attrib, doc_id in zip(doc_attribs, doc_ids):
