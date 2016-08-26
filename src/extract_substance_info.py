@@ -1,5 +1,7 @@
 # extract and output substance information using the models trained in train_models.py
 # output evaluation on test data or output results on unlabeled data
+import nltk
+
 from DataLoading import DataLoader as DataLoader
 from DataModeling.DataModels import *
 from Evaluation import EventAndStatusEvaluate, AttributeEvaluate
@@ -13,6 +15,7 @@ from SystemUtilities.Configuration import *
 
 
 def main():
+    print "Using NLTK v"+nltk.__version__
     # Set which division of data to use
     DATA_SPLIT = "Test"
 
@@ -32,7 +35,7 @@ def main():
     PatientFromDocs.get_patient_level_info(patients)
 
     Shelver.shelve_full_patients(patients)
-    # patients = Shelver.unshelve_full_patients()
+    #patients = Shelver.unshelve_full_patients()
 
     if ENV == RUNTIME_ENV.TEST:
         evaluate_extraction(patients)
