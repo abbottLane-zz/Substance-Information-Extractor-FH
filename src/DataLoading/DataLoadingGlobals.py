@@ -20,4 +20,4 @@ REPORT_JOB_ID = 'ReportId/JobRunId'
 JOB_ID = "JobRunId"
 
 # IAA_JOB_IDS = {95, 96, 97}
-JOB_IDS = {95} #, 98, 99, 100, 101, 102, 105, 106}
+JOB_IDS = {95, 98, 99, 100, 101, 102, 105, 106}
