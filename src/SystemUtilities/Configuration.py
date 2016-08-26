@@ -77,6 +77,8 @@ elif USER == will:
     FLORIAN_FULL_DATA = "C:\Users\wlane\Documents\Florian_smoking\smoking_status\\full_data_set\\"
     DOCS_NEEDING_ANNOTATION_DIR =  r"C:\Users\wlane\Documents\Substance_IE_Data\Docs_to_annotate\\"
     # Evaluation
+    SENT_STATUS_CLASSF_EVAL_FILENAME =r"C:\Users\wlane\Documents\Substance_IE_Data\Evaluation\SentStatusClassificationEval"
+    DOC_STATUS_CLASSF_EVAL_FILENAME = r"C:\Users\wlane\Documents\Substance_IE_Data\Evaluation\DocStatusClassificationEval"
     SENT_EVENT_DETECT_EVAL_FILENAME = r"C:\Users\wlane\Documents\Substance_IE_Data\Evaluation\SentEventDetectionEval"
     DOC_EVENT_DETECT_EVAL_FILENAME = r"C:\Users\wlane\Documents\Substance_IE_Data\Evaluation\DocEventDetectionEval"
     ATTRIB_VALUE_EVAL_FILENAME = data_dir + r"Evaluation\AttribValueEval"
