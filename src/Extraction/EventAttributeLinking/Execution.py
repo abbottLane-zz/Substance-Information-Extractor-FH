@@ -94,7 +94,7 @@ def attributes_to_doc_level(doc):
     for sent in doc.sent_list:
         for event in sent.predicted_events:
             for attrib_name, attrib_list in event.attributes.items():
-                doc_attribute = create_document_attribute(attrib_list)
+                doc_attribute = create_document_attribute(attrib_list, sent.span_in_doc_start)
                 doc_attribs_per_substance[event.substance_type][attrib_name] = doc_attribute
 
     # Add doc attribs to doc object
@@ -103,9 +103,9 @@ def attributes_to_doc_level(doc):
             event.attributes[attrib_name] = attrib_obj
 
 
-def create_document_attribute(all_values_for_field):
+def create_document_attribute(all_values_for_field, span_in_doc_start):
     # Choose document level value
-    selected_value = select_doc_value_from_all_values(all_values_for_field)
+    selected_value = select_doc_value_from_all_values(all_values_for_field, span_in_doc_start)
 
     # Create document level attribute object
     document_attribute = DocumentAttribute(selected_value.type, selected_value.span_start, selected_value.span_end,
@@ -114,7 +114,12 @@ def create_document_attribute(all_values_for_field):
     return document_attribute
 
 
-def select_doc_value_from_all_values(all_attributes):
+def select_doc_value_from_all_values(all_attributes, span_in_doc_start):
+    """@type all_attributes: List(Attribute) """
     # TODO -- better selection criteria: prefer by precision then prefer by amount
     selected_value = all_attributes[0]
+
+    # Add index within document to index within sentence
+    selected_value.span_start += span_in_doc_start
+    selected_value.span_end += span_in_doc_start
     return selected_value

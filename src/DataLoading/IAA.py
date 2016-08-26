@@ -267,7 +267,7 @@ def field_disagreements_per_doc(disagreements, row, column_value_map, substance,
 
 
 def log_disagreements(value_disagreements, span_disagreements):
-    """ Output disagreements to a log file """
+    """ Output disagreements to a log file -- Span info is commented out"""
     # Get field value and span disagreements
     docs_with_disagreements = set(value_disagreements.keys()) | set(span_disagreements.keys())
 

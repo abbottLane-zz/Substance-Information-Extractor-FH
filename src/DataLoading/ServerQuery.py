@@ -6,7 +6,7 @@ from DataLoadingGlobals import *
 
 def get_annotations_from_server():
     """
-    :return: {annotator_id: {MRN: {doc_id: [Event]}}} where there is a gold Event for each substance type for each doc
+    :return: {annotator_id: {MRN: {doc_id: [Event]}}} -- the list of events has one gold Event for each substance
     """
     context = labkey.utils.create_server_context(SERVER, PROJECT, use_ssl=True)
 
@@ -119,7 +119,7 @@ def convert_fields_to_substance_events(fields_per_report):
 
 
 def find_substance_field_names():
-    """Find the set of LabKey field names for each substance type"""
+    """ Find the set of LabKey field names for each substance type """
     fields_per_subst = {}
     for subst in SUBSTANCE_TYPES:
         # Status

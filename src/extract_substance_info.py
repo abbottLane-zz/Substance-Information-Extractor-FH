@@ -13,7 +13,7 @@ from SystemUtilities.Configuration import *
 
 
 def main():
-    '''
+    """
     # Set which division of data to use
     DATA_SPLIT = "Test"
 
@@ -33,7 +33,7 @@ def main():
     PatientFromDocs.get_patient_level_info(patients)
 
     Shelver.shelve_full_patients(patients)
-    '''
+    # """
     patients = Shelver.unshelve_full_patients()
 
     if ENV == RUNTIME_ENV.TEST:
