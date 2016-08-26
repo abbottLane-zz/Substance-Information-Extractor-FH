@@ -18,10 +18,10 @@ def extract(patients, model_path=ATTRIB_EXTRACTION_DIR_HOME,
 
         #TODO: alternatively classify all sentences at once? is it faster?
         model_name = model_path + "Models/" + "model-" + type + ".ser.gz"
-        classify_sentences(all_sentences, model_name, stanford_ner_path, type)
+        #classify_sentences(all_sentences, model_name, stanford_ner_path, type)
 
-        # for sentobj in all_sentences:
-        #     test_model_in_mem(stanford_ner_path, model_name, sentobj, type)
+        for sentobj in all_sentences:
+            test_model_in_mem(stanford_ner_path, model_name, sentobj, type)
     print("Finished CRF classification")
 
 
@@ -63,6 +63,12 @@ def write_crf_classified_stuff_to_file(tokd_sentences, classified_text, type):
     pass
 
 
+def add_period_to_each_sentence(tokd_sentences):
+    for sent_list in tokd_sentences:
+        sent_list.append('.')
+    return tokd_sentences
+
+
 def classify_sentences(all_sentences, model_name, stanford_ner_path, type):
     print("\tClassifying " + type + " attributes..")
     stanford_tagger = StanfordNERTagger(
@@ -70,10 +76,11 @@ def classify_sentences(all_sentences, model_name, stanford_ner_path, type):
         stanford_ner_path,
         encoding='utf-8')
 
-    tokd_sentences = list()
+    tokd_sentences = []
     for sent in all_sentences:
         tokenized_text = tokenize_sentence(sent)
         tokd_sentences.append(tokenized_text)
+
 
     classified_text = stanford_tagger.tag_sents(tokd_sentences)
 
