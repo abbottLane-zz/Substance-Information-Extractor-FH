@@ -36,7 +36,7 @@ def remove_date_dashes(event_date):
 
 def get_blobs():
     # read blob file into memory
-    with open(c.RAW_DATA_DIR, "rb") as f:
+    with open(c.data_dir + "/exposure_notes_utf8.txt", "rb") as f:
         data = f.read()
 
     # split on the defined delimiter
@@ -159,7 +159,7 @@ def load_caisis_silver_annotations():
     # Read in metadata file (excel), creating:
     #  dict of {doc_id:patient_id}
     #  dict of {patient_id : [gold labels] }
-    wb = openpyxl.load_workbook(c.CAISIS_DIR)
+    wb = openpyxl.load_workbook(c.data_dir + "/resources/caisis_exposure_labels.xlsx")
     sheets = wb.get_sheet_names()
     mrn_caisis_dict = dict()
     caisis_gold_dict = dict()
